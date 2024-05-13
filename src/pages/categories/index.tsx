@@ -18,6 +18,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import Dropdown from "../../components/Dropdown";
 import { useOnOutsideClick } from "../../hooks/useOnClickOutside";
+import { Category } from "../../utils/types";
 
 const Categories = () => {
   const navigate = useNavigate();
@@ -34,18 +35,45 @@ const Categories = () => {
 
   const dropDownItems = [
     {
-      label: "read",
+      label: "Read",
       icon: <EyeOutlined />,
+      key: "read",
     },
     {
-      label: "update",
+      label: "Update",
       icon: <EditOutlined />,
+      key: "update",
     },
     {
-      label: "delete",
+      label: "Delete",
       icon: <DeleteOutlined />,
+      key: "delete",
     },
   ];
+
+  const handleRead = (record: Category) => {};
+  const handleUpdate = (record: Category) => {};
+  const handleDelete = (record: Category) => {};
+
+  const handleDropdownOnClick = (key: string, record: Category) => {
+    switch (key) {
+      case "read": {
+        handleRead(record);
+        break;
+      }
+      case "update": {
+        handleUpdate(record);
+        break;
+      }
+      case "delete": {
+        handleDelete(record);
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  };
 
   return (
     <>
@@ -94,7 +122,17 @@ const Categories = () => {
                     />
                   </td>
                   <td>
-                    <DropDownActions key={category.id} dropDownContent={<Dropdown items={dropDownItems} />}/>
+                    <DropDownActions
+                      key={category.id}
+                      dropDownContent={
+                        <Dropdown
+                          onItemClick={(label) =>
+                            handleDropdownOnClick(label, category)
+                          }
+                          items={dropDownItems}
+                        />
+                      }
+                    />
                   </td>
                 </tr>
               ))}
@@ -108,12 +146,11 @@ const Categories = () => {
 
 export default Categories;
 
-
 type DropDownActionsProps = {
-  dropDownContent: ReactElement | ReactElement[] 
-}
+  dropDownContent: ReactElement | ReactElement[];
+};
 
-const DropDownActions = ({dropDownContent} : DropDownActionsProps) => {
+const DropDownActions = ({ dropDownContent }: DropDownActionsProps) => {
   const [dropDown, setDropDown] = useState(false);
   const dropDownRef = useOnOutsideClick(() => setDropDown(false));
   return (
