@@ -2,25 +2,30 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import Button from "../ui/Button";
 import FileInput from "../ui/FleInput";
 import Input from "../ui/Input";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useLayoutEffect, useState } from "react";
 import ImagePreview from "../imagePreview/ImagePreview";
 import { CategoryFormValues } from "../../utils/types";
 import {
   createNewCategory,
   selectCreatedItem,
+  CurrentType,
 } from "../../redux/slice/categoriesSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 
-const CategoriesForm = () => {
+type CategoriesFormProps = CurrentType;
+
+const CategoriesForm = ({ record, action }: CategoriesFormProps) => {
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<CategoryFormValues>();
   const [imagePreview, setImagePreview] = useState<FileList | null>(null);
   const dispatch = useAppDispatch();
   const { status, error } = useAppSelector(selectCreatedItem);
+
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const images = e.target.files;
@@ -34,11 +39,22 @@ const CategoriesForm = () => {
     setImagePreview(null);
   };
 
+  useLayoutEffect(() => {
+    if (record) {
+      setValue("categoryName", record.category_name);
+    } else {
+      setValue("categoryName", "");
+    }
+  }, [record, setValue]);
+
+  const formHeading =
+    action === "read" ? "Read" : action === "create" ? "Add new" : "Edit";
+
   if (error) return <p>{error}</p>;
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-      <h3 className="text-xl">Add new Category</h3>
+      <h3 className="text-xl">{formHeading} category</h3>
       <Input
         placeholder="Category Name"
         label="Category name"

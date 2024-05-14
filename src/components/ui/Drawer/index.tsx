@@ -14,7 +14,7 @@ const Drawer = ({ children, isDrawerOpen, closeDrawer }: DrawerProps) => {
     <div
       className={
         isDrawerOpen
-          ? "fixed top-0 bottom-0 left-0 right-0 opacity-100 bg-black bg-opacity-20 z-10"
+          ? "fixed top-0 bottom-0 left-0 right-0 opacity-100 bg-black bg-opacity-20 z-50"
           : "hidden"
       }
       onClick={closeDrawer}

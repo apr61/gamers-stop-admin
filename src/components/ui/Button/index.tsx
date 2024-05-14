@@ -5,6 +5,7 @@ type ButtonProps = {
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
   disabled?: boolean;
+  className?: string;
 };
 
 const Button = ({
@@ -12,6 +13,7 @@ const Button = ({
   onClick,
   type = "submit",
   disabled = false,
+  className = "",
 }: ButtonProps) => {
   return (
     <button
@@ -20,7 +22,7 @@ const Button = ({
       disabled={disabled}
       className={`${
         disabled ? "bg-gray-500" : "bg-blue-500"
-      }  px-4 py-2 text-white hover:bg-opacity-90 rounded-md w-fit`}
+      }  px-4 py-2 text-white hover:bg-opacity-90 rounded-md w-fit ${className}`}
     >
       {children}
     </button>

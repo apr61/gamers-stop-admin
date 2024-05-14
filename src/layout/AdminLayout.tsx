@@ -1,15 +1,15 @@
-import { Outlet } from "react-router-dom"
-import Sidenav from "../components/ui/Sidenav"
+import { Outlet } from "react-router-dom";
+import Sidenav from "../components/Sidenav";
 
 const AdminLayout = () => {
   return (
-    <div className="flex p-4 min-h-screen bg-gray-200">
-        <Sidenav />
-        <main className="max-w-7xl mx-auto w-full my-16">
-            <Outlet />
-        </main>
+    <div className="flex p-2 md:p-4 min-h-screen bg-gray-200">
+      <Sidenav />
+      <main className="max-w-7xl md:max-w-3xl mx-auto w-full my-16">
+        <Outlet />
+      </main>
     </div>
-  )
-}
+  );
+};
 
-export default AdminLayout
+export default AdminLayout;

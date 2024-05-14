@@ -1,33 +1,37 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Category, CategoryFormValues } from "../../utils/types";
 import { RootState } from "../store/store";
-import {
-  insertCategory,
-  readAllCategories,
-} from "../../services/api/categories";
+import { insertCategory } from "../../services/api/categories";
+import { readAllRecords } from "../../services/api/crud";
 
 type KEY_STATE = {
   status: "idle" | "pending" | "succeeded" | "failed";
   error: string | null;
 };
 
+export type CurrentType = {
+  action: "create" | "read" | "update" | "delete";
+  record: Category | null;
+};
+
 type CategoryState = {
   list: {
-    data: Category[],
-    status: "idle" | "pending" | "succeeded" | "failed",
-    error: string | null
-  }
+    data: Category[];
+    status: "idle" | "pending" | "succeeded" | "failed";
+    error: string | null;
+  };
   read: KEY_STATE;
   create: KEY_STATE;
   update: KEY_STATE;
   delete: KEY_STATE;
+  current: CurrentType;
 };
 
 const initialState: CategoryState = {
   list: {
     data: [],
     status: "idle",
-    error: null
+    error: null,
   },
   read: {
     status: "idle",
@@ -45,20 +49,24 @@ const initialState: CategoryState = {
     status: "idle",
     error: null,
   },
+  current: {
+    action: "create",
+    record: null,
+  },
 };
 
 export const fetchCategories = createAsyncThunk(
   "categories/read",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await readAllCategories();
+      const response = await readAllRecords("categories");
       return response as Category[];
     } catch (error) {
       if (error instanceof Error) {
         return rejectWithValue(error.message);
       }
     }
-  }
+  },
 );
 
 export const createNewCategory = createAsyncThunk(
@@ -72,13 +80,20 @@ export const createNewCategory = createAsyncThunk(
         return rejectWithValue(error.message);
       }
     }
-  }
+  },
 );
 
 const categoriesSlice = createSlice({
   name: "categories",
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    setActionType: (state, action: PayloadAction<CurrentType>) => {
+      state.current = action.payload;
+    },
+    resetActionType: (state) => {
+      state.current = { action: "create", record: null };
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(fetchCategories.fulfilled, (state, action) => {
@@ -107,8 +122,10 @@ const categoriesSlice = createSlice({
   },
 });
 
-export const selectListItems = (state: RootState) =>
-  state.categories.list;
-export const selectCreatedItem = (state: RootState) => state.categories.create
+export const selectListItems = (state: RootState) => state.categories.list;
+export const selectCreatedItem = (state: RootState) => state.categories.create;
+export const selectCurrentItem = (state: RootState) => state.categories.current;
+
+export const { setActionType, resetActionType } = categoriesSlice.actions;
 
 export default categoriesSlice.reducer;

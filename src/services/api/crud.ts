@@ -19,7 +19,7 @@ const insertRecord = async (documentData: any, tableName: string) => {
 const updateRecordById = async (
   documentData: any,
   tableName: string,
-  id: string
+  id: string,
 ) => {
   try {
     const { data, error } = await supabase
@@ -87,7 +87,6 @@ const readAllRecords = async (tableName: string) => {
     if (error instanceof Error) throw new Error(error.message);
   }
 };
-
 
 export {
   insertRecord,
