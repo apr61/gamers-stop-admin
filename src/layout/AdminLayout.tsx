@@ -5,7 +5,7 @@ const AdminLayout = () => {
   return (
     <div className="flex p-2 md:p-4 min-h-screen bg-gray-200">
       <Sidenav />
-      <main className="max-w-7xl md:max-w-3xl mx-auto w-full my-16">
+      <main className="max-w-3xl md:max-w-7xl mx-auto w-full my-16">
         <Outlet />
       </main>
     </div>

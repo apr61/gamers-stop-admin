@@ -22,12 +22,12 @@ const DataTable = ({ categories, setDrawer, handleModal }: DataTableProps) => {
 
   const dropDownItems = [
     {
-      label: "Read",
+      label: "Show",
       icon: <EyeOutlined />,
       key: "read",
     },
     {
-      label: "Update",
+      label: "Edit",
       icon: <EditOutlined />,
       key: "update",
     },
@@ -82,7 +82,7 @@ const DataTable = ({ categories, setDrawer, handleModal }: DataTableProps) => {
         </thead>
         <tbody>
           {categories.map((category) => (
-            <tr className="border-b-[1px]" key={category.id}>
+            <tr className="border-b-[1px] hover:bg-gray-50 transition-all ease-in-out duration-150" key={category.id}>
               <td className="ext-start p-2">{category.category_name}</td>
               <td className="ext-start p-2">
                 <img

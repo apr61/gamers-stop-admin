@@ -39,8 +39,8 @@ const Sidenav = () => {
   ];
 
   return (
-    <aside className="max-w-xs lg:max-w-[16rem] w-full bg-white rounded-md p-4 flex flex-col sticky top-4 h-[calc(100vh-2rem)] overflow-y-auto">
-      <Link to="/admin" className="text-4xl lg:text-3xl block">
+    <aside className="max-w-[16rem] lg:max-w-xs w-full bg-white rounded-md p-4 flex flex-col sticky top-4 h-[calc(100vh-2rem)] overflow-y-auto">
+      <Link to="/admin" className="text-3xl lg:text-4xl block">
         Gamers Stop
       </Link>
       <ul className="py-2 flex flex-col">
@@ -54,7 +54,7 @@ const Sidenav = () => {
         ))}
       </ul>
       <div className="mt-auto">
-        <button className="bg-red-500 text-white w-full text-lg p-4 rounded-md hover:bg-opacity-90 flex gap-2 justify-center">
+        <button className="bg-red-500 text-white w-full text-lg p-2 rounded-md hover:bg-opacity-90 flex gap-2 justify-center transition-all ease-in-out duration-150">
           <span className="text-xl">
             <LoginOutlined />
           </span>
@@ -79,8 +79,8 @@ const NavItem = ({ href, text, Icon }: NavItemProps) => {
       <NavLink
         to={href}
         className={({ isActive }) =>
-          `rounded-md p-4 flex gap-2 items-center ${
-            isActive ? "bg-blue-400 text-white" : ""
+          `rounded-md p-2 flex gap-2 items-center hover:bg-gray-100 transition-all ease-in-out duration-150 ${
+            isActive ? "bg-blue-400 text-white hover:bg-blue-400" : ""
           }`
         }
         end

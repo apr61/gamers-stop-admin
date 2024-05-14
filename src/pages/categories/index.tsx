@@ -12,8 +12,6 @@ import {
 } from "../../redux/slice/categoriesSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import DataTable from "../../components/DataTable/Index";
-import Modal from "../../components/Modal";
-import Button from "../../components/ui/Button";
 import DeleteModal from "../../components/DeleteModal";
 
 const Categories = () => {
