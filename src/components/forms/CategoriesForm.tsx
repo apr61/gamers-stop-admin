@@ -75,7 +75,9 @@ const CategoriesForm = ({ record, action }: CategoriesFormProps) => {
         <p className="text-red-500">{errors.images?.message}</p>
       )}
       <div className="flex gap-2">
-        <Button disabled={isSubmitting || status === "pending"}>Save</Button>
+        <Button type="submit" disabled={isSubmitting || status === "pending"}>
+          Save
+        </Button>
       </div>
     </form>
   );

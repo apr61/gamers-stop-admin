@@ -8,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import { ReactElement } from "react";
 import { Link, NavLink } from "react-router-dom";
+import Button from "../ui/Button";
 
 const Sidenav = () => {
   const navItems = [
@@ -39,8 +40,8 @@ const Sidenav = () => {
   ];
 
   return (
-    <aside className="max-w-[16rem] lg:max-w-xs w-full bg-white rounded-md p-4 flex flex-col sticky top-4 h-[calc(100vh-2rem)] overflow-y-auto">
-      <Link to="/admin" className="text-3xl lg:text-4xl block">
+    <aside className="max-w-[16rem] 2xl:max-w-xs w-full bg-white rounded-md p-4 flex flex-col sticky top-4 h-[calc(100vh-2rem)] overflow-y-auto">
+      <Link to="/admin" className="text-xl lg:text-2xl 2xl:text-4xl block">
         Gamers Stop
       </Link>
       <ul className="py-2 flex flex-col">
@@ -54,12 +55,17 @@ const Sidenav = () => {
         ))}
       </ul>
       <div className="mt-auto">
-        <button className="bg-red-500 text-white w-full text-lg p-2 rounded-md hover:bg-opacity-90 flex gap-2 justify-center transition-all ease-in-out duration-150">
-          <span className="text-xl">
-            <LoginOutlined />
-          </span>
-          Logout
-        </button>
+        <Button
+          btnType="danger"
+          className="w-full flex gap-2 justify-center items-center"
+        >
+          <>
+            <span className="text-xl">
+              <LoginOutlined />
+            </span>
+            Logout
+          </>
+        </Button>
       </div>
     </aside>
   );
@@ -79,8 +85,10 @@ const NavItem = ({ href, text, Icon }: NavItemProps) => {
       <NavLink
         to={href}
         className={({ isActive }) =>
-          `rounded-md p-2 flex gap-2 items-center hover:bg-gray-100 transition-all ease-in-out duration-150 ${
-            isActive ? "bg-blue-400 text-white hover:bg-blue-400" : ""
+          `rounded-md p-2 flex gap-2 items-center transition-all ease-in-out duration-150 ${
+            isActive
+              ? "bg-blue-400 text-white hover:bg-blue-400"
+              : "hover:bg-gray-100"
           }`
         }
         end
