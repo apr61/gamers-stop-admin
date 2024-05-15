@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, ReactNode } from "react";
 
 type ColumnConfig<T> = {
   title: string;
@@ -24,8 +24,16 @@ const Table = <T,>({ columns, data, isLoading = false }: TableProps<T>) => {
           ))}
         </tr>
       </thead>
+      {isLoading && (
+        <tbody>
+          <tr>
+            <td colSpan={columns.length} className="text-center p-4">
+              Loading...
+            </td>
+          </tr>
+        </tbody>
+      )}
       <tbody>
-        {isLoading && <p>Loading...</p>}
         {!isLoading &&
           data.map((record, rowIndex) => (
             <tr
@@ -37,8 +45,8 @@ const Table = <T,>({ columns, data, isLoading = false }: TableProps<T>) => {
                   {column.render
                     ? column.render(record)
                     : column.dataIndex
-                      ? record[column.dataIndex]
-                      : ""}
+                    ? record[column.dataIndex] as ReactNode
+                    : ""}
                 </td>
               ))}
             </tr>

@@ -10,6 +10,8 @@ export type CategoryFormValues = {
 };
 
 export type CrudConfig = {
-  tableName: string;
-  entity: string;
+  DRAWER_TITLE: string;
+  TABLE_NAME: string;
+  DATA_TABLE_TITLE: string
+  ADD_NEW_ITEM: string
 };

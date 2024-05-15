@@ -40,7 +40,7 @@ const updateRecordById = async (
 // Function to delete a document from Supabase by ID
 const deleteRecordById = async (tableName: string, id: string) => {
   try {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from(tableName)
       .delete()
       .eq("id", id);
@@ -49,7 +49,7 @@ const deleteRecordById = async (tableName: string, id: string) => {
       throw new Error(error.message);
     }
 
-    return data;
+    return id;
   } catch (error) {
     if (error instanceof Error) throw new Error(error.message);
   }

@@ -17,13 +17,14 @@ import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import { CrudConfig } from "../utils/types";
+import ReadItem from "../components/ReadItem";
 
 type CrudLayoutProps = {
   config: CrudConfig;
 };
 
 const CrudLayout = ({ config }: CrudLayoutProps) => {
-  const { record, action } = useAppSelector(selectCurrentItem);
+  const currentItem = useAppSelector(selectCurrentItem);
   const dispatch = useAppDispatch();
   const drawer = useAppSelector(selectDrawer);
 
@@ -37,9 +38,13 @@ const CrudLayout = ({ config }: CrudLayoutProps) => {
       <Drawer
         isDrawerOpen={drawer}
         closeDrawer={handleDrawer}
-        title={config.entity}
+        title={config.DRAWER_TITLE}
       >
-        <CategoriesForm record={record} action={action} />
+        {currentItem.action === "read" ? (
+          <ReadItem />
+        ) : (
+          <CategoriesForm {...currentItem} />
+        )}
       </Drawer>
       <div className="px-8 py-10 w-full bg-white rounded-md">
         <FixedHeaderContent config={config} />
@@ -67,7 +72,7 @@ const FixedHeaderContent = ({ config }: FixedHeaderContent) => {
       >
         <ArrowLeftOutlined />
       </button>
-      <h2 className="text-xl">Categories List</h2>
+      <h2 className="text-xl">{config.DATA_TABLE_TITLE}</h2>
       <div className="ml-auto flex gap-2">
         <Input type="search" placeholder="search" />
         <Button
@@ -76,7 +81,7 @@ const FixedHeaderContent = ({ config }: FixedHeaderContent) => {
         >
           <>
             <PlusOutlined />
-            Add new category
+            {config.ADD_NEW_ITEM}
           </>
         </Button>
       </div>
