@@ -1,12 +1,16 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Category, CategoryFormValues } from "../../utils/types";
+import {
+  Category,
+  CategoryFormValues,
+  FetchDataListType,
+} from "../../utils/types";
 import { RootState } from "../store/store";
 import {
   deleteCategoryById,
   insertCategory,
+  readAllCategories,
   updateCategory,
 } from "../../services/api/categories";
-import { readAllRecords } from "../../services/api/crud";
 
 type KEY_STATE = {
   status: "idle" | "pending" | "succeeded" | "failed";
@@ -25,6 +29,7 @@ type CategoryState = {
     data: Category[];
     status: "idle" | "pending" | "succeeded" | "failed";
     error: string | null;
+    totalItems: number;
   };
   read: KEY_STATE;
   create: KEY_STATE;
@@ -38,6 +43,7 @@ const initialState: CategoryState = {
     data: [],
     status: "idle",
     error: null,
+    totalItems: 0,
   },
   read: {
     status: "idle",
@@ -63,18 +69,33 @@ const initialState: CategoryState = {
   },
 };
 
+type EditCategoryType = {
+  category: Category;
+  categoryForm: CategoryFormValues;
+};
+
 export const fetchCategories = createAsyncThunk(
   "categories/read",
-  async (_, { rejectWithValue }) => {
+  async (query: FetchDataListType, { rejectWithValue }) => {
     try {
-      const response = await readAllRecords("categories");
-      return response as Category[];
+      const response = await readAllCategories(query);
+      if (response) {
+        const data = {
+          data: response.data as Category[],
+          totalCount: response.count,
+        };
+        return data;
+      }
+      return {
+        data: [],
+        totalCount: 0,
+      };
     } catch (error) {
       if (error instanceof Error) {
         return rejectWithValue(error.message);
       }
     }
-  }
+  },
 );
 
 export const createNewCategory = createAsyncThunk(
@@ -88,7 +109,7 @@ export const createNewCategory = createAsyncThunk(
         return rejectWithValue(error.message);
       }
     }
-  }
+  },
 );
 
 export const removeCategory = createAsyncThunk(
@@ -102,13 +123,8 @@ export const removeCategory = createAsyncThunk(
         return rejectWithValue(err.message);
       }
     }
-  }
+  },
 );
-
-type EditCategoryType = {
-  category: Category;
-  categoryForm: CategoryFormValues;
-};
 
 export const editCategory = createAsyncThunk(
   "categories/edit",
@@ -121,7 +137,7 @@ export const editCategory = createAsyncThunk(
         return rejectWithValue(err.message);
       }
     }
-  }
+  },
 );
 
 const categoriesSlice = createSlice({
@@ -144,7 +160,8 @@ const categoriesSlice = createSlice({
     builder
       .addCase(fetchCategories.fulfilled, (state, action) => {
         state.list.status = "succeeded";
-        state.list.data = action.payload!;
+        state.list.data = action.payload?.data || [];
+        state.list.totalItems = action.payload?.totalCount || 0;
       })
       .addCase(fetchCategories.pending, (state) => {
         state.list.status = "pending";
@@ -168,7 +185,7 @@ const categoriesSlice = createSlice({
       .addCase(removeCategory.fulfilled, (state, action) => {
         state.current.status = "succeeded";
         state.list.data = state.list.data.filter(
-          (item) => item.id !== action.payload
+          (item) => item.id !== action.payload,
         );
       })
       .addCase(removeCategory.pending, (state) => {

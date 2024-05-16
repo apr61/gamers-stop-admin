@@ -46,7 +46,7 @@ const CrudLayout = ({ config }: CrudLayoutProps) => {
           <CategoriesForm {...currentItem} />
         )}
       </Drawer>
-      <div className="px-8 py-10 w-full bg-white rounded-md">
+      <div className="px-8 py-4 w-full bg-white rounded-md">
         <FixedHeaderContent config={config} />
         <DataTable />
       </div>

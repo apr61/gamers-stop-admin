@@ -1,18 +1,37 @@
 import { nanoid } from "@reduxjs/toolkit";
 import supabase from "../../utils/supabase";
-import { Category, CategoryFormValues } from "../../utils/types";
+import {
+  Category,
+  CategoryFormValues,
+  FetchDataListType,
+} from "../../utils/types";
 import { deleteFile, updateFile, uploadFiles } from "./fileUpload";
 
 // Function to read all documents from a table in Supabase
-const readAllCategories = async () => {
+const readAllCategories = async (query: FetchDataListType) => {
   try {
-    const { data, error } = await supabase.from("categories").select("*");
+    const { count, error: countError } = await supabase
+      .from("categories")
+      .select("*", { count: "exact", head: true });
+    if (countError) {
+      throw new Error(countError.message);
+    }
+
+    const { data, error } = await supabase
+      .from("categories")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .range(query.from, query.to);
 
     if (error) {
       throw new Error(error.message);
     }
 
-    return data;
+    const response = {
+      data: data ? data : [],
+      count: count ? count : 0,
+    };
+    return response;
   } catch (error) {
     if (error instanceof Error) throw new Error(error.message);
   }
@@ -21,13 +40,8 @@ const readAllCategories = async () => {
 // Function to insert a document into Supabase
 const insertCategory = async (documentData: CategoryFormValues) => {
   try {
-    const fileResponse = await uploadFiles(documentData.images);
-
-    if (fileResponse === undefined) throw new Error("Error uploading images");
-
     const newCategoryData = {
       category_name: documentData.categoryName,
-      category_image: fileResponse[0].publicUrl,
     };
 
     const { error } = await supabase.from("categories").insert(newCategoryData);
@@ -68,13 +82,13 @@ const deleteCategoryById = async (category: Category) => {
 
 const updateCategory = async (
   category: Category,
-  categoryForm: CategoryFormValues
+  categoryForm: CategoryFormValues,
 ) => {
   console.log(categoryForm);
   try {
     const fileResponse = await updateFile(
       categoryForm.images,
-      category.category_image
+      category.category_image,
     );
 
     if (fileResponse?.publicUrl) {

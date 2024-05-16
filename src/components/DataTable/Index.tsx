@@ -5,7 +5,7 @@ import {
   EllipsisOutlined,
 } from "@ant-design/icons";
 import Dropdown from "../../components/ui/Dropdown";
-import { Category } from "../../utils/types";
+import { Category, FetchDataListType } from "../../utils/types";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import { ReactElement, useEffect, useState } from "react";
 import { useOnOutsideClick } from "../../hooks/useOnClickOutside";
@@ -16,10 +16,21 @@ import {
 } from "../../redux/slice/categoriesSlice";
 import Table from "../ui/Table";
 import { openDeleteModal, openDrawer } from "../../redux/slice/crudStateSlice";
+import Pagination from "../ui/Pagination";
+import { useSearchParams } from "react-router-dom";
 
 const DataTable = () => {
   const dispatch = useAppDispatch();
-  const { data: categories, error, status } = useAppSelector(selectListItems);
+  const {
+    data: categories,
+    error,
+    status,
+    totalItems,
+  } = useAppSelector(selectListItems);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = searchParams.get("page") || 1;
+  const itemsPerPage = 5;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const dropDownItems = [
     {
@@ -99,18 +110,37 @@ const DataTable = () => {
   ];
 
   useEffect(() => {
-    dispatch(fetchCategories());
-  }, [dispatch]);
+    const from = (+page - 1) * itemsPerPage;
+    const to = from + itemsPerPage - 1;
+    dispatch(fetchCategories({ from, to }));
+  }, [dispatch, page]);
+
+  const setPage = (newPage: number) => {
+    setSearchParams((prev) => {
+      prev.set("page", newPage.toString());
+      return prev;
+    });
+  };
 
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="mt-4">
+    <div className="mt-2">
       <Table
         columns={columns}
         data={categories}
         isLoading={status === "pending"}
       />
+      <div className="flex w-full mt-4 justify-between">
+        <p>
+          Page {+page} of {totalPages}
+        </p>
+        <Pagination
+          currentPage={+page}
+          totalPages={totalPages}
+          setPage={setPage}
+        />
+      </div>
     </div>
   );
 };

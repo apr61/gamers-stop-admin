@@ -2,13 +2,13 @@ import supabase from "../../utils/supabase";
 import { nanoid } from "@reduxjs/toolkit";
 
 // Function to upload multiple files to Supabase Storage
-const uploadFiles = async (fileList: FileList) => {
+const uploadFiles = async (fileList: FileList, bucketName: string) => {
   const files = Array.from(fileList);
   try {
     const uploads = files.map(async (file) => {
       const { data, error } = await supabase.storage
-        .from("images")
-        .upload(file.name + nanoid(), file);
+        .from(bucketName)
+        .upload(nanoid(), file);
 
       if (error) {
         throw new Error(error.message);
@@ -16,16 +16,15 @@ const uploadFiles = async (fileList: FileList) => {
 
       if (data) {
         const { data: publicUrl } = supabase.storage
-          .from("images")
+          .from(bucketName)
           .getPublicUrl(data.path);
-        return publicUrl;
+        return publicUrl.publicUrl;
       }
-
-      return data;
+      return null;
     });
 
     const results = await Promise.all(uploads);
-    return results;
+    return results.filter((url): url is string => url !== null);
   } catch (error) {
     if (error instanceof Error) throw new Error(error.message);
   }
