@@ -1,5 +1,5 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { ChangeEvent, useEffect, useLayoutEffect, useState } from "react";
+import { ChangeEvent, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import {
   createNewCategory,
@@ -7,16 +7,19 @@ import {
   CurrentType,
   editCategory,
 } from "../../redux/slice/categoriesSlice";
-import UrlToFileList from "../../utils/urlToFileList";
 import Button from "../ui/Button";
 import FileInput from "../ui/FileInput";
 import Input from "../ui/Input";
-import { CategoryFormValues } from "../../utils/types";
+import { Category, CategoryFormValues } from "../../utils/types";
 import {
   addFiles,
+  editFiles,
+  removeFiles,
+  resetFileHandling,
   selectFileHandlingData,
+  setPublicUrls,
 } from "../../redux/slice/fileHandlingSlice";
-import { DeleteOutlined } from "@ant-design/icons";
+import ImagePreview from "../ImagePreview";
 
 type CategoriesFormProps = CurrentType;
 
@@ -28,7 +31,6 @@ const CategoriesForm = ({ record, action }: CategoriesFormProps) => {
     setValue,
     formState: { errors, isSubmitting },
   } = useForm<CategoryFormValues>();
-  const [imagePreview, setImagePreview] = useState<FileList | null>(null);
   const dispatch = useAppDispatch();
   const { status, error } = useAppSelector(selectCreatedItem);
   const formHeading = action === "create" ? "Add new" : "Edit";
@@ -39,34 +41,63 @@ const CategoriesForm = ({ record, action }: CategoriesFormProps) => {
   } = useAppSelector(selectFileHandlingData);
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      await dispatch(addFiles(e.target.files));
+    switch (action) {
+      case "create": {
+        if (e.target.files) {
+          await dispatch(addFiles(e.target.files));
+        }
+        break;
+      }
+      case "update": {
+        if (e.target.files) {
+          await dispatch(
+            editFiles({
+              files: e.target.files,
+              path: [record?.category_image!],
+            })
+          );
+        }
+        break;
+      }
+      default: {
+        break;
+      }
     }
   };
 
   const onSubmit: SubmitHandler<CategoryFormValues> = async (data) => {
     if (action === "create") {
-      await dispatch(createNewCategory(data));
+      const newCategory: Omit<Category, "id"> = {
+        category_image: publicUrls[0],
+        category_name: data.categoryName,
+      };
+      await dispatch(createNewCategory(newCategory));
     } else {
-      await dispatch(editCategory({ category: record!, categoryForm: data }));
+      await dispatch(
+        editCategory({
+          id: record?.id as string,
+          category_name: data.categoryName,
+          category_image: publicUrls[0],
+        })
+      );
     }
     reset({ categoryName: "", images: undefined });
-    setImagePreview(null);
+    dispatch(resetFileHandling());
   };
 
-  useLayoutEffect(() => {
+  const handleDelete = async (url: string) => {
+    await dispatch(removeFiles([url]));
+  };
+
+  useEffect(() => {
     if (record) {
       setValue("categoryName", record.category_name);
-      (async () => {
-        const fileData = await UrlToFileList(record.category_image!);
-        setValue("images", fileData);
-        setImagePreview(fileData);
-      })();
+      dispatch(setPublicUrls([record.category_image]));
     } else {
       reset({ categoryName: "", images: undefined });
-      setImagePreview(null);
+      dispatch(resetFileHandling())
     }
-  }, [record, setValue, reset]);
+  }, [record, reset]);
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
@@ -85,14 +116,16 @@ const CategoriesForm = ({ record, action }: CategoriesFormProps) => {
         <FileInput
           label="Image"
           {...register("images", {
-            required: "Category image is required",
+            required:
+              publicUrls.length === 0 ? "Category image is required" : false,
             onChange: handleFileChange,
           })}
         />
       )}
-      <ImagePreview images={publicUrls} />
+      <ImagePreview images={publicUrls} handleOnClick={handleDelete} />
       {errors.images && <p className="text-red-500">{errors.images.message}</p>}
       {error && <p className="text-red-500">{error}</p>}
+      {fileError && <p className="text-red-500">{fileError}</p>}
       <div className="flex gap-2">
         <Button type="submit" disabled={isSubmitting || status === "pending"}>
           Save
@@ -103,25 +136,3 @@ const CategoriesForm = ({ record, action }: CategoriesFormProps) => {
 };
 
 export default CategoriesForm;
-
-type ImagePreviewProps = {
-  images: string[];
-};
-
-const ImagePreview = ({ images }: ImagePreviewProps) => {
-  return (
-    <div className="flex gap-2 flex-wrap">
-      {images.map((url, index) => (
-        <div
-          key={url}
-          className="w-16 h-16 relative hover:brightness-[85%] group transistion ease-in-out duration-150"
-        >
-          <img src={url} alt={`image ` + index} className="w-full h-full" />
-          <button className="hidden group-hover:block text-red-600 text-xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-            <DeleteOutlined />
-          </button>
-        </div>
-      ))}
-    </div>
-  );
-};

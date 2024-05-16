@@ -1,7 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   Category,
-  CategoryFormValues,
   FetchDataListType,
 } from "../../utils/types";
 import { RootState } from "../store/store";
@@ -69,11 +68,6 @@ const initialState: CategoryState = {
   },
 };
 
-type EditCategoryType = {
-  category: Category;
-  categoryForm: CategoryFormValues;
-};
-
 export const fetchCategories = createAsyncThunk(
   "categories/read",
   async (query: FetchDataListType, { rejectWithValue }) => {
@@ -100,7 +94,7 @@ export const fetchCategories = createAsyncThunk(
 
 export const createNewCategory = createAsyncThunk(
   "categories/create",
-  async (formData: CategoryFormValues, { rejectWithValue }) => {
+  async (formData: Omit<Category, "id">, { rejectWithValue }) => {
     try {
       const newCategory = await insertCategory(formData);
       return newCategory;
@@ -128,9 +122,9 @@ export const removeCategory = createAsyncThunk(
 
 export const editCategory = createAsyncThunk(
   "categories/edit",
-  async ({ category, categoryForm }: EditCategoryType, { rejectWithValue }) => {
+  async (categoryData : Category, { rejectWithValue }) => {
     try {
-      const data = await updateCategory(category, categoryForm);
+      const data = await updateCategory(categoryData);
       return data;
     } catch (err) {
       if (err instanceof Error) {
@@ -144,8 +138,9 @@ const categoriesSlice = createSlice({
   name: "categories",
   initialState: initialState,
   reducers: {
-    setActionType: (state, action: PayloadAction<CurrentType>) => {
-      state.current = action.payload;
+    setActionType: (state, action: PayloadAction<Omit<CurrentType, "status" | "error" >>) => {
+      state.current.record = action.payload.record;
+      state.current.action = action.payload.action;
     },
     resetActionType: (state) => {
       state.current = {
@@ -173,7 +168,7 @@ const categoriesSlice = createSlice({
       })
       .addCase(createNewCategory.fulfilled, (state, action) => {
         state.create.status = "succeeded";
-        state.list.data.push(action.payload as Category);
+        state.list.data.unshift(action.payload as Category);
       })
       .addCase(createNewCategory.pending, (state) => {
         state.create.status = "pending";

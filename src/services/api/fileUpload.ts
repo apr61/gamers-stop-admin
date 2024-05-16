@@ -1,5 +1,6 @@
 import supabase from "../../utils/supabase";
 import { nanoid } from "@reduxjs/toolkit";
+import { EditFilesType } from "../../utils/types";
 
 // Function to upload multiple files to Supabase Storage
 const uploadFiles = async (fileList: FileList, bucketName: string) => {
@@ -30,45 +31,70 @@ const uploadFiles = async (fileList: FileList, bucketName: string) => {
   }
 };
 
-const deleteFile = async (fileUrl: string) => {
+const deleteFile = async (fileUrl: string[]) => {
   try {
-    const bucketName = fileUrl.split("/").at(-2);
-    const fileName = fileUrl.split("/").at(-1);
-    if (bucketName && fileName) {
-      const { data, error } = await supabase.storage
+    const deletedFiles = fileUrl.map(async (url) => {
+      const bucketName = url.split("/").at(-2);
+      const fileName = url.split("/").at(-1);
+      if (bucketName && fileName) {
+        const { data, error } = await supabase.storage
         .from(bucketName)
         .remove([fileName]);
-      return { data, error };
-    }
+        return { data, error };
+      }
+    })
+    const result = Promise.all(deletedFiles)
+    return result
   } catch (error) {
     if (error instanceof Error) throw new Error(error.message);
   }
 };
 
-const updateFile = async (fileList: FileList, fileUrl: string) => {
-  const files = Array.from(fileList);
+const updateFile = async (editFileData: EditFilesType): Promise<string[]> => {
+  const { files, path } = editFileData;
+  const fileArray = Array.from(files);
+
+  if (fileArray.length !== path.length) {
+    throw new Error('The number of files and paths must match.');
+  }
+
   try {
-    const bucketName = fileUrl.split("/").at(-2);
-    const fileName = fileUrl.split("/").at(-1);
-    if (bucketName && fileName) {
-      const { data, error } = await supabase.storage
-        .from(bucketName)
-        .update(fileName, files[0], {
-          upsert: true,
-        });
-      if (error) {
-        throw new Error(error.message);
-      }
-      if (data) {
-        const { data: publicUrl } = supabase.storage
+    const uploadPromises = fileArray.map(async (file, index) => {
+      const filePath = path[index];
+      const bucketName = filePath.split("/").at(-2);
+      const fileName = filePath.split("/").at(-1);
+
+      if (bucketName && fileName) {
+        const { data, error } = await supabase.storage
           .from(bucketName)
-          .getPublicUrl(data.path);
-        return publicUrl;
+          .update(fileName, file, {
+            upsert: true,
+          });
+
+        if (error) {
+          throw new Error(error.message);
+        }
+
+        if (data) {
+          const { data: publicUrl } = supabase.storage
+            .from(bucketName)
+            .getPublicUrl(data.path);
+
+          if (publicUrl?.publicUrl) {
+            return publicUrl.publicUrl;
+          }
+        }
       }
-    }
+      throw new Error('Bucket name or file name is missing.');
+    });
+
+    const publicUrls = await Promise.all(uploadPromises);
+    return publicUrls;
   } catch (err) {
     if (err instanceof Error) {
       throw new Error(err.message);
+    } else {
+      throw new Error('An unknown error occurred');
     }
   }
 };

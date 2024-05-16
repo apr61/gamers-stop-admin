@@ -5,7 +5,7 @@ import {
   EllipsisOutlined,
 } from "@ant-design/icons";
 import Dropdown from "../../components/ui/Dropdown";
-import { Category, FetchDataListType } from "../../utils/types";
+import { Category } from "../../utils/types";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import { ReactElement, useEffect, useState } from "react";
 import { useOnOutsideClick } from "../../hooks/useOnClickOutside";

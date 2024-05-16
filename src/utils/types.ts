@@ -20,3 +20,8 @@ export type FetchDataListType = {
   from: number;
   to: number;
 };
+
+export type EditFilesType = {
+  files: FileList,
+  path: string[]
+}
