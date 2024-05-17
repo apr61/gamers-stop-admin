@@ -6,7 +6,7 @@ export type Category = {
 
 export type CategoryFormValues = {
   categoryName: string;
-  images: FileList;
+  images: FileList | null;
 };
 
 export type CrudConfig = {
@@ -21,7 +21,9 @@ export type FetchDataListType = {
   to: number;
 };
 
-export type EditFilesType = {
+export type CategoryFormData = {
+  category_name: string,
   files: FileList,
-  path: string[]
+  imageUrls: string[],
+  id: string
 }

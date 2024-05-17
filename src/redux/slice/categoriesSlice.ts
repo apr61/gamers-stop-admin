@@ -1,14 +1,15 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   Category,
+  CategoryFormData,
   FetchDataListType,
 } from "../../utils/types";
 import { RootState } from "../store/store";
 import {
+  addCategoryFileUpload,
   deleteCategoryById,
-  insertCategory,
   readAllCategories,
-  updateCategory,
+  updateCategoryFileUpload,
 } from "../../services/api/categories";
 
 type KEY_STATE = {
@@ -94,9 +95,9 @@ export const fetchCategories = createAsyncThunk(
 
 export const createNewCategory = createAsyncThunk(
   "categories/create",
-  async (formData: Omit<Category, "id">, { rejectWithValue }) => {
+  async (formData: Omit<CategoryFormData, "imageUrls" | "id">, { rejectWithValue }) => {
     try {
-      const newCategory = await insertCategory(formData);
+      const newCategory = await addCategoryFileUpload(formData);
       return newCategory;
     } catch (error) {
       if (error instanceof Error) {
@@ -122,9 +123,9 @@ export const removeCategory = createAsyncThunk(
 
 export const editCategory = createAsyncThunk(
   "categories/edit",
-  async (categoryData : Category, { rejectWithValue }) => {
+  async (categoryData : CategoryFormData, { rejectWithValue }) => {
     try {
-      const data = await updateCategory(categoryData);
+      const data = await updateCategoryFileUpload(categoryData);
       return data;
     } catch (err) {
       if (err instanceof Error) {

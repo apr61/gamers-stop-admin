@@ -1,5 +1,5 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { ChangeEvent, useEffect } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import {
   createNewCategory,
@@ -10,16 +10,9 @@ import {
 import Button from "../ui/Button";
 import FileInput from "../ui/FileInput";
 import Input from "../ui/Input";
-import { Category, CategoryFormValues } from "../../utils/types";
-import {
-  addFiles,
-  editFiles,
-  removeFiles,
-  resetFileHandling,
-  selectFileHandlingData,
-  setPublicUrls,
-} from "../../redux/slice/fileHandlingSlice";
+import { CategoryFormData, CategoryFormValues } from "../../utils/types";
 import ImagePreview from "../ImagePreview";
+import UrlToFileList from "../../utils/urlToFileList";
 
 type CategoriesFormProps = CurrentType;
 
@@ -31,73 +24,63 @@ const CategoriesForm = ({ record, action }: CategoriesFormProps) => {
     setValue,
     formState: { errors, isSubmitting },
   } = useForm<CategoryFormValues>();
-  const dispatch = useAppDispatch();
   const { status, error } = useAppSelector(selectCreatedItem);
   const formHeading = action === "create" ? "Add new" : "Edit";
-  const {
-    publicUrls,
-    status: fileStatus,
-    error: fileError,
-  } = useAppSelector(selectFileHandlingData);
-
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const dispatch = useAppDispatch()
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    switch (action) {
-      case "create": {
-        if (e.target.files) {
-          await dispatch(addFiles(e.target.files));
-        }
-        break;
-      }
-      case "update": {
-        if (e.target.files) {
-          await dispatch(
-            editFiles({
-              files: e.target.files,
-              path: [record?.category_image!],
-            })
-          );
-        }
-        break;
-      }
-      default: {
-        break;
-      }
+    const files = e.target.files;
+    if (files) {
+      const filePreviews = Array.from(files).map((file) =>
+        URL.createObjectURL(file)
+      );
+      setImagePreviews(filePreviews);
     }
   };
 
   const onSubmit: SubmitHandler<CategoryFormValues> = async (data) => {
+    
     if (action === "create") {
-      const newCategory: Omit<Category, "id"> = {
-        category_image: publicUrls[0],
-        category_name: data.categoryName,
+        const newCategory: Omit<CategoryFormData, "imageUrls" | "id">= {
+          category_name: data.categoryName,
+          files: data.images!,
       };
       await dispatch(createNewCategory(newCategory));
     } else {
+      const updatedCategoryData : CategoryFormData = {
+        id: record?.id!,
+        category_name: data.categoryName,
+        files: data.images!,
+        imageUrls: [record?.category_image!]
+      }
       await dispatch(
-        editCategory({
-          id: record?.id as string,
-          category_name: data.categoryName,
-          category_image: publicUrls[0],
-        })
+        editCategory(updatedCategoryData)
       );
     }
-    reset({ categoryName: "", images: undefined });
-    dispatch(resetFileHandling());
+    reset({ categoryName: "", images: null });
+    setImagePreviews([]);
   };
 
   const handleDelete = async (url: string) => {
-    await dispatch(removeFiles([url]));
+    setImagePreviews((prev) => prev.filter((imgUrl) => imgUrl != url));
+    setValue("images", null)
   };
 
   useEffect(() => {
-    if (record) {
-      setValue("categoryName", record.category_name);
-      dispatch(setPublicUrls([record.category_image]));
-    } else {
-      reset({ categoryName: "", images: undefined });
-      dispatch(resetFileHandling())
-    }
-  }, [record, reset]);
+    const initializeForm = async () => {
+      if (record) {
+        const fileList = await UrlToFileList(record.category_image);
+        setValue("images", fileList);
+        setValue("categoryName", record.category_name);
+        setImagePreviews([record.category_image]);
+        return;
+      }
+      reset({ categoryName: "", images: null });
+      setImagePreviews([]);
+    };
+
+    initializeForm();
+  }, [record, reset, setValue]);
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
@@ -110,22 +93,16 @@ const CategoriesForm = ({ record, action }: CategoriesFormProps) => {
       {errors.categoryName && (
         <p className="text-red-500">{errors.categoryName.message}</p>
       )}
-      {fileStatus === "pending" ? (
-        <p>Loading...</p>
-      ) : (
-        <FileInput
-          label="Image"
-          {...register("images", {
-            required:
-              publicUrls.length === 0 ? "Category image is required" : false,
-            onChange: handleFileChange,
-          })}
-        />
-      )}
-      <ImagePreview images={publicUrls} handleOnClick={handleDelete} />
+      <FileInput
+        label="Image"
+        {...register("images", {
+          required: imagePreviews.length === 0 ? "Category image is required" : false,
+          onChange: handleFileChange,
+        })}
+      />
+      <ImagePreview images={imagePreviews} handleOnClick={handleDelete} />
       {errors.images && <p className="text-red-500">{errors.images.message}</p>}
       {error && <p className="text-red-500">{error}</p>}
-      {fileError && <p className="text-red-500">{fileError}</p>}
       <div className="flex gap-2">
         <Button type="submit" disabled={isSubmitting || status === "pending"}>
           Save

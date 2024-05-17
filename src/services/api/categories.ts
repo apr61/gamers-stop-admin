@@ -1,10 +1,10 @@
-import { nanoid } from "@reduxjs/toolkit";
 import supabase from "../../utils/supabase";
 import {
   Category,
+  CategoryFormData,
   FetchDataListType,
 } from "../../utils/types";
-import { deleteFile } from "./fileUpload";
+import { deleteFile, updateFile, uploadFiles } from "./fileUpload";
 
 // Function to read all documents from a table in Supabase
 const readAllCategories = async (query: FetchDataListType) => {
@@ -37,17 +37,23 @@ const readAllCategories = async (query: FetchDataListType) => {
 };
 
 // Function to insert a document into Supabase
-const insertCategory = async (documentData: Omit<Category, "id"> ) => {
+const insertCategory = async (
+  documentData: Omit<Category, "id">
+): Promise<Category | null> => {
   try {
-    const { error } = await supabase.from("categories").insert(documentData);
+    const { data, error } = await supabase
+      .from("categories")
+      .insert(documentData)
+      .select();
 
     if (error) {
       throw new Error(error.message);
     }
 
-    return { ...documentData, id: nanoid() };
+    return data[0];
   } catch (error) {
     if (error instanceof Error) throw new Error(error.message);
+    return null;
   }
 };
 
@@ -57,7 +63,7 @@ const deleteCategoryById = async (category: Category) => {
       supabase.from("categories").delete().eq("id", category.id),
       deleteFile([category.category_image]),
     ]);
-    
+
     const { error } = deleteCategoryResult;
 
     if (error) {
@@ -71,23 +77,76 @@ const deleteCategoryById = async (category: Category) => {
   }
 };
 
-const updateCategory = async (
-  category: Category,
-) => {
+const updateCategory = async (category: Category) => {
   try {
-      await supabase
-        .from("categories")
-        .update({
-          category_name: category.category_name,
-          category_image: category?.category_image,
-        })
-        .eq("id", category.id);
+    await supabase
+      .from("categories")
+      .update({
+        category_name: category.category_name,
+        category_image: category?.category_image,
+      })
+      .eq("id", category.id);
 
-      return category
+    return category;
   } catch (err) {
     if (err instanceof Error) {
       throw new Error(err.message);
     }
+    return null
+  }
+};
+
+const addCategoryFileUpload = async (
+  formData: Omit<CategoryFormData, "imageUrls" | "id">
+) => {
+  try {
+    let imageUrls: string[] = [];
+    if (formData.files.length > 0) {
+      imageUrls = await uploadFiles(formData.files, "images");
+    }
+
+    if (imageUrls.length <= 0) throw new Error("Unable upload images");
+
+    const categoryData: Omit<Category, "id"> = {
+      category_name: formData.category_name,
+      category_image: imageUrls[0],
+    };
+
+    const newCategory = await insertCategory(categoryData);
+    return newCategory;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    return null;
+  }
+};
+
+const updateCategoryFileUpload = async (formData: CategoryFormData) => {
+  try {
+    let imageUrls: string[] = [];
+    if (formData.files.length > 0) {
+      imageUrls = await updateFile({
+        files: formData.files,
+        path: formData.imageUrls,
+      });
+    }
+
+    if (imageUrls.length <= 0) throw new Error("Unable upload images");
+
+    const categoryData: Category = {
+      category_name: formData.category_name,
+      category_image: imageUrls[0],
+      id: formData.id
+    };
+
+    const updatedCategory = await updateCategory(categoryData);
+    return updatedCategory;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+    return null;
   }
 };
 
@@ -96,4 +155,6 @@ export {
   insertCategory,
   deleteCategoryById,
   updateCategory,
+  addCategoryFileUpload,
+  updateCategoryFileUpload,
 };
