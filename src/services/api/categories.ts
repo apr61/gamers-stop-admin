@@ -1,7 +1,6 @@
 import supabase from "../../utils/supabase";
 import {
   Category,
-  CategoryFormData,
   FetchDataListType,
 } from "../../utils/types";
 import { deleteFile, updateFile, uploadFiles } from "./fileUpload";
@@ -19,6 +18,7 @@ const readAllCategories = async (query: FetchDataListType) => {
     const { data, error } = await supabase
       .from("categories")
       .select("*")
+      .ilike("category_name", `%${query.search}%`)
       .order("created_at", { ascending: false })
       .range(query.from, query.to);
 
@@ -96,6 +96,13 @@ const updateCategory = async (category: Category) => {
   }
 };
 
+export type CategoryFormData = {
+  category_name: string,
+  files: FileList,
+  imageUrls: string[],
+  id: string
+}
+
 const addCategoryFileUpload = async (
   formData: Omit<CategoryFormData, "imageUrls" | "id">
 ) => {
@@ -105,7 +112,7 @@ const addCategoryFileUpload = async (
       imageUrls = await uploadFiles(formData.files, "images");
     }
 
-    if (imageUrls.length <= 0) throw new Error("Unable upload images");
+    if (imageUrls.length <= 0) throw new Error("Unable to upload images");
 
     const categoryData: Omit<Category, "id"> = {
       category_name: formData.category_name,
@@ -152,7 +159,6 @@ const updateCategoryFileUpload = async (formData: CategoryFormData) => {
 
 export {
   readAllCategories,
-  insertCategory,
   deleteCategoryById,
   updateCategory,
   addCategoryFileUpload,

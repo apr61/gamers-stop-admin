@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import categoriesSlice from "../slice/categoriesSlice";
-import crudStateSlice from "../slice/crudStateSlice";
+import crudStateSlice from "../slice/crudActionsSlice";
 import fileHandlingSlice from "../slice/fileHandlingSlice";
+import crudSlice from "../slice/crudSlice";
 
 export const store = configureStore({
   reducer: {
-    categories: categoriesSlice,
+    crud: crudSlice,
     crudState: crudStateSlice,
     fileHandling: fileHandlingSlice,
   },

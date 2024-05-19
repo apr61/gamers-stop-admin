@@ -2,21 +2,19 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import {
-  createNewCategory,
-  selectCreatedItem,
-  CurrentType,
-  editCategory,
-} from "../../redux/slice/categoriesSlice";
+  createNewEntity,
+  editEntity,
+  selectCurrentItem,
+} from "../../redux/slice/crudSlice";
 import Button from "../ui/Button";
 import FileInput from "../ui/FileInput";
 import Input from "../ui/Input";
-import { CategoryFormData, CategoryFormValues } from "../../utils/types";
+import { CategoryFormValues } from "../../utils/types";
 import ImagePreview from "../ImagePreview";
 import UrlToFileList from "../../utils/urlToFileList";
 
-type CategoriesFormProps = CurrentType;
-
-const CategoriesForm = ({ record, action }: CategoriesFormProps) => {
+const CategoriesForm = () => {
+  const { action, record, status, error } = useAppSelector(selectCurrentItem);
   const {
     register,
     handleSubmit,
@@ -24,10 +22,9 @@ const CategoriesForm = ({ record, action }: CategoriesFormProps) => {
     setValue,
     formState: { errors, isSubmitting },
   } = useForm<CategoryFormValues>();
-  const { status, error } = useAppSelector(selectCreatedItem);
   const formHeading = action === "create" ? "Add new" : "Edit";
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
@@ -39,43 +36,40 @@ const CategoriesForm = ({ record, action }: CategoriesFormProps) => {
   };
 
   const onSubmit: SubmitHandler<CategoryFormValues> = async (data) => {
-    
     if (action === "create") {
-        const newCategory: Omit<CategoryFormData, "imageUrls" | "id">= {
-          category_name: data.categoryName,
-          files: data.images!,
-      };
-      await dispatch(createNewCategory(newCategory));
-    } else {
-      const updatedCategoryData : CategoryFormData = {
-        id: record?.id!,
-        category_name: data.categoryName,
-        files: data.images!,
-        imageUrls: [record?.category_image!]
-      }
       await dispatch(
-        editCategory(updatedCategoryData)
+        createNewEntity({ formData: data, tableName: "categories" })
       );
+    } else {
+      if (record && "category_name" in record)
+        await dispatch(
+          editEntity({
+            id: record?.id!,
+            path: [record?.category_image!],
+            tableName: "categories",
+            formData: data,
+          })
+        );
     }
-    reset({ categoryName: "", images: null });
+    reset();
     setImagePreviews([]);
   };
 
   const handleDelete = async (url: string) => {
     setImagePreviews((prev) => prev.filter((imgUrl) => imgUrl != url));
-    setValue("images", null)
+    setValue("category_image", null);
   };
 
   useEffect(() => {
     const initializeForm = async () => {
-      if (record) {
+      if (record && "category_name" in record) {
         const fileList = await UrlToFileList(record.category_image);
-        setValue("images", fileList);
-        setValue("categoryName", record.category_name);
+        setValue("category_image", fileList);
+        setValue("category_name", record.category_name);
         setImagePreviews([record.category_image]);
         return;
       }
-      reset({ categoryName: "", images: null });
+      reset();
       setImagePreviews([]);
     };
 
@@ -88,20 +82,25 @@ const CategoriesForm = ({ record, action }: CategoriesFormProps) => {
       <Input
         placeholder="Category Name"
         label="Category name"
-        {...register("categoryName", { required: "Category name is required" })}
+        {...register("category_name", {
+          required: "Category name is required",
+        })}
       />
-      {errors.categoryName && (
-        <p className="text-red-500">{errors.categoryName.message}</p>
+      {errors.category_name && (
+        <p className="text-red-500">{errors.category_name.message}</p>
       )}
       <FileInput
         label="Image"
-        {...register("images", {
-          required: imagePreviews.length === 0 ? "Category image is required" : false,
+        {...register("category_image", {
+          required:
+            imagePreviews.length === 0 ? "Category image is required" : false,
           onChange: handleFileChange,
         })}
       />
       <ImagePreview images={imagePreviews} handleOnClick={handleDelete} />
-      {errors.images && <p className="text-red-500">{errors.images.message}</p>}
+      {errors.category_image && (
+        <p className="text-red-500">{errors.category_image.message}</p>
+      )}
       {error && <p className="text-red-500">{error}</p>}
       <div className="flex gap-2">
         <Button type="submit" disabled={isSubmitting || status === "pending"}>

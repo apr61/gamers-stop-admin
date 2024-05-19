@@ -1,6 +1,6 @@
-import React, { useId } from "react";
+import React, { InputHTMLAttributes, useId } from "react";
 
-type InputPropsType = {
+type InputPropsType = InputHTMLAttributes<HTMLInputElement> &{
   label?: string;
   placeholder: string;
   type?: string;

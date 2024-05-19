@@ -1,4 +1,4 @@
-import { selectCurrentItem } from "../../redux/slice/categoriesSlice";
+import { selectCurrentItem } from "../../redux/slice/crudSlice";
 import { useAppSelector } from "../../redux/store/hooks";
 
 const ReadItem = () => {

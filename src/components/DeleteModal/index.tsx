@@ -1,18 +1,23 @@
 import { useOnOutsideClick } from "../../hooks/useOnClickOutside";
 import {
-  removeCategory,
+  removeEntity,
   resetActionType,
   selectCurrentItem,
-} from "../../redux/slice/categoriesSlice";
+} from "../../redux/slice/crudSlice";
 import {
   closeDeleteModal,
   selectDeleteModal,
-} from "../../redux/slice/crudStateSlice";
+} from "../../redux/slice/crudActionsSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import Modal from "../Modal";
 import Button from "../ui/Button";
+import { CrudConfig, CrudType } from "../../utils/types";
 
-const DeleteModal = () => {
+type DeleteModalProps = {
+  config: CrudConfig
+}
+
+const DeleteModal = ({config} : DeleteModalProps) => {
   const dispatch = useAppDispatch();
   const modalRef = useOnOutsideClick(() => dispatch(closeDeleteModal()));
   const deleteModal = useAppSelector(selectDeleteModal);
@@ -23,7 +28,13 @@ const DeleteModal = () => {
   };
   const handleDelete = async () => {
     if (record) {
-      await dispatch(removeCategory(record));
+      const data : CrudType = {
+        id: record.id,
+        tableName: config.TABLE_NAME,
+        data: record,
+        withFile: true
+      }
+      await dispatch(removeEntity(data));
       dispatch(closeDeleteModal());
       dispatch(resetActionType());
     }
