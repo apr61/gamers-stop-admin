@@ -6,6 +6,8 @@ import Orders from "../pages/orders";
 import Categories from "../pages/categories";
 import Users from "../pages/users";
 import NotFound from "../components/NotFound";
+import Login from "../pages/login";
+import SignUp from "../pages/signup";
 
 const routes = createBrowserRouter([
   {
@@ -33,6 +35,14 @@ const routes = createBrowserRouter([
         element: <Categories />,
       },
     ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/signup",
+    element: <SignUp />,
   },
   {
     path: "*",

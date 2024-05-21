@@ -29,6 +29,17 @@ export type ProductFormValues = {
   category_id: string;
 };
 
+export type SignUpFormValues = {
+  name: string;
+  email: string;
+  password: string;
+};
+
+export type LoginFormValues = {
+  email: string;
+  password: string;
+};
+
 export type CrudConfig = {
   DRAWER_TITLE: string;
   TABLE_NAME: TableName;

@@ -4,6 +4,7 @@ import crudSlice from "../slice/crudSlice";
 import categorySlice from "../slice/categorySlice";
 import productsSlice from "../slice/productsSlice";
 import uiActionsSlice from "../slice/uiActionsSlice";
+import authSlice from "../slice/authSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     fileHandling: fileHandlingSlice,
     categories: categorySlice,
     products: productsSlice,
+    auth: authSlice,
   },
 });
 

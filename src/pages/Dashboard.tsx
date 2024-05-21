@@ -1,8 +1,10 @@
+import { selectCurrentUser } from "../redux/slice/authSlice";
+import { useAppSelector } from "../redux/store/hooks";
 
 const Dashboard = () => {
-  return (
-    <div>Dashboard</div>
-  )
-}
+  const { user, isLoggedIn, session } = useAppSelector(selectCurrentUser);
+  console.log(user, isLoggedIn, session);
+  return <div>Dashboard</div>;
+};
 
-export default Dashboard
+export default Dashboard;
