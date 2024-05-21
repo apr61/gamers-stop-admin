@@ -1,5 +1,13 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Category, CategoryFormValues, CrudType, Data, ProductFormValues, QueryType, TableName } from "../../utils/types";
+import {
+  Category,
+  CategoryFormValues,
+  CrudType,
+  Data,
+  ProductFormValues,
+  QueryType,
+  TableName,
+} from "../../utils/types";
 import { RootState } from "../store/store";
 import {
   deleteRecordById,
@@ -61,7 +69,7 @@ export const entitySearch = createAsyncThunk(
         return rejectWithValue(error.message);
       }
     }
-  }
+  },
 );
 
 export const createNewEntity = createAsyncThunk(
@@ -74,7 +82,7 @@ export const createNewEntity = createAsyncThunk(
       formData: CategoryFormValues | ProductFormValues;
       tableName: TableName;
     },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     try {
       const newEntity = await insertRecordWithUpload(formData, tableName);
@@ -84,7 +92,7 @@ export const createNewEntity = createAsyncThunk(
         return rejectWithValue(error.message);
       }
     }
-  }
+  },
 );
 
 export const removeEntity = createAsyncThunk(
@@ -98,7 +106,7 @@ export const removeEntity = createAsyncThunk(
         return rejectWithValue(err.message);
       }
     }
-  }
+  },
 );
 
 export const editEntity = createAsyncThunk(
@@ -110,19 +118,19 @@ export const editEntity = createAsyncThunk(
       path,
       id,
     }: {
-      formData: CategoryFormValues;
+      formData: CategoryFormValues | ProductFormValues;
       tableName: TableName;
       path: string[];
       id: string;
     },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     try {
       const data = await updateRecordByIdWithUpload(
         formData,
         tableName,
         path,
-        id
+        id,
       );
       return data;
     } catch (err) {
@@ -130,7 +138,7 @@ export const editEntity = createAsyncThunk(
         return rejectWithValue(err.message);
       }
     }
-  }
+  },
 );
 
 const crudSlice = createSlice({
@@ -139,7 +147,7 @@ const crudSlice = createSlice({
   reducers: {
     setActionType: (
       state,
-      action: PayloadAction<Omit<CurrentType, "status" | "error">>
+      action: PayloadAction<Omit<CurrentType, "status" | "error">>,
     ) => {
       state.current.record = action.payload.record;
       state.current.action = action.payload.action;
@@ -151,6 +159,10 @@ const crudSlice = createSlice({
         status: "idle",
         error: null,
       };
+    },
+    resetCrudState: (state) => {
+      state.current = initialState.current;
+      state.list = initialState.list;
     },
   },
   extraReducers: (builder) => {
@@ -182,7 +194,7 @@ const crudSlice = createSlice({
       .addCase(removeEntity.fulfilled, (state, action) => {
         state.current.status = "succeeded";
         state.list.data = state.list.data.filter(
-          (item) => item.id !== action.payload
+          (item) => item.id !== action.payload,
         );
       })
       .addCase(removeEntity.pending, (state) => {
@@ -212,6 +224,7 @@ const crudSlice = createSlice({
 export const selectListItems = (state: RootState) => state.crud.list;
 export const selectCurrentItem = (state: RootState) => state.crud.current;
 
-export const { setActionType, resetActionType } = crudSlice.actions;
+export const { setActionType, resetActionType, resetCrudState } =
+  crudSlice.actions;
 
 export default crudSlice.reducer;

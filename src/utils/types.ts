@@ -12,6 +12,7 @@ export type Product = {
   quantity: number;
   category_id: string;
   images: string[];
+  category?: Category;
 };
 
 export type CategoryFormValues = {

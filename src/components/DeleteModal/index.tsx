@@ -7,17 +7,17 @@ import {
 import {
   closeDeleteModal,
   selectDeleteModal,
-} from "../../redux/slice/crudActionsSlice";
+} from "../../redux/slice/uiActionsSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import Modal from "../Modal";
 import Button from "../ui/Button";
 import { CrudConfig, CrudType } from "../../utils/types";
 
 type DeleteModalProps = {
-  config: CrudConfig
-}
+  config: CrudConfig;
+};
 
-const DeleteModal = ({config} : DeleteModalProps) => {
+const DeleteModal = ({ config }: DeleteModalProps) => {
   const dispatch = useAppDispatch();
   const modalRef = useOnOutsideClick(() => dispatch(closeDeleteModal()));
   const deleteModal = useAppSelector(selectDeleteModal);
@@ -28,12 +28,12 @@ const DeleteModal = ({config} : DeleteModalProps) => {
   };
   const handleDelete = async () => {
     if (record) {
-      const data : CrudType = {
+      const data: CrudType = {
         id: record.id,
         tableName: config.TABLE_NAME,
         data: record,
-        withFile: true
-      }
+        withFile: true,
+      };
       await dispatch(removeEntity(data));
       dispatch(closeDeleteModal());
       dispatch(resetActionType());

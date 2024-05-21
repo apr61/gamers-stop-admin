@@ -1,7 +1,7 @@
 import { Fields } from "./types";
 
 export const dataForTable = (fields: Fields) => {
-  let columns: {
+  const columns: {
     title: string;
     dataIndex: string;
     render?: (record: any) => void;

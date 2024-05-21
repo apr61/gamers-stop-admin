@@ -1,16 +1,13 @@
 import DataTable from "../components/DataTable/Index";
 import DeleteModal from "../components/DeleteModal";
 import Drawer from "../components/ui/Drawer";
-import {
-  resetActionType,
-  selectCurrentItem,
-} from "../redux/slice/crudSlice";
+import { resetActionType, selectCurrentItem } from "../redux/slice/crudSlice";
 import { useAppDispatch, useAppSelector } from "../redux/store/hooks";
 import {
   closeDrawer,
   openDrawer,
   selectDrawer,
-} from "../redux/slice/crudActionsSlice";
+} from "../redux/slice/uiActionsSlice";
 import { ArrowLeftOutlined, PlusOutlined } from "@ant-design/icons";
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
@@ -21,7 +18,7 @@ import { ChangeEvent, FC, useState } from "react";
 
 type CrudLayoutProps = {
   config: CrudConfig;
-  Form: FC<unknown>
+  Form: FC<unknown>;
 };
 
 const CrudLayout = ({ config, Form }: CrudLayoutProps) => {
@@ -41,11 +38,7 @@ const CrudLayout = ({ config, Form }: CrudLayoutProps) => {
         closeDrawer={handleDrawer}
         title={config.DRAWER_TITLE}
       >
-        {currentItem.action === "read" ? (
-          <ReadItem />
-        ) : (
-          <Form />
-        )}
+        {currentItem.action === "read" ? <ReadItem /> : <Form />}
       </Drawer>
       <div className="px-8 py-4 w-full bg-white rounded-md">
         <FixedHeaderContent config={config} />

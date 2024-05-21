@@ -1,25 +1,25 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Product } from "../../utils/types";
+import { Category } from "../../utils/types";
 import { RootState } from "../store/store";
 import { readAll } from "../../services/api/crud";
 
-type ProductState = {
-  products: Product[];
+type CategoryState = {
+  categories: Category[];
   status: "idle" | "pending" | "succeeded" | "failed";
   error: string | null;
 };
 
-const initialState: ProductState = {
-  products: [],
+const initialState: CategoryState = {
+  categories: [],
   status: "idle",
   error: null,
 };
 
-export const fetchProducts = createAsyncThunk(
-  "product/fetchAll",
+export const fetchCategories = createAsyncThunk(
+  "category/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      const data = await readAll("products");
+      const data = await readAll("categories");
       return data;
     } catch (error) {
       if (error instanceof Error) {
@@ -29,28 +29,28 @@ export const fetchProducts = createAsyncThunk(
   },
 );
 
-const productSlice = createSlice({
-  name: "products",
+const categorySlice = createSlice({
+  name: "categories",
   initialState: initialState,
   reducers: {},
   extraReducers(builder) {
     builder
-      .addCase(fetchProducts.pending, (state) => {
+      .addCase(fetchCategories.pending, (state) => {
         state.status = "pending";
       })
-      .addCase(fetchProducts.fulfilled, (state, action) => {
-        (state.products = action.payload as Product[]),
+      .addCase(fetchCategories.fulfilled, (state, action) => {
+        (state.categories = action.payload as Category[]),
           (state.status = "succeeded"),
           (state.error = null);
       })
-      .addCase(fetchProducts.rejected, (state, action) => {
-        state.products = [];
+      .addCase(fetchCategories.rejected, (state, action) => {
+        state.categories = [];
         state.error = action.payload as string;
         state.status = "failed";
       });
   },
 });
 
-export const selectProducts = (state: RootState) => state.products;
+export const selectCategories = (state: RootState) => state.categories;
 
-export default productSlice.reducer;
+export default categorySlice.reducer;

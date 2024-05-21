@@ -10,6 +10,7 @@ import {
   TableName,
 } from "../../utils/types";
 import { deleteFile, updateFile, uploadFiles } from "./fileUpload";
+import { readAllProducts } from "./product";
 
 type DocumentData = CategoryFormValues | ProductFormValues;
 type CategoryNewData = Omit<Category, "id">;
@@ -35,7 +36,7 @@ const insertNewRecord = async (tableName: TableName, newData: NewData) => {
 // Function to insert a document into Supabase
 const insertRecordWithUpload = async (
   documentData: DocumentData,
-  tableName: TableName
+  tableName: TableName,
 ): Promise<Data | null> => {
   try {
     let imageUrls: string[] = [];
@@ -71,7 +72,7 @@ const insertRecordWithUpload = async (
 const updateRecordById = async (
   documentData: NewData,
   tableName: TableName,
-  id: string
+  id: string,
 ) => {
   try {
     const { error } = await supabase
@@ -94,7 +95,7 @@ const updateRecordByIdWithUpload = async (
   documentData: DocumentData,
   tableName: TableName,
   path: string[],
-  id: string
+  id: string,
 ) => {
   try {
     let imageUrls: string[] = [];
@@ -198,6 +199,15 @@ const search = async (tableName: TableName, query: QueryType) => {
       throw new Error(countError.message);
     }
 
+    if (tableName === "products") {
+      const data = await readAllProducts(query);
+      const response = {
+        data: data ? data : [],
+        count: count ? count : 0,
+      };
+      return response;
+    }
+
     const { data, error } = await supabase
       .from(tableName)
       .select("*")
@@ -228,7 +238,7 @@ const readAll = async (tableName: TableName): Promise<Data[]> => {
     return data;
   } catch (err) {
     if (err instanceof Error) throw new Error(err.message);
-    return []
+    return [];
   }
 };
 
@@ -240,5 +250,5 @@ export {
   deleteRecordById,
   readRecordById,
   search,
-  readAll
+  readAll,
 };

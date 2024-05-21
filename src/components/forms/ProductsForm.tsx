@@ -1,13 +1,26 @@
-import { SubmitHandler, useForm } from "react-hook-form";
+import {
+  FieldErrors,
+  SubmitHandler,
+  UseFormRegister,
+  useForm,
+} from "react-hook-form";
 import { ProductFormValues } from "../../utils/types";
 import FileInput from "../ui/FileInput";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useLayoutEffect, useState } from "react";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import ImagePreview from "../ImagePreview";
-import Select from "../ui/Select";
-import { useAppDispatch } from "../../redux/store/hooks";
-import { createNewEntity } from "../../redux/slice/crudSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
+import {
+  createNewEntity,
+  editEntity,
+  selectCurrentItem,
+} from "../../redux/slice/crudSlice";
+import UrlToFileList from "../../utils/urlToFileList";
+import {
+  fetchCategories,
+  selectCategories,
+} from "../../redux/slice/categorySlice";
 
 const ProductsForm = () => {
   const {
@@ -15,28 +28,41 @@ const ProductsForm = () => {
     formState: { errors, isSubmitting },
     handleSubmit,
     setValue,
-    reset
+    reset,
   } = useForm<ProductFormValues>();
+  const { action, record, error, status } = useAppSelector(selectCurrentItem);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const dispatch = useAppDispatch();
+
+  const FormHeading = action === "create" ? "Add new" : "Edit";
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
       const filePreviews = Array.from(files).map((file) =>
-        URL.createObjectURL(file)
+        URL.createObjectURL(file),
       );
       setImagePreviews(filePreviews);
     }
   };
 
   const onSubmit: SubmitHandler<ProductFormValues> = async (data) => {
-    data = {
-      ...data,
-      category_id: "c0f647bc-b318-4c42-ab11-69860e87c3e9",
-    };
-    await dispatch(createNewEntity({ formData: data, tableName: "products" }));
-    reset()
+    if (action === "create") {
+      await dispatch(
+        createNewEntity({ formData: data, tableName: "products" }),
+      );
+    } else {
+      if (record && "name" in record)
+        await dispatch(
+          editEntity({
+            formData: data,
+            tableName: "products",
+            path: record.images,
+            id: record.id,
+          }),
+        );
+    }
+    reset();
     setImagePreviews([]);
   };
 
@@ -45,9 +71,29 @@ const ProductsForm = () => {
     setValue("images", null);
   };
 
+  useLayoutEffect(() => {
+    const initializeForm = async () => {
+      if (record && "name" in record) {
+        const fileList = await UrlToFileList(record.images);
+        setValue("name", record.name);
+        setValue("price", record.price);
+        setValue("description", record.description);
+        setValue("quantity", record.quantity);
+        setValue("category_id", record.category_id);
+        setValue("images", fileList);
+        setImagePreviews(record.images);
+        return;
+      }
+      reset();
+      setImagePreviews([]);
+    };
+
+    initializeForm();
+  }, [record, reset, setValue]);
+
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-      <h3 className="text-xl">New product</h3>
+      <h3 className="text-xl">{FormHeading} product</h3>
       <Input
         placeholder="Product name"
         label="Name"
@@ -105,17 +151,18 @@ const ProductsForm = () => {
       />
       {errors.price && <p className="text-red-500">{errors.price.message}</p>}
 
-      <Select
-        className=""
-        label="Category"
-        {...register("category_id", { required: "Category is required" })}
+      <CategorySelect
+        register={register}
+        errors={errors}
+        currentCategoryId={
+          record && "name" in record ? record.category_id : null
+        }
       />
-      {errors.category_id && (
-        <p className="text-red-500">{errors.category_id.message}</p>
-      )}
+
+      {error && <p className="text-red-500">{error}</p>}
 
       <div className="flex gap-2">
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting || status === "pending"}>
           Save
         </Button>
       </div>
@@ -124,3 +171,54 @@ const ProductsForm = () => {
 };
 
 export default ProductsForm;
+
+type CategorySelectProps = {
+  register: UseFormRegister<ProductFormValues>;
+  errors: FieldErrors<ProductFormValues>;
+  currentCategoryId: string | null;
+};
+
+const CategorySelect = ({
+  register,
+  errors,
+  currentCategoryId,
+}: CategorySelectProps) => {
+  const { categories, status, error } = useAppSelector(selectCategories);
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, [dispatch]);
+  return (
+    <>
+      <div className="w-full flex gap-2 flex-col">
+        <label htmlFor="category" className="text-lg cursor-pointer">
+          Category
+        </label>
+        <select
+          id="category"
+          className={`w-full p-4 bg-white border rounded-md cursor-pointer`}
+          {...register("category_id", { required: "Category is required" })}
+        >
+          <option>Select category</option>
+          {status === "pending" ? (
+            <option>Loading...</option>
+          ) : (
+            categories.map((category) => (
+              <option
+                key={category.id}
+                value={category.id}
+                className={`${currentCategoryId === category.id ? "bg-blue-500 text-white" : ""}`}
+              >
+                {category.category_name}
+              </option>
+            ))
+          )}
+        </select>
+      </div>
+      {errors.category_id && (
+        <p className="text-red-500">{errors.category_id.message}</p>
+      )}
+      {error && <p className="text-red-500">{error}</p>}
+    </>
+  );
+};

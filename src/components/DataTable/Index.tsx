@@ -15,16 +15,16 @@ import {
   setActionType,
 } from "../../redux/slice/crudSlice";
 import Table from "../ui/Table";
-import { openDeleteModal, openDrawer } from "../../redux/slice/crudActionsSlice";
+import { openDeleteModal, openDrawer } from "../../redux/slice/uiActionsSlice";
 import Pagination from "../ui/Pagination";
 import { useSearchParams } from "react-router-dom";
 import { dataForTable } from "../../utils/dataStructure";
 
 type DataTableProps = {
-  config: CrudConfig
-}
+  config: CrudConfig;
+};
 
-const DataTable = ({config} : DataTableProps) => {
+const DataTable = ({ config }: DataTableProps) => {
   const dispatch = useAppDispatch();
   const {
     data: categories,
@@ -88,7 +88,7 @@ const DataTable = ({config} : DataTableProps) => {
       }
     }
   };
-  let columns = dataForTable(config.fields)
+  let columns = dataForTable(config.fields);
   columns = [
     ...columns,
     {
@@ -108,19 +108,19 @@ const DataTable = ({config} : DataTableProps) => {
   useEffect(() => {
     const from = (+page - 1) * itemsPerPage;
     const to = from + itemsPerPage - 1;
-    const query : QueryType = {
+    const query: QueryType = {
       pagination: {
         from: from,
         to: to,
       },
       search: {
         query: config.search,
-        with: search
+        with: search,
       },
-      tableName: config.TABLE_NAME
-    }
+      tableName: config.TABLE_NAME,
+    };
     dispatch(entitySearch(query));
-  }, [dispatch, page, search]);
+  }, [dispatch, page, search, config.search, config.TABLE_NAME]);
 
   const setPage = (newPage: number) => {
     setSearchParams((prev) => {

@@ -28,7 +28,7 @@ const Drawer = ({
       onClick={closeDrawer}
     >
       <div
-        className="opacity-100 fixed top-0 bottom-0 right-0 bg-white max-w-sm w-full p-4"
+        className="opacity-100 fixed top-0 bottom-0 right-0 bg-white max-w-sm w-full p-4 overflow-y-auto"
         onClick={handleInnerClick}
       >
         <div className="flex justify-between items-center">

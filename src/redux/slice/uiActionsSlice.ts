@@ -1,18 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store/store";
 
-type CrudState = {
+type uiActions = {
   drawer: boolean;
   deleteModal: boolean;
 };
 
-const initialState: CrudState = {
+const initialState: uiActions = {
   drawer: false,
   deleteModal: false,
 };
 
-const crudStateSlice = createSlice({
-  name: "crudState",
+const uiActions = createSlice({
+  name: "uiActions",
   initialState: initialState,
   reducers: {
     openDrawer: (state) => {
@@ -27,22 +27,22 @@ const crudStateSlice = createSlice({
     closeDeleteModal: (state) => {
       state.deleteModal = false;
     },
-    resetCrudState: (state) => {
+    resetUiState: (state) => {
       (state.drawer = false), (state.deleteModal = false);
     },
   },
 });
 
-export const selectDrawer = (state: RootState) => state.crudState.drawer;
+export const selectDrawer = (state: RootState) => state.uiActions.drawer;
 export const selectDeleteModal = (state: RootState) =>
-  state.crudState.deleteModal;
+  state.uiActions.deleteModal;
 
 export const {
   openDrawer,
   closeDeleteModal,
   closeDrawer,
   openDeleteModal,
-  resetCrudState,
-} = crudStateSlice.actions;
+  resetUiState,
+} = uiActions.actions;
 
-export default crudStateSlice.reducer;
+export default uiActions.reducer;

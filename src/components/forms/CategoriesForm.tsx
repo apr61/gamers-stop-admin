@@ -29,7 +29,7 @@ const CategoriesForm = () => {
     const files = e.target.files;
     if (files) {
       const filePreviews = Array.from(files).map((file) =>
-        URL.createObjectURL(file)
+        URL.createObjectURL(file),
       );
       setImagePreviews(filePreviews);
     }
@@ -38,17 +38,17 @@ const CategoriesForm = () => {
   const onSubmit: SubmitHandler<CategoryFormValues> = async (data) => {
     if (action === "create") {
       await dispatch(
-        createNewEntity({ formData: data, tableName: "categories" })
+        createNewEntity({ formData: data, tableName: "categories" }),
       );
     } else {
       if (record && "category_name" in record)
         await dispatch(
           editEntity({
-            id: record?.id!,
-            path: [record?.category_image!],
+            id: record.id!,
+            path: [record.category_image!],
             tableName: "categories",
             formData: data,
-          })
+          }),
         );
     }
     reset();
@@ -63,7 +63,7 @@ const CategoriesForm = () => {
   useEffect(() => {
     const initializeForm = async () => {
       if (record && "category_name" in record) {
-        const fileList = await UrlToFileList(record.category_image);
+        const fileList = await UrlToFileList([record.category_image]);
         setValue("category_image", fileList);
         setValue("category_name", record.category_name);
         setImagePreviews([record.category_image]);
