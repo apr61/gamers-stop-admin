@@ -51,6 +51,7 @@ export type CrudConfig = {
 
 export type Fields = CategoryFields | ProductFields;
 export type TableName = "products" | "categories" | "orders" | "users";
+export type Roles = "USER" | "ADMIN"
 
 export type QueryType = {
   pagination: {

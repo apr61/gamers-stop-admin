@@ -8,7 +8,7 @@ const createNewUserEmailPass = async (newUser: SignUpFormValues) => {
     options: {
       data: {
         name: newUser.name,
-        user_role: "customer",
+        user_role: "USER",
       },
     },
   });

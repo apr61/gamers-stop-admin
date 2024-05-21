@@ -1,8 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { createNewUserEmailPass } from "../../services/api/auth";
 import { SignUpFormValues } from "../../utils/types";
 import { useAppDispatch } from "../../redux/store/hooks";
 import { createNewUser } from "../../redux/slice/authSlice";
@@ -15,10 +14,12 @@ const SignUpForm = () => {
     reset,
   } = useForm<SignUpFormValues>();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate()
 
   const onSubmit: SubmitHandler<SignUpFormValues> = async (data) => {
     await dispatch(createNewUser(data));
     reset();
+    navigate('/')
   };
 
   const EmailRegex = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;

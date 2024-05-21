@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -14,10 +14,12 @@ const LoginForm = () => {
     reset,
   } = useForm<LoginFormValues>();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate()
 
   const onSubmit: SubmitHandler<LoginFormValues> = async (data) => {
     await dispatch(loginUser(data));
     reset();
+    navigate("/admin")
   };
 
   const EmailRegex = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
