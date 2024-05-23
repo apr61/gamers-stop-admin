@@ -9,6 +9,7 @@ import {
   QueryType,
   TableName,
 } from "../../utils/types";
+import errorHandler from "../errorHandler";
 import { deleteFile, updateFile, uploadFiles } from "./fileUpload";
 import { readAllProducts } from "./product";
 
@@ -18,119 +19,100 @@ type ProductNewData = Omit<Product, "id">;
 type NewData = CategoryNewData | ProductNewData;
 
 const insertNewRecord = async (tableName: TableName, newData: NewData) => {
-  try {
-    const { data, error } = await supabase
-      .from(tableName)
-      .insert(newData)
-      .select();
-    if (error) {
-      throw new Error(error.message);
-    }
-    return data[0];
-  } catch (err) {
-    if (err instanceof Error) throw new Error(err.message);
-    return null;
+  const { data, error } = await supabase
+    .from(tableName)
+    .insert(newData)
+    .select();
+  if (error) {
+    return errorHandler(error.message, error.code);
   }
+  return data[0];
 };
 
 // Function to insert a document into Supabase
 const insertRecordWithUpload = async (
   documentData: DocumentData,
-  tableName: TableName,
+  tableName: TableName
 ): Promise<Data | null> => {
-  try {
-    let imageUrls: string[] = [];
-    // Check for Category
-    let newData: NewData;
-    if ("category_image" in documentData && documentData.category_image) {
-      imageUrls = await uploadFiles(documentData.category_image, "images");
-      if (imageUrls.length <= 0) throw new Error("Unable to upload images");
-      newData = {
-        ...documentData,
-        category_image: imageUrls[0],
-      };
-      return await insertNewRecord(tableName, newData);
-    }
-    // Check for Prodcut
-    if ("images" in documentData && documentData.images) {
-      imageUrls = await uploadFiles(documentData.images, "images");
-      if (imageUrls.length <= 0) throw new Error("Unable to upload images");
-      newData = {
-        ...documentData,
-        images: imageUrls,
-      };
-      return await insertNewRecord(tableName, newData);
-    }
-    return null;
-  } catch (error) {
-    if (error instanceof Error) throw new Error(error.message);
-    return null;
+  let imageUrls: string[] = [];
+  // Check for Category
+  let newData: NewData;
+  if ("category_image" in documentData && documentData.category_image) {
+    imageUrls = await uploadFiles(documentData.category_image, "images");
+    if (imageUrls.length <= 0) return errorHandler("Error uploading files");
+    newData = {
+      ...documentData,
+      category_image: imageUrls[0],
+    };
+    return await insertNewRecord(tableName, newData);
   }
+  // Check for Prodcut
+  if ("images" in documentData && documentData.images) {
+    imageUrls = await uploadFiles(documentData.images, "images");
+    if (imageUrls.length <= 0) return errorHandler("Error uploading files");
+    newData = {
+      ...documentData,
+      images: imageUrls,
+    };
+    return await insertNewRecord(tableName, newData);
+  }
+  return null;
 };
 
 // Function to update a document in Supabase by ID
 const updateRecordById = async (
   documentData: NewData,
   tableName: TableName,
-  id: string,
+  id: string
 ) => {
-  try {
-    const { error } = await supabase
-      .from(tableName)
-      .update(documentData)
-      .eq("id", id);
+  const { error } = await supabase
+    .from(tableName)
+    .update(documentData)
+    .eq("id", id);
 
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    return { ...documentData, id };
-  } catch (error) {
-    if (error instanceof Error) throw new Error(error.message);
-    return null;
+  if (error) {
+    return errorHandler(error.message, error.code);
   }
+
+  return { ...documentData, id };
 };
 
 const updateRecordByIdWithUpload = async (
   documentData: DocumentData,
   tableName: TableName,
   path: string[],
-  id: string,
+  id: string
 ) => {
-  try {
-    let imageUrls: string[] = [];
-    // Check for Category
-    let newData: NewData;
-    if ("category_image" in documentData && documentData.category_image) {
-      imageUrls = await updateFile({
-        files: documentData.category_image,
-        path: path,
-      });
-      if (imageUrls.length <= 0) throw new Error("Unable to upload images");
-      newData = {
-        ...documentData,
-        category_image: imageUrls[0],
-      };
-      return await updateRecordById(newData, tableName, id);
-    }
-    // Check for Prodcut
-    if ("images" in documentData && documentData.images) {
-      imageUrls = await updateFile({
-        files: documentData.images,
-        path: path,
-      });
-      if (imageUrls.length <= 0) throw new Error("Unable to upload images");
-      newData = {
-        ...documentData,
-        images: imageUrls,
-      };
-      return await updateRecordById(newData, tableName, id);
-    }
-    return null;
-  } catch (error) {
-    if (error instanceof Error) throw new Error(error.message);
-    return null;
+  let imageUrls: string[] = [];
+  // Check for Category
+  let newData: NewData;
+  if ("category_image" in documentData && documentData.category_image) {
+    imageUrls = await updateFile({
+      files: documentData.category_image,
+      path: path,
+    });
+    if (imageUrls.length <= 0) return errorHandler("Error uploading files");
+
+    newData = {
+      ...documentData,
+      category_image: imageUrls[0],
+    };
+    return await updateRecordById(newData, tableName, id);
   }
+  // Check for Prodcut
+  if ("images" in documentData && documentData.images) {
+    imageUrls = await updateFile({
+      files: documentData.images,
+      path: path,
+    });
+    if (imageUrls.length <= 0) return errorHandler("Error uploading files");
+    newData = {
+      ...documentData,
+      images: imageUrls,
+    };
+    return await updateRecordById(newData, tableName, id);
+  }
+  return null;
 };
 
 // Function to delete a document from Supabase by ID
@@ -140,34 +122,30 @@ const deleteRecordById = async ({
   withFile,
   data,
 }: CrudType) => {
-  try {
-    if (withFile) {
-      let urls: string[] = [];
-      if ("category_name" in data) {
-        urls = [data.category_image];
-      } else if ("name" in data) {
-        urls = data.images;
-      }
-      const [deleteCategoryResult] = await Promise.all([
-        supabase.from(tableName).delete().eq("id", id),
-        deleteFile(urls),
-      ]);
-
-      const { error } = deleteCategoryResult;
-
-      if (error) {
-        throw new Error(error.message);
-      }
-      return id;
-    } else {
-      const { error } = await supabase.from(tableName).delete().eq("id", id);
-      if (error) {
-        throw new Error(error.message);
-      }
-      return id;
+  if (withFile) {
+    let urls: string[] = [];
+    if ("category_name" in data) {
+      urls = [data.category_image];
+    } else if ("name" in data) {
+      urls = data.images;
     }
-  } catch (error) {
-    if (error instanceof Error) throw new Error(error.message);
+    const [deleteCategoryResult] = await Promise.all([
+      supabase.from(tableName).delete().eq("id", id),
+      deleteFile(urls),
+    ]);
+
+    const { error } = deleteCategoryResult;
+
+    if (error) {
+      return errorHandler(error.message, error.code)
+    }
+    return id;
+  } else {
+    const { error } = await supabase.from(tableName).delete().eq("id", id);
+    if (error) {
+      return errorHandler(error.message, error.code)
+    }
+    return id;
   }
 };
 

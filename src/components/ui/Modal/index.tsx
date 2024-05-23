@@ -1,5 +1,5 @@
 import { ReactElement, forwardRef } from "react";
-import Button from "../ui/Button";
+import Button from "../Button";
 import { CloseOutlined } from "@ant-design/icons";
 
 type ModalProps = {

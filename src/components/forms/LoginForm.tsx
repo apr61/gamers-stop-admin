@@ -24,8 +24,6 @@ const LoginForm = () => {
 
   const onSubmit: SubmitHandler<LoginFormValues> = async (data) => {
     await dispatch(loginUser(data));
-    reset();
-    navigate("/admin");
   };
 
   const EmailRegex = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;

@@ -5,7 +5,7 @@ export type Category = {
 };
 
 export type Product = {
-  id: string;
+  id: number;
   name: string;
   description: string;
   price: number;
@@ -14,6 +14,32 @@ export type Product = {
   images: string[];
   category?: Category;
 };
+
+export type Address = {
+  id: number,
+  created_at: Date,
+  userId: string,
+  isDefault: boolean
+}
+
+export type Order = {
+  id: number,
+  userId: string,
+  products: number[],
+  addressId: number,
+  paymentStatus: boolean,
+  orderStatus: string,
+  totalPrice: number,
+  orderNumber: string
+}
+
+export type OrderFields = {
+  name: Field,
+  paymentStatus: Field,
+  orderStatus: Field,
+  totalPrice: Field,
+  orderNumber: Field
+}
 
 export type CategoryFormValues = {
   category_name: string;
@@ -46,10 +72,10 @@ export type CrudConfig = {
   DATA_TABLE_TITLE: string;
   ADD_NEW_ITEM: string;
   fields: Fields;
-  search: keyof Category | keyof Product;
+  search: keyof Category | keyof Product | keyof Order
 };
 
-export type Fields = CategoryFields | ProductFields;
+export type Fields = CategoryFields | ProductFields | OrderFields
 export type TableName = "products" | "categories" | "orders" | "users";
 export type Roles = "USER" | "ADMIN"
 
@@ -92,6 +118,7 @@ export type ProductFields = {
   quantity: Field;
   description: Field;
 };
+
 
 export type FetchDataListType = {
   from: number;

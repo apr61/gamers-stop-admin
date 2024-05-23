@@ -2,7 +2,7 @@ import toast from "react-hot-toast";
 
 const errorHandler = (
   error: string,
-  statusCode: string | number | undefined,
+  statusCode: string | number | undefined = undefined,
 ) => {
   let message = "";
   if (statusCode) {
@@ -11,10 +11,7 @@ const errorHandler = (
     message = `500 - ${error}`;
   }
   toast.error(message);
-  return {
-    statusCode: statusCode ? statusCode : 500,
-    message: error,
-  };
+  throw new Error(error)
 };
 
 export default errorHandler;

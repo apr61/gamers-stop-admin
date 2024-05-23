@@ -22,27 +22,17 @@ const initialState: AuthState = {
 
 const createNewUser = createAsyncThunk(
   "auth/createNewUser",
-  async (newUser: SignUpFormValues, { rejectWithValue }) => {
-    try {
-      const data = await createNewUserEmailPass(newUser);
-      return data.session;
-    } catch (error) {
-      if (error instanceof Error) return rejectWithValue(error.message);
-      return null;
-    }
+  async (newUser: SignUpFormValues) => {
+    const data = await createNewUserEmailPass(newUser);
+    return data.session;
   }
 );
 
 const loginUser = createAsyncThunk(
   "auth/loginUser",
-  async (newUser: LoginFormValues, { rejectWithValue }) => {
-    try {
-      const data = await loginUserWithEmailPass(newUser);
-      return data.session;
-    } catch (error) {
-      if (error instanceof Error) return rejectWithValue(error.message);
-      return null;
-    }
+  async (newUser: LoginFormValues) => {
+    const data = await loginUserWithEmailPass(newUser);
+    return data.session;
   }
 );
 
@@ -62,29 +52,29 @@ const authSlice = createSlice({
   name: "auth",
   initialState: initialState,
   reducers: {
-    setCurrentSession : (state, action) => {
-      state.session = action.payload
+    setCurrentSession: (state, action) => {
+      state.session = action.payload;
     },
-    setAuthStatus : (state, action) => {
-      state.status = action.payload
+    setAuthStatus: (state, action) => {
+      state.status = action.payload;
     },
-    setAuthError : (state, action) => {
-      state.error = action.payload
-    }
+    setAuthError: (state, action) => {
+      state.error = action.payload;
+    },
   },
   extraReducers(builder) {
     builder
       .addCase(logOutUser.fulfilled, (state) => {
-        state.session = null
-        state.status = "succeeded"
-        state.error = null
+        state.session = null;
+        state.status = "succeeded";
+        state.error = null;
       })
       .addMatcher(
         isAnyOf(createNewUser.fulfilled, loginUser.fulfilled),
         (state, action) => {
           state.session = action.payload as Session;
           state.status = "succeeded";
-          state.error = null
+          state.error = null;
         }
       )
       .addMatcher(
@@ -94,7 +84,11 @@ const authSlice = createSlice({
         }
       )
       .addMatcher(
-        isAnyOf(createNewUser.rejected, loginUser.rejected, logOutUser.rejected),
+        isAnyOf(
+          createNewUser.rejected,
+          loginUser.rejected,
+          logOutUser.rejected
+        ),
         (state, action) => {
           state.session = null;
           state.status = "failed";
@@ -105,6 +99,7 @@ const authSlice = createSlice({
 });
 
 export const selectCurrentUser = (state: RootState) => state.auth;
-export const {setAuthError,setCurrentSession, setAuthStatus} = authSlice.actions
+export const { setAuthError, setCurrentSession, setAuthStatus } =
+  authSlice.actions;
 export { createNewUser, loginUser, logOutUser };
 export default authSlice.reducer;

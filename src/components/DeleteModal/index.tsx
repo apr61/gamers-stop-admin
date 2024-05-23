@@ -9,7 +9,7 @@ import {
   selectDeleteModal,
 } from "../../redux/slice/uiActionsSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
-import Modal from "../Modal";
+import Modal from "../ui/Modal";
 import Button from "../ui/Button";
 import { CrudConfig, CrudType } from "../../utils/types";
 
