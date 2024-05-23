@@ -162,7 +162,11 @@ const ProductsForm = () => {
       {error && <p className="text-red-500">{error}</p>}
 
       <div className="flex gap-2">
-        <Button type="submit" disabled={isSubmitting || status === "pending"}>
+        <Button
+          type="submit"
+          disabled={isSubmitting || status === "pending"}
+          loading={isSubmitting || status === "pending"}
+        >
           Save
         </Button>
       </div>
@@ -199,9 +203,9 @@ const CategorySelect = ({
           className={`w-full p-4 bg-white border rounded-md cursor-pointer`}
           {...register("category_id", { required: "Category is required" })}
         >
-          <option>Select category</option>
+          <option value="">Select category</option>
           {status === "pending" ? (
-            <option>Loading...</option>
+            <option value="">Loading...</option>
           ) : (
             categories.map((category) => (
               <option

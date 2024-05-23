@@ -10,10 +10,10 @@ import { ReactElement } from "react";
 import { Link, NavLink } from "react-router-dom";
 import Button from "../ui/Button";
 import { useAppDispatch } from "../../redux/store/hooks";
-import { logOutUser } from "../../redux/slice/authSlice";
+import { logOutUser, setAuthStatus } from "../../redux/slice/authSlice";
 
 const Sidenav = () => {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const navItems = [
     {
       href: "/admin",
@@ -43,8 +43,9 @@ const Sidenav = () => {
   ];
 
   const handleLogout = async () => {
-    await dispatch(logOutUser())
-  }
+    await dispatch(logOutUser());
+    dispatch(setAuthStatus("idle"));
+  };
 
   return (
     <aside className="max-w-[16rem] 2xl:max-w-xs w-full bg-white rounded-md p-4 flex flex-col sticky top-4 h-[calc(100vh-2rem)] overflow-y-auto">

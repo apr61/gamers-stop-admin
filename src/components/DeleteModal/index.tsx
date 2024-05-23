@@ -58,6 +58,7 @@ const DeleteModal = ({ config }: DeleteModalProps) => {
             btnType="primary"
             onClick={handleDelete}
             disabled={status === "pending"}
+            loading={status === "pending"}
           >
             Yes, Delete
           </Button>

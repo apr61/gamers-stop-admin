@@ -10,13 +10,19 @@ import Login from "../pages/login";
 import SignUp from "../pages/signup";
 import RequireAuth from "../layout/RequireAuth";
 import Unautorized from "../pages/Unauthorized";
+import { Suspense } from "react";
+import PageLoader from "../components/PageLoader";
 
 const routes = createBrowserRouter([
   {
     element: <RequireAuth allowedRoles={["ADMIN"]} />,
     children: [
       {
-        element: <AdminLayout />,
+        element: (
+          <Suspense fallback={<PageLoader />}>
+            <AdminLayout />
+          </Suspense>
+        ),
         children: [
           {
             path: "/admin",

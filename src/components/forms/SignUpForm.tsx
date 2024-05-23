@@ -1,10 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { SignUpFormValues } from "../../utils/types";
-import { useAppDispatch } from "../../redux/store/hooks";
-import { createNewUser } from "../../redux/slice/authSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
+import {
+  createNewUser,
+  selectCurrentUser,
+  setAuthStatus,
+} from "../../redux/slice/authSlice";
 
 const SignUpForm = () => {
   const {
@@ -14,15 +19,22 @@ const SignUpForm = () => {
     reset,
   } = useForm<SignUpFormValues>();
   const dispatch = useAppDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { status } = useAppSelector(selectCurrentUser);
 
   const onSubmit: SubmitHandler<SignUpFormValues> = async (data) => {
     await dispatch(createNewUser(data));
-    reset();
-    navigate('/')
   };
 
   const EmailRegex = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
+
+  useEffect(() => {
+    if (status === "succeeded") {
+      reset();
+      navigate("/");
+      dispatch(setAuthStatus("idle"));
+    }
+  }, [dispatch, reset, navigate, status]);
 
   return (
     <form
@@ -71,7 +83,12 @@ const SignUpForm = () => {
       {errors.password && (
         <p className="text-red-500">{errors.password.message}</p>
       )}
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
+      <Button
+        type="submit"
+        className="w-full"
+        disabled={isSubmitting || status === "pending"}
+        loading={isSubmitting || status === "pending"}
+      >
         Sign Up
       </Button>
       <p>

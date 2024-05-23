@@ -103,7 +103,11 @@ const CategoriesForm = () => {
       )}
       {error && <p className="text-red-500">{error}</p>}
       <div className="flex gap-2">
-        <Button type="submit" disabled={isSubmitting || status === "pending"}>
+        <Button
+          type="submit"
+          disabled={isSubmitting || status === "pending"}
+          loading={isSubmitting || status === "pending"}
+        >
           Save
         </Button>
       </div>
