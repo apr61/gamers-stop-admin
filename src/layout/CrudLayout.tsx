@@ -16,12 +16,12 @@ import { CrudConfig } from "../utils/types";
 import ReadItem from "../components/ReadItem";
 import { ChangeEvent, FC, useState } from "react";
 
-type CrudLayoutProps = {
-  config: CrudConfig;
+type CrudLayoutProps<T> = {
+  config: CrudConfig<T>;
   Form: FC<unknown>;
 };
 
-const CrudLayout = ({ config, Form }: CrudLayoutProps) => {
+const CrudLayout = <T,>({ config, Form }: CrudLayoutProps<T>) => {
   const currentItem = useAppSelector(selectCurrentItem);
   const dispatch = useAppDispatch();
   const drawer = useAppSelector(selectDrawer);
@@ -51,11 +51,11 @@ const CrudLayout = ({ config, Form }: CrudLayoutProps) => {
 
 export default CrudLayout;
 
-type FixedHeaderContent = {
-  config: CrudConfig;
+type FixedHeaderContent<T> = {
+  config: CrudConfig<T>;
 };
 
-const FixedHeaderContent = ({ config }: FixedHeaderContent) => {
+const FixedHeaderContent = <T,>({ config }: FixedHeaderContent<T>) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [search, setSearch] = useState<string>("");

@@ -11,7 +11,7 @@ function RootApp() {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const initializeAuth = async () => {
-      const session = await supabase.auth.getSession();
+      const session = await supabase.supabase.auth.getSession();
       if (session) {
         dispatch(setCurrentSession(session.data.session));
         dispatch(setAuthStatus("succeeded"));

@@ -1,3 +1,5 @@
+import { ReactElement } from "react";
+
 export type Category = {
   id: string;
   category_name: string;
@@ -16,30 +18,36 @@ export type Product = {
 };
 
 export type Address = {
-  id: number,
-  created_at: Date,
-  userId: string,
-  isDefault: boolean
-}
+  id: number;
+  created_at: Date;
+  userId: string;
+  isDefault: boolean;
+};
 
 export type Order = {
-  id: number,
-  userId: string,
-  products: number[],
-  addressId: number,
-  paymentStatus: boolean,
-  orderStatus: string,
-  totalPrice: number,
-  orderNumber: string
+  id: number;
+  userId: string;
+  products: Product[];
+  addressId: number;
+  paymentStatus: boolean;
+  orderStatus: string;
+  totalPrice: number;
+  orderNumber: string;
+  created_at: string;
+};
+
+export type CustomUser = {
+  email: string;
+  
 }
 
 export type OrderFields = {
-  name: Field,
-  paymentStatus: Field,
-  orderStatus: Field,
-  totalPrice: Field,
-  orderNumber: Field
-}
+  name: Field;
+  paymentStatus: Field;
+  orderStatus: Field;
+  totalPrice: Field;
+  orderNumber: Field;
+};
 
 export type CategoryFormValues = {
   category_name: string;
@@ -66,18 +74,23 @@ export type LoginFormValues = {
   password: string;
 };
 
-export type CrudConfig = {
+export type ColumnConfig<T> = {
+  title: string;
+  dataIndex?: keyof T;
+  render?: (record: T) => ReactElement | string;
+};
+
+export type CrudConfig<T> = {
   DRAWER_TITLE: string;
   TABLE_NAME: TableName;
   DATA_TABLE_TITLE: string;
   ADD_NEW_ITEM: string;
-  fields: Fields;
-  search: keyof Category | keyof Product | keyof Order
+  search: keyof T;
+  columns: ColumnConfig<T>[];
 };
 
-export type Fields = CategoryFields | ProductFields | OrderFields
 export type TableName = "products" | "categories" | "orders" | "users";
-export type Roles = "USER" | "ADMIN"
+export type Roles = "USER" | "ADMIN";
 
 export type QueryType = {
   pagination: {
@@ -91,7 +104,7 @@ export type QueryType = {
   tableName: TableName;
 };
 
-export type Data = Product | Category;
+export type Data = Order | Product | Category;
 
 export type CrudType = {
   id: string;
@@ -118,7 +131,6 @@ export type ProductFields = {
   quantity: Field;
   description: Field;
 };
-
 
 export type FetchDataListType = {
   from: number;

@@ -3,7 +3,7 @@ import { LoginFormValues, SignUpFormValues } from "../../utils/types";
 import errorHandler from "../errorHandler";
 
 const createNewUserEmailPass = async (newUser: SignUpFormValues) => {
-  const { data, error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.supabase.auth.signUp({
     email: newUser.email,
     password: newUser.password,
     options: {
@@ -20,7 +20,7 @@ const createNewUserEmailPass = async (newUser: SignUpFormValues) => {
 };
 
 const loginUserWithEmailPass = async (user: LoginFormValues) => {
-  const { data, error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.supabase.auth.signInWithPassword({
     email: user.email,
     password: user.password,
   });
@@ -31,7 +31,7 @@ const loginUserWithEmailPass = async (user: LoginFormValues) => {
 };
 
 const signOut = async () => {
-  const { error } = await supabase.auth.signOut();
+  const { error } = await supabase.supabase.auth.signOut();
   if (error) {
     return errorHandler(error.message, error.status);
   }

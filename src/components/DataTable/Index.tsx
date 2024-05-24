@@ -5,7 +5,7 @@ import {
   EllipsisOutlined,
 } from "@ant-design/icons";
 import Dropdown from "../../components/ui/Dropdown";
-import { Category, CrudConfig, QueryType } from "../../utils/types";
+import { CrudConfig, QueryType, ColumnConfig, Data } from "../../utils/types";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import { ReactElement, useEffect, useState } from "react";
 import { useOnOutsideClick } from "../../hooks/useOnClickOutside";
@@ -18,20 +18,14 @@ import Table from "../ui/Table";
 import { openDeleteModal, openDrawer } from "../../redux/slice/uiActionsSlice";
 import Pagination from "../ui/Pagination";
 import { useSearchParams } from "react-router-dom";
-import { dataForTable } from "../../utils/dataStructure";
 
-type DataTableProps = {
-  config: CrudConfig;
+type DataTableProps<T> = {
+  config: CrudConfig<T>;
 };
 
-const DataTable = ({ config }: DataTableProps) => {
+const DataTable = <T,>({ config }: DataTableProps<T>) => {
   const dispatch = useAppDispatch();
-  const {
-    data: categories,
-    error,
-    status,
-    totalItems,
-  } = useAppSelector(selectListItems);
+  const { data, error, status, totalItems } = useAppSelector(selectListItems);
   const [searchParams, setSearchParams] = useSearchParams();
   const page = searchParams.get("page") || 1;
   const search = searchParams.get("search") || "";
@@ -56,20 +50,20 @@ const DataTable = ({ config }: DataTableProps) => {
     },
   ];
 
-  const handleRead = (record: Category) => {
-    dispatch(setActionType({ action: "read", record: record }));
+  const handleRead = (record: T) => {
+    dispatch(setActionType({ action: "read", record: record as Data }));
     dispatch(openDrawer());
   };
-  const handleUpdate = (record: Category) => {
-    dispatch(setActionType({ action: "update", record: record }));
+  const handleUpdate = (record: T) => {
+    dispatch(setActionType({ action: "update", record: record as Data }));
     dispatch(openDrawer());
   };
-  const handleDelete = (record: Category) => {
-    dispatch(setActionType({ action: "delete", record: record }));
+  const handleDelete = (record: T) => {
+    dispatch(setActionType({ action: "delete", record: record as Data }));
     dispatch(openDeleteModal());
   };
 
-  const handleDropdownOnClick = (key: string, record: Category) => {
+  const handleDropdownOnClick = (key: string, record: T) => {
     switch (key) {
       case "read": {
         handleRead(record);
@@ -88,13 +82,11 @@ const DataTable = ({ config }: DataTableProps) => {
       }
     }
   };
-  let columns = dataForTable(config.fields);
-  columns = [
-    ...columns,
+  const columns: ColumnConfig<T>[] = [
+    ...config.columns,
     {
-      title: "",
-      dataIndex: "",
-      render: (record: Category) => (
+      title: "Actions",
+      render: (record: T) => (
         <CrudActions>
           <Dropdown
             onItemClick={(label) => handleDropdownOnClick(label, record)}
@@ -131,11 +123,13 @@ const DataTable = ({ config }: DataTableProps) => {
 
   if (error) return <p>{error}</p>;
 
+  console.log(status);
+
   return (
     <div className="mt-2">
       <Table
         columns={columns}
-        data={categories}
+        data={data as T[]}
         isLoading={status === "pending"}
       />
       <div className="flex w-full mt-4 justify-between">

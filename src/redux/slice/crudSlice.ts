@@ -16,24 +16,24 @@ import {
   updateRecordByIdWithUpload,
 } from "../../services/api/crud";
 
-export type CurrentType = {
+export type CurrentType<T> = {
   action: "create" | "read" | "update" | "delete";
-  record: Data | null;
+  record: T | null;
   status: "idle" | "pending" | "succeeded" | "failed";
   error: string | null;
 };
 
-type CrudState = {
+interface CrudState<T extends Data> {
   list: {
-    data: Data[];
+    data: T[];
     status: "idle" | "pending" | "succeeded" | "failed";
     error: string | null;
     totalItems: number;
   };
-  current: CurrentType;
-};
+  current: CurrentType<T>;
+}
 
-const initialState: CrudState = {
+const initialState: CrudState<Data> = {
   list: {
     data: [],
     status: "idle",
@@ -147,7 +147,7 @@ const crudSlice = createSlice({
   reducers: {
     setActionType: (
       state,
-      action: PayloadAction<Omit<CurrentType, "status" | "error">>,
+      action: PayloadAction<Omit<CurrentType<Data>, "status" | "error">>,
     ) => {
       state.current.record = action.payload.record;
       state.current.action = action.payload.action;
@@ -182,7 +182,7 @@ const crudSlice = createSlice({
       })
       .addCase(createNewEntity.fulfilled, (state, action) => {
         state.current.status = "succeeded";
-        state.list.data.unshift(action.payload as Category);
+        state.list.data.unshift(action.payload!);
       })
       .addCase(createNewEntity.pending, (state) => {
         state.current.status = "pending";
