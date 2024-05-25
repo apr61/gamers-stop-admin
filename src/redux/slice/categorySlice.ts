@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Category } from "../../utils/types";
 import { RootState } from "../store/store";
-import { readAll } from "../../services/api/crud";
+import { getCategories } from "../../services/api/categories";
 
 type CategoryState = {
   categories: Category[];
@@ -19,7 +19,7 @@ export const fetchCategories = createAsyncThunk(
   "category/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      const data = await readAll("categories");
+      const data = await getCategories();
       return data;
     } catch (error) {
       if (error instanceof Error) {

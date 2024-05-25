@@ -45,7 +45,7 @@ const SignUpForm = () => {
       <Input
         label="Name"
         placeholder="Your name"
-        {...register("name", {
+        {...register("full_name", {
           required: "Name is required",
           minLength: {
             value: 3,
@@ -54,7 +54,7 @@ const SignUpForm = () => {
           validate: (value) => value.trim().length >= 3 || "Name is required",
         })}
       />
-      {errors.name && <p className="text-red-500">{errors.name.message}</p>}
+      {errors.full_name && <p className="text-red-500">{errors.full_name.message}</p>}
       <Input
         label="Email"
         placeholder="you@example.com"

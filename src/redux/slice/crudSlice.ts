@@ -10,11 +10,11 @@ import {
 } from "../../utils/types";
 import { RootState } from "../store/store";
 import {
-  deleteRecordById,
-  insertRecordWithUpload,
+  deleteRecord,
+  createRecord,
   search,
-  updateRecordByIdWithUpload,
-} from "../../services/api/crud";
+  updateRecord,
+} from "../../services/api/crudv2";
 
 export type CurrentType<T> = {
   action: "create" | "read" | "update" | "delete";
@@ -55,7 +55,7 @@ export const entitySearch = createAsyncThunk(
       const response = await search(query.tableName, query);
       if (response) {
         const data = {
-          data: response.data as Category[],
+          data: response.data as Data[],
           totalCount: response.count,
         };
         return data;
@@ -85,7 +85,7 @@ export const createNewEntity = createAsyncThunk(
     { rejectWithValue },
   ) => {
     try {
-      const newEntity = await insertRecordWithUpload(formData, tableName);
+      const newEntity = await createRecord(tableName, formData);
       return newEntity;
     } catch (error) {
       if (error instanceof Error) {
@@ -99,7 +99,7 @@ export const removeEntity = createAsyncThunk(
   "crud/delete",
   async (data: CrudType, { rejectWithValue }) => {
     try {
-      const deletedId = await deleteRecordById(data);
+      const deletedId = await deleteRecord(data.tableName, data.id);
       return deletedId;
     } catch (err) {
       if (err instanceof Error) {
@@ -115,22 +115,19 @@ export const editEntity = createAsyncThunk(
     {
       formData,
       tableName,
-      path,
       id,
     }: {
       formData: CategoryFormValues | ProductFormValues;
       tableName: TableName;
-      path: string[];
-      id: string;
+      id: number;
     },
     { rejectWithValue },
   ) => {
     try {
-      const data = await updateRecordByIdWithUpload(
-        formData,
+      const data = await updateRecord(
         tableName,
-        path,
         id,
+        formData,
       );
       return data;
     } catch (err) {
@@ -161,16 +158,15 @@ const crudSlice = createSlice({
       };
     },
     resetCrudState: (state) => {
-      state.current = initialState.current;
-      state.list = initialState.list;
+      state = initialState
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(entitySearch.fulfilled, (state, action) => {
         state.list.status = "succeeded";
-        state.list.data = action.payload?.data || [];
-        state.list.totalItems = action.payload?.totalCount || 0;
+        state.list.data = action.payload?.data!;
+        state.list.totalItems = action.payload?.totalCount!;
       })
       .addCase(entitySearch.pending, (state) => {
         state.list.status = "pending";

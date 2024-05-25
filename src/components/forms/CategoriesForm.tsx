@@ -45,7 +45,6 @@ const CategoriesForm = () => {
         await dispatch(
           editEntity({
             id: record.id!,
-            path: [record.category_image!],
             tableName: "categories",
             formData: data,
           }),

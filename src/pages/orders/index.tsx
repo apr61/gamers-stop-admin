@@ -9,42 +9,41 @@ const Orders = () => {
   const columns: ColumnConfig<Order>[] = [
     {
       title: "Order Number",
-      dataIndex: "orderNumber",
-      render: (record: Order) =>
-        record.orderNumber ? record.orderNumber.substring(0, 10) : "",
+      dataIndex: "ordernumber",
     },
     {
-      title: "Customer name",
-      dataIndex: "userId",
+      title: "Name",
+      render: (record: Order) => record.user ? record?.user.full_name : ""
     },
     {
       title: "Total Price",
-      dataIndex: "totalPrice",
-      render: (record: Order) => `$${record.totalPrice}`,
+      dataIndex: "totalprice",
+      render: (record: Order) => `$${record.totalprice}`,
     },
     {
       title: "Order Status",
-      dataIndex: "orderStatus",
+      dataIndex: "orderstatus",
     },
     {
       title: "Order Date",
-      dataIndex: "created_at",
+      dataIndex: "order_date",
       render: (record: Order) =>
-        new Date(record.created_at).toLocaleDateString(),
+        new Date(record.order_date).toLocaleDateString(),
     },
   ];
   const config: CrudConfig<Order> = {
-    DATA_TABLE_TITLE: "Orders list",
+    DATA_TABLE_TITLE: "Order list",
     DRAWER_TITLE: "Order",
     ADD_NEW_ITEM: "Add new order",
     TABLE_NAME: "orders",
-    search: "orderStatus",
+    search: "orderstatus",
     columns: columns,
   };
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(resetCrudState());
   }, [dispatch]);
+
   return <CrudLayout config={config} Form={OrderForm} />;
 };
 

@@ -2,6 +2,7 @@ import {
   BookOutlined,
   ClusterOutlined,
   DashboardOutlined,
+  GlobalOutlined,
   LoginOutlined,
   ProductOutlined,
   UserOutlined,
@@ -39,6 +40,11 @@ const Sidenav = () => {
       href: "/admin/orders",
       text: "Orders",
       icon: <BookOutlined />,
+    },
+    {
+      href: "/admin/addresses",
+      text: "Addresses",
+      icon: <GlobalOutlined />,
     },
   ];
 

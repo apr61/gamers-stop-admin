@@ -8,8 +8,10 @@ const createNewUserEmailPass = async (newUser: SignUpFormValues) => {
     password: newUser.password,
     options: {
       data: {
-        name: newUser.name,
+        full_name: newUser.full_name,
         user_role: "USER",
+        avatar_url: "",
+        phone: ""
       },
     },
   });

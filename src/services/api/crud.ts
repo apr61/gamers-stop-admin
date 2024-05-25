@@ -11,7 +11,6 @@ import {
 } from "../../utils/types";
 import errorHandler from "../errorHandler";
 import { deleteFile, updateFile, uploadFiles } from "./fileUpload";
-import { readAllProducts } from "./product";
 
 type DocumentData = CategoryFormValues | ProductFormValues;
 type CategoryNewData = Omit<Category, "id">;

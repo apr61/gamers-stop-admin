@@ -2,19 +2,77 @@ import { useEffect } from "react";
 import UserForm from "../../components/forms/UserForm";
 import CrudLayout from "../../layout/CrudLayout";
 import { resetCrudState } from "../../redux/slice/crudSlice";
-import { CrudConfig } from "../../utils/types";
+import { ColumnConfig, CrudConfig, User } from "../../utils/types";
 import { useAppDispatch } from "../../redux/store/hooks";
-import { User } from "@supabase/supabase-js";
-import { listAllUsers } from "../../services/api/users";
+import BlankUserProfile from "../../assets/blank-profile-picture.webp";
+
+const ROLE_COLORS = {
+  ADMIN: "bg-blue-200",
+  USER: "bg-green-200",
+};
 
 const Users = () => {
+  const columns: ColumnConfig<User>[] = [
+    {
+      title: "",
+      render: (record: User) => (
+        <img
+          className="w-10 h-10 rounded-full"
+          src={record.avatar_url ? record.avatar_url : BlankUserProfile}
+          alt={record.full_name}
+        />
+      ),
+    },
+    {
+      title: "Name",
+      dataIndex: "full_name",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+    },
+    {
+      title: "Role",
+      dataIndex: "user_role",
+      render: (record: User) => (
+        <p
+          className={`py-1 px-4 rounded-2xl w-fit ${
+            ROLE_COLORS[record.user_role]
+          }`}
+        >
+          {record.user_role}
+        </p>
+      ),
+    },
+    {
+      title: "Mobile Number",
+      dataIndex: "phone",
+    },
+    {
+      title: "Last login",
+      dataIndex: "lastLogin",
+      render: (record: User) => new Date(record.lastLogin).toLocaleDateString(),
+    },
+    {
+      title: "Last Updated",
+      dataIndex: "last_updated",
+      render: (record: User) =>
+        new Date(record.last_updated).toLocaleDateString(),
+    },
+    {
+      title: "Member Since",
+      dataIndex: "created_at",
+      render: (record: User) =>
+        new Date(record.created_at).toLocaleDateString(),
+    },
+  ];
   const config: CrudConfig<User> = {
     DATA_TABLE_TITLE: "Users list",
     DRAWER_TITLE: "User",
     ADD_NEW_ITEM: "Add new user",
     TABLE_NAME: "users",
-    search: "",
-    columns: [],
+    search: "full_name",
+    columns: columns,
   };
   const dispatch = useAppDispatch();
   useEffect(() => {

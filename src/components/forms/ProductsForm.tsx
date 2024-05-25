@@ -57,7 +57,6 @@ const ProductsForm = () => {
           editEntity({
             formData: data,
             tableName: "products",
-            path: record.images,
             id: record.id,
           }),
         );
@@ -79,7 +78,7 @@ const ProductsForm = () => {
         setValue("price", record.price);
         setValue("description", record.description);
         setValue("quantity", record.quantity);
-        setValue("category", record.category_id);
+        setValue("category_id", record.category_id);
         setValue("images", fileList);
         setImagePreviews(record.images);
         return;
@@ -179,7 +178,7 @@ export default ProductsForm;
 type CategorySelectProps = {
   register: UseFormRegister<ProductFormValues>;
   errors: FieldErrors<ProductFormValues>;
-  currentCategoryId: string | null;
+  currentCategoryId: number | null;
 };
 
 const CategorySelect = ({

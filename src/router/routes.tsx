@@ -12,6 +12,7 @@ import RequireAuth from "../layout/RequireAuth";
 import Unautorized from "../pages/Unauthorized";
 import { Suspense } from "react";
 import PageLoader from "../components/PageLoader";
+import Addresses from "../pages/addresses";
 
 const routes = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const routes = createBrowserRouter([
           {
             path: "/admin/categories",
             element: <Categories />,
+          },
+          {
+            path: "/admin/addresses",
+            element: <Addresses />,
           },
         ],
       },

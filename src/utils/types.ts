@@ -1,9 +1,14 @@
 import { ReactElement } from "react";
 
 export type Category = {
-  id: string;
+  id: number;
   category_name: string;
   category_image: string;
+};
+
+export type CategoryFormValues = {
+  category_name: string;
+  category_image: FileList | null;
 };
 
 export type Product = {
@@ -14,44 +19,7 @@ export type Product = {
   quantity: number;
   category_id: string;
   images: string[];
-  category?: Category;
-};
-
-export type Address = {
-  id: number;
-  created_at: Date;
-  userId: string;
-  isDefault: boolean;
-};
-
-export type Order = {
-  id: number;
-  userId: string;
-  products: Product[];
-  addressId: number;
-  paymentStatus: boolean;
-  orderStatus: string;
-  totalPrice: number;
-  orderNumber: string;
-  created_at: string;
-};
-
-export type CustomUser = {
-  email: string;
-  
-}
-
-export type OrderFields = {
-  name: Field;
-  paymentStatus: Field;
-  orderStatus: Field;
-  totalPrice: Field;
-  orderNumber: Field;
-};
-
-export type CategoryFormValues = {
-  category_name: string;
-  category_image: FileList | null;
+  category: Category;
 };
 
 export type ProductFormValues = {
@@ -63,8 +31,63 @@ export type ProductFormValues = {
   category_id: string;
 };
 
-export type SignUpFormValues = {
+export type Address = {
+  id: number;
+  created_at: Date;
+  user: CustomUser;
+  isDefault: boolean;
+  address: string;
   name: string;
+  phoneNumber: string;
+  pincode: string;
+  townLocality: string;
+  cityDistrict: string;
+  state: string;
+};
+
+export type Order = {
+  id: number;
+  user_id: string;
+  user: CustomUser,
+  products: Product[];
+  address: Address;
+  paymentstatus: string;
+  orderstatus: string;
+  totalprice: number;
+  ordernumber: string;
+  order_date: string;
+  quantity: number
+};
+
+export type User = {
+  email: string;
+  id: string,
+  lastLogin: string,
+  full_name: string,
+  user_role: Roles,
+  created_at: string,
+  phone: string,
+  last_updated: string,
+  avatar_url: string
+}
+
+export type CustomUser = {
+  id: string,
+  full_name: string,
+  user_role: Roles,
+  avatar_url: string
+}
+
+export type OrderFields = {
+  name: Field;
+  paymentStatus: Field;
+  orderStatus: Field;
+  totalPrice: Field;
+  orderNumber: Field;
+};
+
+export type SignUpFormValues = {
+  full_name: string;
   email: string;
   password: string;
 };
@@ -89,7 +112,7 @@ export type CrudConfig<T> = {
   columns: ColumnConfig<T>[];
 };
 
-export type TableName = "products" | "categories" | "orders" | "users";
+export type TableName = "products" | "categories" | "orders" | "users" | "addresses";
 export type Roles = "USER" | "ADMIN";
 
 export type QueryType = {
@@ -104,10 +127,10 @@ export type QueryType = {
   tableName: TableName;
 };
 
-export type Data = Order | Product | Category;
+export type Data = Order | Product | Category | CustomUser;
 
 export type CrudType = {
-  id: string;
+  id: number;
   tableName: TableName;
   withFile: boolean;
   data: Data;

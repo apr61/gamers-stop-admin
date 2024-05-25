@@ -123,7 +123,6 @@ const DataTable = <T,>({ config }: DataTableProps<T>) => {
 
   if (error) return <p>{error}</p>;
 
-  console.log(status);
 
   return (
     <div className="mt-2">

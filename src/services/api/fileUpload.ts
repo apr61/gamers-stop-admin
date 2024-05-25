@@ -75,7 +75,7 @@ const updateFile = async (editFileData: EditFilesType): Promise<string[]> => {
       }
 
       // Check if the file exists
-      const { error: checkError } = await supabase.storage
+      const { error: checkError } = await supabase.supabase.storage
         .from(bucketName)
         .download(fileName);
 
