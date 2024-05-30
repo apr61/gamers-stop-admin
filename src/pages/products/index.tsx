@@ -3,9 +3,11 @@ import CrudLayout from "../../layout/CrudLayout";
 import ProductsForm from "../../components/forms/ProductsForm";
 import { useEffect } from "react";
 import { resetCrudState } from "../../redux/slice/crudSlice";
-import { useAppDispatch } from "../../redux/store/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
+import { productSearch, selectProducts } from "../../redux/slice/productsSlice";
 
 const Products = () => {
+  const {data, error, status, search} = useAppSelector(selectProducts)
   const columns: ColumnConfig<Product>[] = [
     {
       title: "Name",
@@ -48,6 +50,15 @@ const Products = () => {
     TABLE_NAME: "products",
     search: "name",
     columns: columns,
+    entity: {
+      entityData: {
+        data,
+        search,
+        status,
+        error
+      },
+      searchFn: productSearch
+    }
   };
   const dispatch = useAppDispatch();
   useEffect(() => {

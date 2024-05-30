@@ -6,12 +6,10 @@ import {
 } from "@ant-design/icons";
 import Dropdown from "../../components/ui/Dropdown";
 import { CrudConfig, QueryType, ColumnConfig, Data } from "../../utils/types";
-import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
+import { useAppDispatch } from "../../redux/store/hooks";
 import { ReactElement, useEffect, useState } from "react";
 import { useOnOutsideClick } from "../../hooks/useOnClickOutside";
 import {
-  entitySearch,
-  selectListItems,
   setActionType,
 } from "../../redux/slice/crudSlice";
 import Table from "../ui/Table";
@@ -25,7 +23,7 @@ type DataTableProps<T> = {
 
 const DataTable = <T,>({ config }: DataTableProps<T>) => {
   const dispatch = useAppDispatch();
-  const { data, error, status, totalItems } = useAppSelector(selectListItems);
+  const { error, status, search: {data, totalItems} } = config.entity.entityData
   const [searchParams, setSearchParams] = useSearchParams();
   const page = searchParams.get("page") || 1;
   const search = searchParams.get("search") || "";
@@ -111,7 +109,7 @@ const DataTable = <T,>({ config }: DataTableProps<T>) => {
       },
       tableName: config.TABLE_NAME,
     };
-    dispatch(entitySearch(query));
+    dispatch(config.entity.searchFn(query));
   }, [dispatch, page, search, config.search, config.TABLE_NAME]);
 
   const setPage = (newPage: number) => {

@@ -186,7 +186,7 @@ const CategorySelect = ({
   errors,
   currentCategoryId,
 }: CategorySelectProps) => {
-  const { categories, status, error } = useAppSelector(selectCategories);
+  const { data: categories, status, error } = useAppSelector(selectCategories);
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(fetchCategories());

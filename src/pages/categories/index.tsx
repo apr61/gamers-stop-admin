@@ -1,11 +1,13 @@
 import { useEffect } from "react";
 import CategoriesForm from "../../components/forms/CategoriesForm";
 import CrudLayout from "../../layout/CrudLayout";
-import { useAppDispatch } from "../../redux/store/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import { Category, CrudConfig, ColumnConfig } from "../../utils/types";
 import { resetCrudState } from "../../redux/slice/crudSlice";
+import { categorySearch, selectCategories } from "../../redux/slice/categorySlice";
 
 const Categories = () => {
+  const {data, error, status, search} = useAppSelector(selectCategories)
   const columns: ColumnConfig<Category>[] = [
     {
       title: "Name",
@@ -30,6 +32,15 @@ const Categories = () => {
     TABLE_NAME: "categories",
     search: "category_name",
     columns: columns,
+    entity: {
+      entityData: {
+        data,
+        search,
+        status,
+        error
+      },
+      searchFn: categorySearch
+    }
   };
 
   const dispatch = useAppDispatch();

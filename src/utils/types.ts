@@ -1,3 +1,4 @@
+import { AsyncThunk } from "@reduxjs/toolkit";
 import { ReactElement } from "react";
 
 export type Category = {
@@ -107,6 +108,10 @@ export type ColumnConfig<T> = {
   render?: (record: T) => ReactElement | string;
 };
 
+interface AsyncThunkConfig {
+  // Define any extra configurations or typing you need here
+}
+
 export type CrudConfig<T> = {
   DRAWER_TITLE: string;
   TABLE_NAME: TableName;
@@ -114,6 +119,18 @@ export type CrudConfig<T> = {
   ADD_NEW_ITEM: string;
   search: keyof T;
   columns: ColumnConfig<T>[];
+  entity: {
+    searchFn: AsyncThunk<never[] | { data: T[]; totalItems: number; }, QueryType, AsyncThunkConfig>;
+    entityData: {
+      data: T[];
+      status: "idle" | "pending" | "succeeded" | "failed";
+      error: string | null;
+      search: {
+        data: T[];
+        totalItems: number;
+      };
+    };
+  };
 };
 
 export type TableName =

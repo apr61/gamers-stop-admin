@@ -1,5 +1,5 @@
 import supabase from "../../utils/supabase";
-import { QueryType } from "../../utils/types";
+import { Product, QueryType } from "../../utils/types";
 
 export const searchOrders = async (query: QueryType) => {
   const { count, error: countError } = await supabase.supabase
@@ -93,7 +93,7 @@ const fetchAllOrders = async () => {
       ...order,
       products: orderProducts
         .filter((op) => op.order_id === order.id)
-        .map((op) => op.products),
+        .map((op) => op.products as Product[]),
     }));
 
     return ordersWithProducts;

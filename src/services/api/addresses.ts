@@ -1,9 +1,9 @@
 import supabase from "../../utils/supabase";
-import { Address, QueryType } from "../../utils/types";
+import { Address, AddressFormValues, QueryType } from "../../utils/types";
 
 // Create a new address
 const createAddress = async (
-  address: Omit<Address, "id" | "created_at">
+  address: AddressFormValues
 ): Promise<Address> => {
   const { data, error } = await supabase.supabase
     .from("addresses")
@@ -47,7 +47,7 @@ const getAddressById = async (id: number): Promise<Address> => {
 // Update an address
 const updateAddress = async (
   id: number,
-  address: Partial<Omit<Address, "id" | "created_at">>
+  address: AddressFormValues
 ): Promise<Address> => {
   const { data, error } = await supabase.supabase
     .from("addresses")

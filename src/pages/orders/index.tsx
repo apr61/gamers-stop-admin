@@ -1,11 +1,13 @@
 import { useEffect } from "react";
 import OrderForm from "../../components/forms/OrderForm";
 import CrudLayout from "../../layout/CrudLayout";
-import { useAppDispatch } from "../../redux/store/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import { CrudConfig, Order, ColumnConfig } from "../../utils/types";
 import { resetCrudState } from "../../redux/slice/crudSlice";
+import { orderSearch, selectOrders } from "../../redux/slice/ordersSlice";
 
 const Orders = () => {
+  const {data, error, status, search} = useAppSelector(selectOrders)
   const columns: ColumnConfig<Order>[] = [
     {
       title: "Order Number",
@@ -38,6 +40,15 @@ const Orders = () => {
     TABLE_NAME: "orders",
     search: "orderstatus",
     columns: columns,
+    entity: {
+      entityData: {
+        data,
+        search,
+        status,
+        error
+      },
+      searchFn: orderSearch
+    }
   };
   const dispatch = useAppDispatch();
   useEffect(() => {

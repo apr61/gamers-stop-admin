@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 import CrudLayout from "../../layout/CrudLayout";
-import { useAppDispatch } from "../../redux/store/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import { CrudConfig, ColumnConfig, Address } from "../../utils/types";
 import { resetCrudState } from "../../redux/slice/crudSlice";
 import AddressForm from "../../components/forms/AddressForm";
 import BlankUserProfile from "../../assets/blank-profile-picture.webp"
+import { addressSearch, selectAddresses } from "../../redux/slice/addressSlice";
 
 const Addresses = () => {
+  const {data, error, status, search} = useAppSelector(selectAddresses)
   const columns: ColumnConfig<Address>[] = [
     {
       title: "Pic",
@@ -51,6 +53,15 @@ const Addresses = () => {
     TABLE_NAME: "addresses",
     search: "name",
     columns: columns,
+    entity: {
+      entityData: {
+        data,
+        search,
+        status,
+        error
+      },
+      searchFn: addressSearch
+    }
   };
   const dispatch = useAppDispatch();
   useEffect(() => {
