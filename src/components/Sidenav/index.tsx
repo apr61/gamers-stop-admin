@@ -54,7 +54,7 @@ const Sidenav = () => {
   };
 
   return (
-    <aside className="max-w-[16rem] 2xl:max-w-xs w-full bg-white rounded-md p-4 flex flex-col sticky top-4 h-[calc(100vh-2rem)] overflow-y-auto">
+    <aside className="max-w-[16rem] 2xl:max-w-xs w-full bg-white p-4 flex flex-col sticky top-0 overflow-y-auto">
       <Link to="/admin" className="text-xl lg:text-2xl 2xl:text-4xl block">
         Gamers Stop
       </Link>

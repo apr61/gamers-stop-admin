@@ -17,7 +17,7 @@ export type Product = {
   description: string;
   price: number;
   quantity: number;
-  category_id: string;
+  category_id: number;
   images: string[];
   category: Category;
 };
@@ -45,10 +45,14 @@ export type Address = {
   state: string;
 };
 
+export type AddressFormValues = Omit<Address, "id" | "created_at" | "user"> & {
+  userId: string;
+};
+
 export type Order = {
   id: number;
   user_id: string;
-  user: CustomUser,
+  user: CustomUser;
   products: Product[];
   address: Address;
   paymentstatus: string;
@@ -56,27 +60,27 @@ export type Order = {
   totalprice: number;
   ordernumber: string;
   order_date: string;
-  quantity: number
+  quantity: number;
 };
 
 export type User = {
   email: string;
-  id: string,
-  lastLogin: string,
-  full_name: string,
-  user_role: Roles,
-  created_at: string,
-  phone: string,
-  last_updated: string,
-  avatar_url: string
-}
+  id: string;
+  lastLogin: string;
+  full_name: string;
+  user_role: Roles;
+  created_at: string;
+  phone: string;
+  last_updated: string;
+  avatar_url: string;
+};
 
 export type CustomUser = {
-  id: string,
-  full_name: string,
-  user_role: Roles,
-  avatar_url: string
-}
+  id: string;
+  full_name: string;
+  user_role: Roles;
+  avatar_url: string;
+};
 
 export type OrderFields = {
   name: Field;
@@ -112,7 +116,12 @@ export type CrudConfig<T> = {
   columns: ColumnConfig<T>[];
 };
 
-export type TableName = "products" | "categories" | "orders" | "users" | "addresses";
+export type TableName =
+  | "products"
+  | "categories"
+  | "orders"
+  | "users"
+  | "addresses";
 export type Roles = "USER" | "ADMIN";
 
 export type QueryType = {

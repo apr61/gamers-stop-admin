@@ -3,7 +3,7 @@ import { uploadFiles, deleteFile, updateFile } from "../api/fileUpload";
 import { Category, CategoryFormValues, QueryType } from "../../utils/types";
 
 export async function createCategory(
-  values: CategoryFormValues
+  values: CategoryFormValues,
 ): Promise<Category> {
   try {
     let categoryImageUrl = "";
@@ -87,10 +87,11 @@ export async function updateCategory(id: number, values: CategoryFormValues) {
         category_name: values.category_name,
         category_image: categoryImageUrl,
       })
-      .eq("id", id);
+      .eq("id", id)
+      .select()
+      .single();
 
     if (error) throw error;
-
     return data;
   } catch (error) {
     console.error("Error updating category:", error);

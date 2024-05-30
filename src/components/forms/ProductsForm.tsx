@@ -78,7 +78,7 @@ const ProductsForm = () => {
         setValue("price", record.price);
         setValue("description", record.description);
         setValue("quantity", record.quantity);
-        setValue("category_id", record.category_id);
+        setValue("category_id", record.category_id.toString());
         setValue("images", fileList);
         setImagePreviews(record.images);
         return;

@@ -26,7 +26,7 @@ export const searchProducts = async (query: QueryType) => {
 };
 
 export async function createProduct(
-  values: ProductFormValues
+  values: ProductFormValues,
 ): Promise<Product> {
   try {
     let imageUrls: string[] = [];
@@ -95,9 +95,9 @@ export async function updateProduct(id: number, values: ProductFormValues) {
     const { data: imagesData, error: imagesError } = await supabase.supabase
       .from("products")
       .select("images")
-      .eq("id", id).single();
-    console.log(imagesData);
-    
+      .eq("id", id)
+      .single();
+
     if (imagesError) throw imagesError;
 
     if (imagesData) {
@@ -118,7 +118,9 @@ export async function updateProduct(id: number, values: ProductFormValues) {
         category_id: values.category_id,
         images: imageUrls,
       })
-      .eq("id", id);
+      .eq("id", id)
+      .select(`*, category:categories(id, category_name, category_image)`)
+      .single();
 
     if (error) throw error;
 
