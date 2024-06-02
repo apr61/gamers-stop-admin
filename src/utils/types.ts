@@ -105,7 +105,7 @@ export type LoginFormValues = {
 export type ColumnConfig<T> = {
   title: string;
   dataIndex?: keyof T;
-  render?: (record: T) => ReactElement | string;
+  render?: (record: T) => ReactElement | string | ReactElement[];
 };
 
 export type CrudConfig<T> = {
@@ -115,6 +115,7 @@ export type CrudConfig<T> = {
   ADD_NEW_ITEM: string;
   search: keyof T;
   columns: ColumnConfig<T>[];
+  readItem: ColumnConfig<T>[],
   entity: {
     entityData: {
       data: T[];

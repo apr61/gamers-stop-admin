@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import OrderForm from "../../components/forms/OrderForm";
 import CrudLayout from "../../layout/CrudLayout";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
-import { CrudConfig, Order, ColumnConfig, QueryType } from "../../utils/types";
+import { CrudConfig, Order, QueryType } from "../../utils/types";
 import { resetCrudState } from "../../redux/slice/crudSlice";
 import {
   orderSearch,
@@ -13,6 +13,7 @@ import {
   selectOrdersCurrentItem,
   setOrderCurrentItem,
 } from "../../redux/slice/ordersSlice";
+import { columns, readItem } from "./config";
 
 const Orders = () => {
   const { data, error, status } = useAppSelector(selectOrders);
@@ -23,31 +24,7 @@ const Orders = () => {
     status: currentStatus,
     action,
   } = useAppSelector(selectOrdersCurrentItem);
-  const columns: ColumnConfig<Order>[] = [
-    {
-      title: "Order Number",
-      dataIndex: "ordernumber",
-    },
-    {
-      title: "Name",
-      render: (record: Order) => (record.user ? record?.user.full_name : ""),
-    },
-    {
-      title: "Total Price",
-      dataIndex: "totalprice",
-      render: (record: Order) => `$${record.totalprice}`,
-    },
-    {
-      title: "Order Status",
-      dataIndex: "orderstatus",
-    },
-    {
-      title: "Order Date",
-      dataIndex: "order_date",
-      render: (record: Order) =>
-        new Date(record.order_date).toLocaleDateString(),
-    },
-  ];
+
   const setCurrentItemFn = (
     action: "read" | "update" | "delete",
     record: Order
@@ -74,6 +51,7 @@ const Orders = () => {
     TABLE_NAME: "orders",
     search: "orderstatus",
     columns: columns,
+    readItem: readItem,
     entity: {
       entityData: {
         data,

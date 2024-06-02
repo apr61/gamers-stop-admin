@@ -5,7 +5,6 @@ import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import {
   Category,
   CrudConfig,
-  ColumnConfig,
   QueryType,
 } from "../../utils/types";
 import { resetCrudState } from "../../redux/slice/crudSlice";
@@ -18,6 +17,7 @@ import {
   selectCategoryCurrentItem,
   setCategoryCurrentItem,
 } from "../../redux/slice/categorySlice";
+import { columns, readItem } from "./config";
 
 const Categories = () => {
   const { data, error, status } = useAppSelector(selectCategories);
@@ -30,24 +30,6 @@ const Categories = () => {
     status: currentStatus,
     action,
   } = useAppSelector(selectCategoryCurrentItem);
-
-  const columns: ColumnConfig<Category>[] = [
-    {
-      title: "Name",
-      dataIndex: "category_name",
-    },
-    {
-      title: "Image",
-      dataIndex: "category_image",
-      render: (record: Category) => (
-        <img
-          src={record.category_image}
-          alt={record.category_name}
-          className="w-10 h-10"
-        />
-      ),
-    },
-  ];
 
   const setCurrentItemFn = (
     action: "read" | "update" | "delete",
@@ -75,6 +57,7 @@ const Categories = () => {
     TABLE_NAME: "categories",
     search: "category_name",
     columns: columns,
+    readItem: readItem,
     entity: {
       entityData: {
         data,

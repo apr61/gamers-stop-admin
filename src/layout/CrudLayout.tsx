@@ -13,8 +13,8 @@ import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { CrudConfig } from "../utils/types";
-import ReadItem from "../components/ReadItem";
 import { ChangeEvent, FC, useState } from "react";
+import ReadItem from "../components/ReadItem";
 
 type CrudLayoutProps<T> = {
   config: CrudConfig<T>;
@@ -39,7 +39,11 @@ const CrudLayout = <T,>({ config, Form }: CrudLayoutProps<T>) => {
         closeDrawer={handleDrawer}
         title={config.DRAWER_TITLE}
       >
-        {currentItem.action === "read" ? <ReadItem /> : <Form />}
+        {currentItem.action === "read" ? (
+          <ReadItem readItem={config.readItem} record={currentItem.record!} />
+        ) : (
+          <Form />
+        )}
       </Drawer>
       <div className="px-8 py-4 w-full bg-white rounded-md">
         <FixedHeaderContent config={config} />

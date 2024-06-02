@@ -3,7 +3,7 @@ import { ReactElement, ReactNode } from "react";
 type ColumnConfig<T> = {
   title: string;
   dataIndex?: keyof T;
-  render?: (record: T) => ReactElement | string;
+  render?: (record: T) => ReactElement | string | ReactElement[];
 };
 
 type TableProps<T> = {
