@@ -1,7 +1,7 @@
 import DataTable from "../components/DataTable/Index";
 import DeleteModal from "../components/DeleteModal";
 import Drawer from "../components/ui/Drawer";
-import { resetActionType, selectCurrentItem } from "../redux/slice/crudSlice";
+import { resetActionType } from "../redux/slice/crudSlice";
 import { useAppDispatch, useAppSelector } from "../redux/store/hooks";
 import {
   closeDrawer,
@@ -22,7 +22,8 @@ type CrudLayoutProps<T> = {
 };
 
 const CrudLayout = <T,>({ config, Form }: CrudLayoutProps<T>) => {
-  const currentItem = useAppSelector(selectCurrentItem);
+  const currentItem = config.entity.current;
+
   const dispatch = useAppDispatch();
   const drawer = useAppSelector(selectDrawer);
 

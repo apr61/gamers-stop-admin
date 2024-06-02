@@ -1,7 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   Product,
-  CrudType,
   QueryType,
   TableName,
   ProductFormValues,
@@ -21,11 +20,11 @@ interface ProductState {
     data: Product[];
     status: "idle" | "pending" | "succeeded" | "failed";
     error: string | null;
-    search: {
-      data: Product[],
-      totalItems: number
-    }
   };
+  search: {
+    data: Product[],
+    totalItems: number
+  }
   current: CurrentType;
 }
 
@@ -34,10 +33,10 @@ const initialState: ProductState = {
     data: [],
     status: "idle",
     error: null,
-    search: {
-      data: [],
-      totalItems: 0
-    }
+  },
+  search: {
+    data: [],
+    totalItems: 0
   },
   current: {
     action: "create",
@@ -49,7 +48,7 @@ const initialState: ProductState = {
 
 export const productSearch = createAsyncThunk(
   "product/search",
-  async (query: QueryType, { rejectWithValue }) => {
+  async (query: QueryType<Product>, { rejectWithValue }) => {
     try {
       const response = await searchProducts(query);
       if (response) {
@@ -109,9 +108,9 @@ export const addProduct = createAsyncThunk(
 
 export const removeProduct = createAsyncThunk(
   "product/delete",
-  async (data: CrudType, { rejectWithValue }) => {
+  async (id: number, { rejectWithValue }) => {
     try {
-      const deletedId = await deleteProduct(data.id);
+      const deletedId = await deleteProduct(id);
       return deletedId;
     } catch (err) {
       if (err instanceof Error) {
@@ -149,14 +148,14 @@ const productSlice = createSlice({
   name: "products",
   initialState: initialState,
   reducers: {
-    setProductActionType: (
+    setProductCurrentItem: (
       state,
       action: PayloadAction<Omit<CurrentType, "status" | "error">>
     ) => {
       state.current.record = action.payload.record;
       state.current.action = action.payload.action;
     },
-    resetProductActionType: (state) => {
+    resetProductCurrentItem: (state) => {
       state.current = {
         action: "create",
         record: null,
@@ -172,8 +171,8 @@ const productSlice = createSlice({
     builder
       .addCase(productSearch.fulfilled, (state, action) => {
         state.list.status = "succeeded";
-        state.list.search.data = action.payload?.data!;
-        state.list.search.totalItems = action.payload?.totalCount!;
+        state.search.data = action.payload?.data!;
+        state.search.totalItems = action.payload?.totalCount!;
       })
       .addCase(productSearch.pending, (state) => {
         state.list.status = "pending";
@@ -181,7 +180,7 @@ const productSlice = createSlice({
       .addCase(productSearch.rejected, (state, action) => {
         state.list.status = "failed";
         state.list.error = action.payload as string;
-        state.list.search = {
+        state.search = {
           data: [],
           totalItems: 0
         };
@@ -196,14 +195,11 @@ const productSlice = createSlice({
       .addCase(fetchProducts.rejected, (state, action) => {
         state.list.status = "failed";
         state.list.error = action.payload as string;
-        state.list.search = {
-          data: [],
-          totalItems: 0
-        };
+        state.list.data = []
       })
       .addCase(addProduct.fulfilled, (state, action) => {
         state.current.status = "succeeded";
-        state.list.data.unshift(action.payload!);
+        state.search.data.unshift(action.payload!);
       })
       .addCase(addProduct.pending, (state) => {
         state.current.status = "pending";
@@ -214,7 +210,7 @@ const productSlice = createSlice({
       })
       .addCase(removeProduct.fulfilled, (state, action) => {
         state.current.status = "succeeded";
-        state.list.data = state.list.data.filter(
+        state.search.data = state.search.data.filter(
           (item) => item.id !== action.payload!
         );
       })
@@ -227,7 +223,7 @@ const productSlice = createSlice({
       })
       .addCase(editProduct.fulfilled, (state, action) => {
         state.current.status = "succeeded";
-        state.list.data = state.list.data.map((item) => {
+        state.search.data = state.search.data.map((item) => {
           if (item.id === action.payload?.id) return action.payload as Product;
           return item;
         });
@@ -243,10 +239,11 @@ const productSlice = createSlice({
 });
 
 export const selectProducts = (state: RootState) => state.products.list;
+export const selectProductsSearch = (state: RootState) => state.products.search;
 export const selectProdcutsCurrentItem = (state: RootState) =>
   state.products.current;
 
-export const { setProductActionType, resetProductActionType, resetProductState } =
+export const { setProductCurrentItem, resetProductCurrentItem, resetProductState } =
   productSlice.actions;
 
 export default productSlice.reducer;

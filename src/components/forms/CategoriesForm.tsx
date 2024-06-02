@@ -1,20 +1,22 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
-import {
-  createNewEntity,
-  editEntity,
-  selectCurrentItem,
-} from "../../redux/slice/crudSlice";
 import Button from "../ui/Button";
 import FileInput from "../ui/FileInput";
 import Input from "../ui/Input";
 import { CategoryFormValues } from "../../utils/types";
 import ImagePreview from "../ImagePreview";
 import UrlToFileList from "../../utils/urlToFileList";
+import {
+  addCategory,
+  editCategory,
+  selectCategoryCurrentItem,
+} from "../../redux/slice/categorySlice";
 
 const CategoriesForm = () => {
-  const { action, record, status, error } = useAppSelector(selectCurrentItem);
+  const { action, record, status, error } = useAppSelector(
+    selectCategoryCurrentItem
+  );
   const {
     register,
     handleSubmit,
@@ -29,7 +31,7 @@ const CategoriesForm = () => {
     const files = e.target.files;
     if (files) {
       const filePreviews = Array.from(files).map((file) =>
-        URL.createObjectURL(file),
+        URL.createObjectURL(file)
       );
       setImagePreviews(filePreviews);
     }
@@ -37,17 +39,15 @@ const CategoriesForm = () => {
 
   const onSubmit: SubmitHandler<CategoryFormValues> = async (data) => {
     if (action === "create") {
-      await dispatch(
-        createNewEntity({ formData: data, tableName: "categories" }),
-      );
+      await dispatch(addCategory({ formData: data, tableName: "categories" }));
     } else {
-      if (record && "category_name" in record)
+      if (record)
         await dispatch(
-          editEntity({
+          editCategory({
             id: record.id!,
             tableName: "categories",
             formData: data,
-          }),
+          })
         );
     }
     reset();
@@ -61,7 +61,7 @@ const CategoriesForm = () => {
 
   useEffect(() => {
     const initializeForm = async () => {
-      if (record && "category_name" in record) {
+      if (record) {
         const fileList = await UrlToFileList([record.category_image]);
         setValue("category_image", fileList);
         setValue("category_name", record.category_name);

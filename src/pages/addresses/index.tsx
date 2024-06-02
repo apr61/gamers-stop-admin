@@ -1,14 +1,34 @@
 import { useEffect } from "react";
 import CrudLayout from "../../layout/CrudLayout";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
-import { CrudConfig, ColumnConfig, Address } from "../../utils/types";
+import {
+  CrudConfig,
+  ColumnConfig,
+  Address,
+  QueryType,
+} from "../../utils/types";
 import { resetCrudState } from "../../redux/slice/crudSlice";
 import AddressForm from "../../components/forms/AddressForm";
-import BlankUserProfile from "../../assets/blank-profile-picture.webp"
-import { addressSearch, selectAddresses } from "../../redux/slice/addressSlice";
+import BlankUserProfile from "../../assets/blank-profile-picture.webp";
+import {
+  addressSearch,
+  removeAddress,
+  resetAddressCurrentItem,
+  selectAddressCurrentItem,
+  selectAddressSearch,
+  selectAddresses,
+  setAddressCurrentItem,
+} from "../../redux/slice/addressSlice";
 
 const Addresses = () => {
-  const {data, error, status, search} = useAppSelector(selectAddresses)
+  const { data, error, status } = useAppSelector(selectAddresses);
+  const { data: searchData, totalItems } = useAppSelector(selectAddressSearch);
+  const {
+    record,
+    error: currentError,
+    status: currentStatus,
+    action,
+  } = useAppSelector(selectAddressCurrentItem);
   const columns: ColumnConfig<Address>[] = [
     {
       title: "Pic",
@@ -46,6 +66,24 @@ const Addresses = () => {
       render: (record: Address) => record?.user.id.substring(0, 10),
     },
   ];
+  const setCurrentItemFn = (
+    action: "read" | "update" | "delete",
+    record: Address
+  ) => {
+    dispatch(setAddressCurrentItem({ action, record }));
+  };
+
+  const searchFn = (query: QueryType<Address>) => {
+    dispatch(addressSearch(query));
+  };
+
+  const deleteFn = async (record: Address) => {
+    await dispatch(removeAddress(record.id));
+  };
+
+  const resetEntityStateFn = () => {
+    dispatch(resetAddressCurrentItem());
+  };
   const config: CrudConfig<Address> = {
     DATA_TABLE_TITLE: "Address list",
     DRAWER_TITLE: "Address",
@@ -56,12 +94,21 @@ const Addresses = () => {
     entity: {
       entityData: {
         data,
-        search,
+        search: { data: searchData, totalItems },
         status,
-        error
+        error,
       },
-      searchFn: addressSearch
-    }
+      current: {
+        action,
+        record: record,
+        error: currentError,
+        status: currentStatus,
+      },
+      searchFn,
+      deleteFn,
+      resetEntityStateFn,
+      setCurrentItemFn,
+    },
   };
   const dispatch = useAppDispatch();
   useEffect(() => {

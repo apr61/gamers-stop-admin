@@ -5,13 +5,10 @@ import {
   EllipsisOutlined,
 } from "@ant-design/icons";
 import Dropdown from "../../components/ui/Dropdown";
-import { CrudConfig, QueryType, ColumnConfig, Data } from "../../utils/types";
+import { CrudConfig, QueryType, ColumnConfig } from "../../utils/types";
 import { useAppDispatch } from "../../redux/store/hooks";
 import { ReactElement, useEffect, useState } from "react";
 import { useOnOutsideClick } from "../../hooks/useOnClickOutside";
-import {
-  setActionType,
-} from "../../redux/slice/crudSlice";
 import Table from "../ui/Table";
 import { openDeleteModal, openDrawer } from "../../redux/slice/uiActionsSlice";
 import Pagination from "../ui/Pagination";
@@ -23,7 +20,11 @@ type DataTableProps<T> = {
 
 const DataTable = <T,>({ config }: DataTableProps<T>) => {
   const dispatch = useAppDispatch();
-  const { error, status, search: {data, totalItems} } = config.entity.entityData
+  const {
+    error,
+    status,
+    search: { data, totalItems },
+  } = config.entity.entityData;
   const [searchParams, setSearchParams] = useSearchParams();
   const page = searchParams.get("page") || 1;
   const search = searchParams.get("search") || "";
@@ -49,15 +50,15 @@ const DataTable = <T,>({ config }: DataTableProps<T>) => {
   ];
 
   const handleRead = (record: T) => {
-    dispatch(setActionType({ action: "read", record: record as Data }));
+    config.entity.setCurrentItemFn("read", record);
     dispatch(openDrawer());
   };
   const handleUpdate = (record: T) => {
-    dispatch(setActionType({ action: "update", record: record as Data }));
+    config.entity.setCurrentItemFn("update", record);
     dispatch(openDrawer());
   };
   const handleDelete = (record: T) => {
-    dispatch(setActionType({ action: "delete", record: record as Data }));
+    config.entity.setCurrentItemFn("delete", record);
     dispatch(openDeleteModal());
   };
 
@@ -98,7 +99,7 @@ const DataTable = <T,>({ config }: DataTableProps<T>) => {
   useEffect(() => {
     const from = (+page - 1) * itemsPerPage;
     const to = from + itemsPerPage - 1;
-    const query: QueryType = {
+    const query: QueryType<T> = {
       pagination: {
         from: from,
         to: to,
@@ -109,7 +110,7 @@ const DataTable = <T,>({ config }: DataTableProps<T>) => {
       },
       tableName: config.TABLE_NAME,
     };
-    dispatch(config.entity.searchFn(query));
+    config.entity.searchFn(query);
   }, [dispatch, page, search, config.search, config.TABLE_NAME]);
 
   const setPage = (newPage: number) => {
@@ -119,8 +120,7 @@ const DataTable = <T,>({ config }: DataTableProps<T>) => {
     });
   };
 
-  if (error) return <p>{error}</p>;
-
+  if (error) return <p>{error}</p>;  
 
   return (
     <div className="mt-2">

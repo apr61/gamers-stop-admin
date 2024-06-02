@@ -4,7 +4,7 @@ type DropDownProps = {
   items: {
     label: string;
     icon?: ReactElement;
-    key: string
+    key: string,
   }[];
   onItemClick: (key: string) => void;
 };
@@ -16,7 +16,7 @@ const Dropdown = ({ items, onItemClick }: DropDownProps) => {
         {items.map((item) => (
           <li
             key={item.key}
-            className="p-2 cursor-pointer hover:bg-gray-200 w-full flex items-center gap-2 rounded-md"
+            className={`p-2 cursor-pointer hover:bg-gray-200 w-full flex items-center gap-2 rounded-md`}
             onClick={() => onItemClick(item.key)}
           >
             {item.icon} {item.label}

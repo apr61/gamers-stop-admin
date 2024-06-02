@@ -2,12 +2,27 @@ import { useEffect } from "react";
 import OrderForm from "../../components/forms/OrderForm";
 import CrudLayout from "../../layout/CrudLayout";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
-import { CrudConfig, Order, ColumnConfig } from "../../utils/types";
+import { CrudConfig, Order, ColumnConfig, QueryType } from "../../utils/types";
 import { resetCrudState } from "../../redux/slice/crudSlice";
-import { orderSearch, selectOrders } from "../../redux/slice/ordersSlice";
+import {
+  orderSearch,
+  removeOrder,
+  resetOrderCurrentItem,
+  selectOrderSearch,
+  selectOrders,
+  selectOrdersCurrentItem,
+  setOrderCurrentItem,
+} from "../../redux/slice/ordersSlice";
 
 const Orders = () => {
-  const {data, error, status, search} = useAppSelector(selectOrders)
+  const { data, error, status } = useAppSelector(selectOrders);
+  const { data: searchData, totalItems } = useAppSelector(selectOrderSearch);
+  const {
+    record,
+    error: currentError,
+    status: currentStatus,
+    action,
+  } = useAppSelector(selectOrdersCurrentItem);
   const columns: ColumnConfig<Order>[] = [
     {
       title: "Order Number",
@@ -15,7 +30,7 @@ const Orders = () => {
     },
     {
       title: "Name",
-      render: (record: Order) => record.user ? record?.user.full_name : ""
+      render: (record: Order) => (record.user ? record?.user.full_name : ""),
     },
     {
       title: "Total Price",
@@ -33,6 +48,25 @@ const Orders = () => {
         new Date(record.order_date).toLocaleDateString(),
     },
   ];
+  const setCurrentItemFn = (
+    action: "read" | "update" | "delete",
+    record: Order
+  ) => {
+    dispatch(setOrderCurrentItem({ action, record }));
+  };
+
+  const searchFn = (query: QueryType<Order>) => {
+    dispatch(orderSearch(query));
+  };
+
+  const deleteFn = async (record: Order) => {
+    await dispatch(removeOrder(record.id));
+  };
+
+  const resetEntityStateFn = () => {
+    dispatch(resetOrderCurrentItem());
+  };
+
   const config: CrudConfig<Order> = {
     DATA_TABLE_TITLE: "Order list",
     DRAWER_TITLE: "Order",
@@ -43,12 +77,21 @@ const Orders = () => {
     entity: {
       entityData: {
         data,
-        search,
+        search: { data: searchData, totalItems },
         status,
-        error
+        error,
       },
-      searchFn: orderSearch
-    }
+      current: {
+        action,
+        record: record,
+        error: currentError,
+        status: currentStatus,
+      },
+      searchFn,
+      deleteFn,
+      resetEntityStateFn,
+      setCurrentItemFn,
+    },
   };
   const dispatch = useAppDispatch();
   useEffect(() => {

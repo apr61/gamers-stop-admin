@@ -1,13 +1,18 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   Address,
-  CrudType,
   QueryType,
   TableName,
   AddressFormValues,
 } from "../../utils/types";
 import { RootState } from "../store/store";
-import { createAddress, deleteAddress, getAddressesByUserId, searchAddresses, updateAddress } from "../../services/api/addresses";
+import {
+  createAddress,
+  deleteAddress,
+  getAddressesByUserId,
+  searchAddresses,
+  updateAddress,
+} from "../../services/api/addresses";
 
 export type CurrentType = {
   action: "create" | "read" | "update" | "delete";
@@ -21,10 +26,10 @@ interface OrderState {
     data: Address[];
     status: "idle" | "pending" | "succeeded" | "failed";
     error: string | null;
-    search: {
-      data: Address[],
-      totalItems: number
-    }
+  };
+  search: {
+    data: Address[];
+    totalItems: number;
   };
   current: CurrentType;
 }
@@ -34,10 +39,10 @@ const initialState: OrderState = {
     data: [],
     status: "idle",
     error: null,
-    search: {
-      data: [],
-      totalItems: 0
-    }
+  },
+  search: {
+    data: [],
+    totalItems: 0,
   },
   current: {
     action: "create",
@@ -49,7 +54,7 @@ const initialState: OrderState = {
 
 export const addressSearch = createAsyncThunk(
   "address/search",
-  async (query: QueryType, { rejectWithValue }) => {
+  async (query: QueryType<Address>, { rejectWithValue }) => {
     try {
       const response = await searchAddresses(query);
       if (response) {
@@ -108,9 +113,9 @@ export const addAddress = createAsyncThunk(
 
 export const removeAddress = createAsyncThunk(
   "address/delete",
-  async (data: CrudType, { rejectWithValue }) => {
+  async (id: number, { rejectWithValue }) => {
     try {
-      const deletedId = await deleteAddress(data.id);
+      const deletedId = await deleteAddress(id);
       return deletedId;
     } catch (err) {
       if (err instanceof Error) {
@@ -128,7 +133,6 @@ export const editAddress = createAsyncThunk(
       id,
     }: {
       formData: AddressFormValues;
-      tableName: TableName;
       id: number;
     },
     { rejectWithValue }
@@ -148,14 +152,14 @@ const addressSlice = createSlice({
   name: "address",
   initialState: initialState,
   reducers: {
-    setAddressActionType: (
+    setAddressCurrentItem: (
       state,
       action: PayloadAction<Omit<CurrentType, "status" | "error">>
     ) => {
       state.current.record = action.payload.record;
       state.current.action = action.payload.action;
     },
-    resetAddressActionType: (state) => {
+    resetAddressCurrentItem: (state) => {
       state.current = {
         action: "create",
         record: null,
@@ -171,8 +175,8 @@ const addressSlice = createSlice({
     builder
       .addCase(addressSearch.fulfilled, (state, action) => {
         state.list.status = "succeeded";
-        state.list.search.data = action.payload?.data!;
-        state.list.search.totalItems = action.payload?.totalCount!;
+        state.search.data = action.payload?.data!;
+        state.search.totalItems = action.payload?.totalCount!;
       })
       .addCase(addressSearch.pending, (state) => {
         state.list.status = "pending";
@@ -180,9 +184,9 @@ const addressSlice = createSlice({
       .addCase(addressSearch.rejected, (state, action) => {
         state.list.status = "failed";
         state.list.error = action.payload as string;
-        state.list.search = {
+        state.search = {
           data: [],
-          totalItems: 0
+          totalItems: 0,
         };
       })
       .addCase(fetchAddressesByUser.fulfilled, (state, action) => {
@@ -195,14 +199,11 @@ const addressSlice = createSlice({
       .addCase(fetchAddressesByUser.rejected, (state, action) => {
         state.list.status = "failed";
         state.list.error = action.payload as string;
-        state.list.search = {
-          data: [],
-          totalItems: 0
-        };
+        state.list.data = [];
       })
       .addCase(addAddress.fulfilled, (state, action) => {
         state.current.status = "succeeded";
-        state.list.data.unshift(action.payload!);
+        state.search.data.unshift(action.payload!);
       })
       .addCase(addAddress.pending, (state) => {
         state.current.status = "pending";
@@ -213,7 +214,7 @@ const addressSlice = createSlice({
       })
       .addCase(removeAddress.fulfilled, (state, action) => {
         state.current.status = "succeeded";
-        state.list.data = state.list.data.filter(
+        state.search.data = state.search.data.filter(
           (item) => item.id !== action.payload!
         );
       })
@@ -226,7 +227,7 @@ const addressSlice = createSlice({
       })
       .addCase(editAddress.fulfilled, (state, action) => {
         state.current.status = "succeeded";
-        state.list.data = state.list.data.map((item) => {
+        state.search.data = state.search.data.map((item) => {
           if (item.id === action.payload?.id) return action.payload as Address;
           return item;
         });
@@ -242,10 +243,14 @@ const addressSlice = createSlice({
 });
 
 export const selectAddresses = (state: RootState) => state.address.list;
+export const selectAddressSearch = (state: RootState) => state.address.search;
 export const selectAddressCurrentItem = (state: RootState) =>
   state.address.current;
 
-export const { setAddressActionType, resetAddressActionType, resetAddressState } =
-  addressSlice.actions;
+export const {
+  setAddressCurrentItem,
+  resetAddressCurrentItem,
+  resetAddressState,
+} = addressSlice.actions;
 
 export default addressSlice.reducer;

@@ -1,8 +1,8 @@
 import supabase from "../../utils/supabase";
-import { Product, QueryType, ProductFormValues } from "../../utils/types";
+import { QueryType, ProductFormValues, Product } from "../../utils/types";
 import { uploadFiles, deleteFile } from "../api/fileUpload";
 
-export const searchProducts = async (query: QueryType) => {
+export const searchProducts = async (query: QueryType<Product>) => {
   const { count, error: countError } = await supabase.supabase
     .from("products")
     .select("*", { count: "exact", head: true });
@@ -27,7 +27,7 @@ export const searchProducts = async (query: QueryType) => {
 
 export async function createProduct(
   values: ProductFormValues,
-): Promise<Product> {
+) {
   try {
     let imageUrls: string[] = [];
 
@@ -45,11 +45,12 @@ export async function createProduct(
         category_id: values.category_id,
         images: imageUrls,
       })
-      .select(`*, category:categories(id, category_name, category_image)`);
+      .select(`*, category:categories(id, category_name, category_image)`)
+      .single()
 
     if (error) throw error;
 
-    return data[0];
+    return data;
   } catch (error) {
     console.error("Error creating product:", error);
     throw error;

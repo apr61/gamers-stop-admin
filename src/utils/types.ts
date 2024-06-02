@@ -1,4 +1,3 @@
-import { AsyncThunk } from "@reduxjs/toolkit";
 import { ReactElement } from "react";
 
 export type Category = {
@@ -20,7 +19,7 @@ export type Product = {
   quantity: number;
   category_id: number;
   images: string[];
-  category: Category;
+  category: Category | null;
 };
 
 export type ProductFormValues = {
@@ -29,12 +28,13 @@ export type ProductFormValues = {
   quantity: number;
   price: number;
   description: string;
-  category_id: string;
+  category_id: number;
 };
 
 export type Address = {
   id: number;
-  created_at: Date;
+  created_at: string;
+  userId: string;
   user: CustomUser;
   isDefault: boolean;
   address: string;
@@ -53,13 +53,13 @@ export type AddressFormValues = Omit<Address, "id" | "created_at" | "user"> & {
 export type Order = {
   id: number;
   user_id: string;
-  user: CustomUser;
+  user: CustomUser | null;
   products: Product[];
-  address: Address;
+  address: Address | null;
   paymentstatus: string;
   orderstatus: string;
   totalprice: number;
-  ordernumber: string;
+  ordernumber: number;
   order_date: string;
   quantity: number;
 };
@@ -69,7 +69,7 @@ export type User = {
   id: string;
   lastLogin: string;
   full_name: string;
-  user_role: Roles;
+  user_role: user_role;
   created_at: string;
   phone: string;
   last_updated: string;
@@ -79,7 +79,7 @@ export type User = {
 export type CustomUser = {
   id: string;
   full_name: string;
-  user_role: Roles;
+  user_role: user_role;
   avatar_url: string;
 };
 
@@ -108,10 +108,6 @@ export type ColumnConfig<T> = {
   render?: (record: T) => ReactElement | string;
 };
 
-interface AsyncThunkConfig {
-  // Define any extra configurations or typing you need here
-}
-
 export type CrudConfig<T> = {
   DRAWER_TITLE: string;
   TABLE_NAME: TableName;
@@ -120,7 +116,6 @@ export type CrudConfig<T> = {
   search: keyof T;
   columns: ColumnConfig<T>[];
   entity: {
-    searchFn: AsyncThunk<never[] | { data: T[]; totalItems: number; }, QueryType, AsyncThunkConfig>;
     entityData: {
       data: T[];
       status: "idle" | "pending" | "succeeded" | "failed";
@@ -130,6 +125,16 @@ export type CrudConfig<T> = {
         totalItems: number;
       };
     };
+    current: {
+      action: "create" | "read" | "update" | "delete";
+      record: T | null;
+      status: "idle" | "pending" | "succeeded" | "failed";
+      error: string | null;
+    };
+    searchFn: (query: QueryType<T>) => void;
+    deleteFn: (record: T) => Promise<void>;
+    resetEntityStateFn: () => void;
+    setCurrentItemFn: (action: "read" | "update" | "delete", record: T) => void;
   };
 };
 
@@ -139,15 +144,15 @@ export type TableName =
   | "orders"
   | "users"
   | "addresses";
-export type Roles = "USER" | "ADMIN";
+export type user_role = "USER" | "ADMIN";
 
-export type QueryType = {
+export type QueryType<T> = {
   pagination: {
     from: number;
     to: number;
   };
   search: {
-    query: keyof Category | keyof Product;
+    query: keyof T;
     with: string;
   };
   tableName: TableName;

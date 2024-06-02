@@ -1,14 +1,18 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   Order,
-  CrudType,
   QueryType,
   TableName,
   AddressFormValues,
 } from "../../utils/types";
 import { RootState } from "../store/store";
-import { createAddress, deleteAddress, getAddressesByUserId, updateAddress } from "../../services/api/addresses";
-import { searchOrders } from "../../services/api/orders";
+import {
+  createOrder,
+  deleteOrder,
+  getOrdersByUserId,
+  searchOrders,
+  updateOrder,
+} from "../../services/api/orders";
 
 export type CurrentType = {
   action: "create" | "read" | "update" | "delete";
@@ -22,10 +26,10 @@ interface OrderState {
     data: Order[];
     status: "idle" | "pending" | "succeeded" | "failed";
     error: string | null;
-    search: {
-      data: Order[],
-      totalItems: number
-    }
+  };
+  search: {
+    data: Order[];
+    totalItems: number;
   };
   current: CurrentType;
 }
@@ -35,10 +39,10 @@ const initialState: OrderState = {
     data: [],
     status: "idle",
     error: null,
-    search: {
-      data: [],
-      totalItems: 0
-    }
+  },
+  search: {
+    data: [],
+    totalItems: 0,
   },
   current: {
     action: "create",
@@ -50,7 +54,7 @@ const initialState: OrderState = {
 
 export const orderSearch = createAsyncThunk(
   "order/search",
-  async (query: QueryType, { rejectWithValue }) => {
+  async (query: QueryType<Order>, { rejectWithValue }) => {
     try {
       const response = await searchOrders(query);
       if (response) {
@@ -76,8 +80,18 @@ export const fetchOrdersByUser = createAsyncThunk(
   "order/readAll",
   async (userId: string, { rejectWithValue }) => {
     try {
-      const response = await getAddressesByUserId(userId);
-      return response;
+      const response = await getOrdersByUserId(userId);
+      if (response) {
+        const data = {
+          data: response.data as Order[],
+          totalCount: response.totalItems,
+        };
+        return data;
+      }
+      return {
+        data: [],
+        totalCount: 0,
+      };
     } catch (error) {
       if (error instanceof Error) {
         return rejectWithValue(error.message);
@@ -97,7 +111,7 @@ export const addOrder = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const newEntity = await createAddress(formData);
+      const newEntity = await createOrder(formData);
       return newEntity;
     } catch (error) {
       if (error instanceof Error) {
@@ -109,9 +123,9 @@ export const addOrder = createAsyncThunk(
 
 export const removeOrder = createAsyncThunk(
   "order/delete",
-  async (data: CrudType, { rejectWithValue }) => {
+  async (id: number, { rejectWithValue }) => {
     try {
-      const deletedId = await deleteAddress(data.id);
+      const deletedId = await deleteOrder(id);
       return deletedId;
     } catch (err) {
       if (err instanceof Error) {
@@ -135,7 +149,7 @@ export const editOrder = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const data = await updateAddress(id, formData);
+      const data = await updateOrder(id, formData);
       return data;
     } catch (err) {
       if (err instanceof Error) {
@@ -149,14 +163,14 @@ const ordersSlice = createSlice({
   name: "orders",
   initialState: initialState,
   reducers: {
-    setOrderActionType: (
+    setOrderCurrentItem: (
       state,
       action: PayloadAction<Omit<CurrentType, "status" | "error">>
     ) => {
       state.current.record = action.payload.record;
       state.current.action = action.payload.action;
     },
-    resetOrderActionType: (state) => {
+    resetOrderCurrentItem: (state) => {
       state.current = {
         action: "create",
         record: null,
@@ -172,8 +186,8 @@ const ordersSlice = createSlice({
     builder
       .addCase(orderSearch.fulfilled, (state, action) => {
         state.list.status = "succeeded";
-        state.list.search.data = action.payload?.data!;
-        state.list.search.totalItems = action.payload?.totalCount!;
+        state.search.data = action.payload?.data!;
+        state.search.totalItems = action.payload?.totalCount!;
       })
       .addCase(orderSearch.pending, (state) => {
         state.list.status = "pending";
@@ -181,14 +195,15 @@ const ordersSlice = createSlice({
       .addCase(orderSearch.rejected, (state, action) => {
         state.list.status = "failed";
         state.list.error = action.payload as string;
-        state.list.search = {
+        state.search = {
           data: [],
-          totalItems: 0
+          totalItems: 0,
         };
       })
       .addCase(fetchOrdersByUser.fulfilled, (state, action) => {
         state.list.status = "succeeded";
-        state.list.data = action.payload!;
+        state.search.data = action.payload?.data!;
+        state.search.totalItems = action.payload?.totalCount!;
       })
       .addCase(fetchOrdersByUser.pending, (state) => {
         state.list.status = "pending";
@@ -196,9 +211,9 @@ const ordersSlice = createSlice({
       .addCase(fetchOrdersByUser.rejected, (state, action) => {
         state.list.status = "failed";
         state.list.error = action.payload as string;
-        state.list.search = {
+        state.search = {
           data: [],
-          totalItems: 0
+          totalItems: 0,
         };
       })
       .addCase(addOrder.fulfilled, (state, action) => {
@@ -245,8 +260,9 @@ const ordersSlice = createSlice({
 export const selectOrders = (state: RootState) => state.orders.list;
 export const selectOrdersCurrentItem = (state: RootState) =>
   state.orders.current;
+export const selectOrderSearch = (state: RootState) => state.orders.search;
 
-export const { setOrderActionType, resetOrderActionType, resetOrderState } =
+export const { setOrderCurrentItem, resetOrderCurrentItem, resetOrderState } =
   ordersSlice.actions;
 
 export default ordersSlice.reducer;

@@ -2,7 +2,6 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   Category,
   CategoryFormValues,
-  CrudType,
   QueryType,
   TableName,
 } from "../../utils/types";
@@ -27,10 +26,10 @@ interface CategoryState {
     data: Category[];
     status: "idle" | "pending" | "succeeded" | "failed";
     error: string | null;
-    search: {
-      data: Category[],
-      totalItems: number
-    }
+  };
+  search: {
+    data: Category[];
+    totalItems: number;
   };
   current: CurrentType;
 }
@@ -40,10 +39,10 @@ const initialState: CategoryState = {
     data: [],
     status: "idle",
     error: null,
-    search: {
-      data: [],
-      totalItems: 0
-    }
+  },
+  search: {
+    data: [],
+    totalItems: 0,
   },
   current: {
     action: "create",
@@ -55,7 +54,7 @@ const initialState: CategoryState = {
 
 export const categorySearch = createAsyncThunk(
   "category/search",
-  async (query: QueryType, { rejectWithValue }) => {
+  async (query: QueryType<Category>, { rejectWithValue }) => {
     try {
       const response = await searchCategories(query);
       if (response) {
@@ -65,15 +64,14 @@ export const categorySearch = createAsyncThunk(
         };
         return data;
       }
-      return {
-        data: [],
-        totalItems: 0,
-      };
     } catch (error) {
       if (error instanceof Error) {
         return rejectWithValue(error.message);
       }
-      return []
+      return {
+        data: [],
+        totalItems: 0,
+      };
     }
   }
 );
@@ -116,9 +114,9 @@ export const addCategory = createAsyncThunk(
 
 export const removeCategory = createAsyncThunk(
   "category/delete",
-  async (data: CrudType, { rejectWithValue }) => {
+  async (id: number, { rejectWithValue }) => {
     try {
-      const deletedId = await deleteCategory(data.id);
+      const deletedId = await deleteCategory(id);
       return deletedId;
     } catch (err) {
       if (err instanceof Error) {
@@ -156,14 +154,14 @@ const categorySlice = createSlice({
   name: "categories",
   initialState: initialState,
   reducers: {
-    setCategoryActionType: (
+    setCategoryCurrentItem: (
       state,
       action: PayloadAction<Omit<CurrentType, "status" | "error">>
     ) => {
       state.current.record = action.payload.record;
       state.current.action = action.payload.action;
     },
-    resetCategoryActionType: (state) => {
+    resetCategoryCurrentItem: (state) => {
       state.current = {
         action: "create",
         record: null,
@@ -179,8 +177,8 @@ const categorySlice = createSlice({
     builder
       .addCase(categorySearch.fulfilled, (state, action) => {
         state.list.status = "succeeded";
-        state.list.search.data = action.payload?.data!;
-        state.list.search.totalItems = action.payload?.totalItems!;
+        state.search.data = action.payload?.data!;
+        state.search.totalItems = action.payload?.totalItems!;
       })
       .addCase(categorySearch.pending, (state) => {
         state.list.status = "pending";
@@ -188,9 +186,9 @@ const categorySlice = createSlice({
       .addCase(categorySearch.rejected, (state, action) => {
         state.list.status = "failed";
         state.list.error = action.payload as string;
-        state.list.search = {
+        state.search = {
           data: [],
-          totalItems: 0
+          totalItems: 0,
         };
       })
       .addCase(fetchCategories.fulfilled, (state, action) => {
@@ -203,14 +201,11 @@ const categorySlice = createSlice({
       .addCase(fetchCategories.rejected, (state, action) => {
         state.list.status = "failed";
         state.list.error = action.payload as string;
-        state.list.search = {
-          data: [],
-          totalItems: 0
-        };
+        state.list.data = [];
       })
       .addCase(addCategory.fulfilled, (state, action) => {
         state.current.status = "succeeded";
-        state.list.data.unshift(action.payload!);
+        state.search.data.unshift(action.payload!);
       })
       .addCase(addCategory.pending, (state) => {
         state.current.status = "pending";
@@ -221,7 +216,7 @@ const categorySlice = createSlice({
       })
       .addCase(removeCategory.fulfilled, (state, action) => {
         state.current.status = "succeeded";
-        state.list.data = state.list.data.filter(
+        state.search.data = state.search.data.filter(
           (item) => item.id !== action.payload!
         );
       })
@@ -234,7 +229,7 @@ const categorySlice = createSlice({
       })
       .addCase(editCategory.fulfilled, (state, action) => {
         state.current.status = "succeeded";
-        state.list.data = state.list.data.map((item) => {
+        state.search.data = state.search.data.map((item) => {
           if (item.id === action.payload?.id) return action.payload as Category;
           return item;
         });
@@ -250,10 +245,14 @@ const categorySlice = createSlice({
 });
 
 export const selectCategories = (state: RootState) => state.categories.list;
+export const selectCategoriesSearch = (state: RootState) => state.categories.search
 export const selectCategoryCurrentItem = (state: RootState) =>
   state.categories.current;
 
-export const { setCategoryActionType, resetCategoryActionType, resetCategoryState } =
-  categorySlice.actions;
+export const {
+  setCategoryCurrentItem,
+  resetCategoryCurrentItem,
+  resetCategoryState,
+} = categorySlice.actions;
 
 export default categorySlice.reducer;

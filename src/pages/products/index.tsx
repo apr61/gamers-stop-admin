@@ -1,13 +1,33 @@
-import { ColumnConfig, CrudConfig, Product } from "../../utils/types";
+import {
+  ColumnConfig,
+  CrudConfig,
+  Product,
+  QueryType,
+} from "../../utils/types";
 import CrudLayout from "../../layout/CrudLayout";
 import ProductsForm from "../../components/forms/ProductsForm";
 import { useEffect } from "react";
 import { resetCrudState } from "../../redux/slice/crudSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
-import { productSearch, selectProducts } from "../../redux/slice/productsSlice";
+import {
+  productSearch,
+  removeProduct,
+  resetProductCurrentItem,
+  selectProdcutsCurrentItem,
+  selectProducts,
+  selectProductsSearch,
+  setProductCurrentItem,
+} from "../../redux/slice/productsSlice";
 
 const Products = () => {
-  const {data, error, status, search} = useAppSelector(selectProducts)
+  const { data, error, status } = useAppSelector(selectProducts);
+  const { data: searchData, totalItems } = useAppSelector(selectProductsSearch);
+  const {
+    record,
+    error: currentError,
+    status: currentStatus,
+    action,
+  } = useAppSelector(selectProdcutsCurrentItem);
   const columns: ColumnConfig<Product>[] = [
     {
       title: "Name",
@@ -43,6 +63,24 @@ const Products = () => {
         record && record.category ? record.category!.category_name : "",
     },
   ];
+  const setCurrentItemFn = (
+    action: "read" | "update" | "delete",
+    record: Product
+  ) => {
+    dispatch(setProductCurrentItem({ action, record }));
+  };
+
+  const searchFn = (query: QueryType<Product>) => {
+    dispatch(productSearch(query));
+  };
+
+  const deleteFn = async (record: Product) => {
+    await dispatch(removeProduct(record.id));
+  };
+
+  const resetEntityStateFn = () => {
+    dispatch(resetProductCurrentItem());
+  };
   const config: CrudConfig<Product> = {
     DATA_TABLE_TITLE: "Products list",
     DRAWER_TITLE: "Products",
@@ -53,18 +91,27 @@ const Products = () => {
     entity: {
       entityData: {
         data,
-        search,
+        search: { data: searchData, totalItems },
         status,
-        error
+        error,
       },
-      searchFn: productSearch
-    }
+      current: {
+        action,
+        record: record,
+        error: currentError,
+        status: currentStatus,
+      },
+      searchFn,
+      deleteFn,
+      resetEntityStateFn,
+      setCurrentItemFn,
+    },
   };
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(resetCrudState());
   }, [dispatch]);
-  
+
   return <CrudLayout config={config} Form={ProductsForm} />;
 };
 

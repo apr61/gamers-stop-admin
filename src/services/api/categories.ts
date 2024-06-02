@@ -19,11 +19,12 @@ export async function createCategory(
         category_name: values.category_name,
         category_image: categoryImageUrl,
       })
-      .select();
+      .select()
+      .single()
 
     if (error) throw error;
 
-    return data[0];
+    return data;
   } catch (error) {
     console.error("Error creating category:", error);
     throw error;
@@ -109,7 +110,7 @@ export async function deleteCategory(id: number) {
 
     if (fetchError) throw fetchError;
 
-    const { data, error } = await supabase.supabase
+    const { error } = await supabase.supabase
       .from("categories")
       .delete()
       .eq("id", id);
@@ -120,14 +121,14 @@ export async function deleteCategory(id: number) {
       await deleteFile([categoryData.category_image]);
     }
 
-    return data;
+    return id;
   } catch (error) {
     console.error("Error deleting category:", error);
     throw error;
   }
 }
 
-export const searchCategories = async (query: QueryType) => {
+export const searchCategories = async (query: QueryType<Category>) => {
   const { count, error: countError } = await supabase.supabase
     .from("categories")
     .select("*", { count: "exact", head: true });

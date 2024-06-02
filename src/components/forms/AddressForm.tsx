@@ -6,22 +6,64 @@ import {
 } from "react-hook-form";
 import { AddressFormValues } from "../../utils/types";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
-import { selectCurrentItem } from "../../redux/slice/crudSlice";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { fetchUsers, selectUsers } from "../../redux/slice/profilesSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import {
+  addAddress,
+  editAddress,
+  resetAddressCurrentItem,
+  selectAddressCurrentItem,
+} from "../../redux/slice/addressSlice";
+import CheckBox from "../ui/checkbox";
 
 const AddressForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    reset,
+    setValue,
   } = useForm<AddressFormValues>();
-  const { status, action, record } = useAppSelector(selectCurrentItem);
+  const [checked, setChecked] = useState<boolean>(false);
+  const { status, action, record } = useAppSelector(selectAddressCurrentItem);
   const formHeading = action === "create" ? "Add" : "Edit";
-  const onSubmit: SubmitHandler<AddressFormValues> = (data) => {};
+  const dispatch = useAppDispatch();
+  const onSubmit: SubmitHandler<AddressFormValues> = async (data) => {
+    if (action === "create") {
+      await dispatch(addAddress({ formData: data }));
+    } else {
+      if (record) {
+        await dispatch(editAddress({ formData: data, id: record.id }));
+      }
+    }
+    reset();
+    setChecked(false)
+    resetAddressCurrentItem();
+  };
+  useEffect(() => {
+    const initializeForm = async () => {
+      if (record) {
+        setValue("name", record.name);
+        setValue("phoneNumber", record.phoneNumber);
+        setValue("address", record.address);
+        setValue("cityDistrict", record.cityDistrict);
+        setValue("state", record.state);
+        setValue("townLocality", record.townLocality);
+        setValue("pincode", record.pincode);
+        setValue("isDefault", record.isDefault);
+        setValue("userId", record.userId);
+        setChecked(record.isDefault);
+        return;
+      }
+      reset();
+    };
+
+    initializeForm();
+  }, [record, reset, setValue]);
   const MobileNumberRegex = /^[6-9]{1}[0-9]{9}$/;
+
   return (
     <form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
       <h3 className="text-xl">{formHeading} address</h3>
@@ -106,10 +148,17 @@ const AddressForm = () => {
       {errors.pincode && (
         <p className="text-red-500">{errors.pincode.message}</p>
       )}
+      <CheckBox
+        label="Is Default"
+        {...register("isDefault", {
+          onChange: (e) => setChecked(e.target.checked),
+        })}
+        isChecked={checked}
+      />
       <UserSelect
         register={register}
         errors={errors}
-        currentUserId={record && "full_name" in record ? record.id : ""}
+        currentUserId={record ? record.id : ""}
       />
       <div className="flex gap-2">
         <Button
@@ -129,7 +178,7 @@ export default AddressForm;
 type UserSelectProps = {
   register: UseFormRegister<AddressFormValues>;
   errors: FieldErrors<AddressFormValues>;
-  currentUserId: string;
+  currentUserId: number | string;
 };
 
 const UserSelect = ({ register, errors, currentUserId }: UserSelectProps) => {
@@ -159,7 +208,9 @@ const UserSelect = ({ register, errors, currentUserId }: UserSelectProps) => {
                 <option
                   key={user.id}
                   value={user.id}
-                  className={`${currentUserId === user.id ? "bg-blue-500 text-white" : ""}`}
+                  className={`${
+                    currentUserId === user.id ? "bg-blue-500 text-white" : ""
+                  }`}
                 >
                   {user.full_name}
                 </option>
