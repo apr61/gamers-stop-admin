@@ -1,7 +1,7 @@
 import DataTable from "../components/DataTable/Index";
 import DeleteModal from "../components/DeleteModal";
 import Drawer from "../components/ui/Drawer";
-import { resetActionType, selectCurrentItem } from "../redux/slice/crudSlice";
+import { resetActionType } from "../redux/slice/crudSlice";
 import { useAppDispatch, useAppSelector } from "../redux/store/hooks";
 import {
   closeDrawer,
@@ -13,16 +13,17 @@ import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { CrudConfig } from "../utils/types";
-import ReadItem from "../components/ReadItem";
 import { ChangeEvent, FC, useState } from "react";
+import ReadItem from "../components/ReadItem";
 
-type CrudLayoutProps = {
-  config: CrudConfig;
+type CrudLayoutProps<T> = {
+  config: CrudConfig<T>;
   Form: FC<unknown>;
 };
 
-const CrudLayout = ({ config, Form }: CrudLayoutProps) => {
-  const currentItem = useAppSelector(selectCurrentItem);
+const CrudLayout = <T,>({ config, Form }: CrudLayoutProps<T>) => {
+  const currentItem = config.entity.current;
+
   const dispatch = useAppDispatch();
   const drawer = useAppSelector(selectDrawer);
 
@@ -38,7 +39,11 @@ const CrudLayout = ({ config, Form }: CrudLayoutProps) => {
         closeDrawer={handleDrawer}
         title={config.DRAWER_TITLE}
       >
-        {currentItem.action === "read" ? <ReadItem /> : <Form />}
+        {currentItem.action === "read" ? (
+          <ReadItem readItem={config.readItem} record={currentItem.record!} />
+        ) : (
+          <Form />
+        )}
       </Drawer>
       <div className="px-8 py-4 w-full bg-white rounded-md">
         <FixedHeaderContent config={config} />
@@ -51,11 +56,11 @@ const CrudLayout = ({ config, Form }: CrudLayoutProps) => {
 
 export default CrudLayout;
 
-type FixedHeaderContent = {
-  config: CrudConfig;
+type FixedHeaderContent<T> = {
+  config: CrudConfig<T>;
 };
 
-const FixedHeaderContent = ({ config }: FixedHeaderContent) => {
+const FixedHeaderContent = <T,>({ config }: FixedHeaderContent<T>) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [search, setSearch] = useState<string>("");

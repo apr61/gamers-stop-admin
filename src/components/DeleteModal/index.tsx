@@ -1,42 +1,31 @@
 import { useOnOutsideClick } from "../../hooks/useOnClickOutside";
 import {
-  removeEntity,
-  resetActionType,
-  selectCurrentItem,
-} from "../../redux/slice/crudSlice";
-import {
   closeDeleteModal,
   selectDeleteModal,
 } from "../../redux/slice/uiActionsSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
-import Modal from "../Modal";
+import Modal from "../ui/Modal";
 import Button from "../ui/Button";
-import { CrudConfig, CrudType } from "../../utils/types";
+import { CrudConfig } from "../../utils/types";
 
-type DeleteModalProps = {
-  config: CrudConfig;
+type DeleteModalProps<T> = {
+  config: CrudConfig<T>;
 };
 
-const DeleteModal = ({ config }: DeleteModalProps) => {
+function DeleteModal<T>({ config }: DeleteModalProps<T>) {
   const dispatch = useAppDispatch();
   const modalRef = useOnOutsideClick(() => dispatch(closeDeleteModal()));
   const deleteModal = useAppSelector(selectDeleteModal);
-  const { record, status, error } = useAppSelector(selectCurrentItem);
+  const { record, status, error } = config.entity.current;
   const handleCancel = () => {
     dispatch(closeDeleteModal());
-    dispatch(resetActionType());
+    config.entity.resetEntityStateFn();
   };
   const handleDelete = async () => {
     if (record) {
-      const data: CrudType = {
-        id: record.id,
-        tableName: config.TABLE_NAME,
-        data: record,
-        withFile: true,
-      };
-      await dispatch(removeEntity(data));
+      await config.entity.deleteFn(record);
       dispatch(closeDeleteModal());
-      dispatch(resetActionType());
+      config.entity.resetEntityStateFn();
     }
   };
 
@@ -58,6 +47,7 @@ const DeleteModal = ({ config }: DeleteModalProps) => {
             btnType="primary"
             onClick={handleDelete}
             disabled={status === "pending"}
+            loading={status === "pending"}
           >
             Yes, Delete
           </Button>
@@ -65,6 +55,6 @@ const DeleteModal = ({ config }: DeleteModalProps) => {
       </div>
     </Modal>
   );
-};
+}
 
 export default DeleteModal;

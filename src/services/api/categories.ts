@@ -1,166 +1,154 @@
 import supabase from "../../utils/supabase";
-import {
-  Category,
-  FetchDataListType,
-} from "../../utils/types";
-import { deleteFile, updateFile, uploadFiles } from "./fileUpload";
+import { uploadFiles, deleteFile, updateFile } from "../api/fileUpload";
+import { Category, CategoryFormValues, QueryType } from "../../utils/types";
 
-// Function to read all documents from a table in Supabase
-const readAllCategories = async (query: FetchDataListType) => {
+export async function createCategory(
+  values: CategoryFormValues,
+): Promise<Category> {
   try {
-    const { count, error: countError } = await supabase
+    let categoryImageUrl = "";
+
+    if (values.category_image && values.category_image.length > 0) {
+      const [url] = await uploadFiles(values.category_image, "category_images");
+      categoryImageUrl = url;
+    }
+
+    const { data, error } = await supabase.supabase
       .from("categories")
-      .select("*", { count: "exact", head: true });
-    if (countError) {
-      throw new Error(countError.message);
-    }
-
-    const { data, error } = await supabase
-      .from("categories")
-      .select("*")
-      .ilike("category_name", `%${query.search}%`)
-      .order("created_at", { ascending: false })
-      .range(query.from, query.to);
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    const response = {
-      data: data ? data : [],
-      count: count ? count : 0,
-    };
-    return response;
-  } catch (error) {
-    if (error instanceof Error) throw new Error(error.message);
-  }
-};
-
-// Function to insert a document into Supabase
-const insertCategory = async (
-  documentData: Omit<Category, "id">
-): Promise<Category | null> => {
-  try {
-    const { data, error } = await supabase
-      .from("categories")
-      .insert(documentData)
-      .select();
-
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    return data[0];
-  } catch (error) {
-    if (error instanceof Error) throw new Error(error.message);
-    return null;
-  }
-};
-
-const deleteCategoryById = async (category: Category) => {
-  try {
-    const [deleteCategoryResult] = await Promise.all([
-      supabase.from("categories").delete().eq("id", category.id),
-      deleteFile([category.category_image]),
-    ]);
-
-    const { error } = deleteCategoryResult;
-
-    if (error) {
-      throw new Error(error.message);
-    }
-    return category.id;
-  } catch (err) {
-    if (err instanceof Error) {
-      throw new Error(err.message);
-    }
-  }
-};
-
-const updateCategory = async (category: Category) => {
-  try {
-    await supabase
-      .from("categories")
-      .update({
-        category_name: category.category_name,
-        category_image: category?.category_image,
+      .insert({
+        category_name: values.category_name,
+        category_image: categoryImageUrl,
       })
-      .eq("id", category.id);
+      .select()
+      .single()
 
-    return category;
-  } catch (err) {
-    if (err instanceof Error) {
-      throw new Error(err.message);
-    }
-    return null
+    if (error) throw error;
+
+    return data;
+  } catch (error) {
+    console.error("Error creating category:", error);
+    throw error;
   }
-};
-
-export type CategoryFormData = {
-  category_name: string,
-  files: FileList,
-  imageUrls: string[],
-  id: string
 }
 
-const addCategoryFileUpload = async (
-  formData: Omit<CategoryFormData, "imageUrls" | "id">
-) => {
+export async function getCategories() {
   try {
-    let imageUrls: string[] = [];
-    if (formData.files.length > 0) {
-      imageUrls = await uploadFiles(formData.files, "images");
-    }
+    const { data, error } = await supabase.supabase
+      .from("categories")
+      .select("*");
 
-    if (imageUrls.length <= 0) throw new Error("Unable to upload images");
+    if (error) throw error;
 
-    const categoryData: Omit<Category, "id"> = {
-      category_name: formData.category_name,
-      category_image: imageUrls[0],
-    };
-
-    const newCategory = await insertCategory(categoryData);
-    return newCategory;
+    return data;
   } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    }
-    return null;
+    console.error("Error fetching categories:", error);
+    throw error;
   }
-};
+}
 
-const updateCategoryFileUpload = async (formData: CategoryFormData) => {
+export async function getCategoryById(id: number) {
   try {
-    let imageUrls: string[] = [];
-    if (formData.files.length > 0) {
-      imageUrls = await updateFile({
-        files: formData.files,
-        path: formData.imageUrls,
+    const { data, error } = await supabase.supabase
+      .from("categories")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (error) throw error;
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching category:", error);
+    throw error;
+  }
+}
+
+export async function updateCategory(id: number, values: CategoryFormValues) {
+  try {
+    let categoryImageUrl = "";
+
+    const { data: imagesData, error: imagesError } = await supabase.supabase
+      .from("categories")
+      .select("category_image")
+      .eq("id", id);
+
+    if (imagesError) throw imagesError;
+
+    if (values.category_image && values.category_image.length > 0) {
+      const [url] = await updateFile({
+        files: values.category_image,
+        path: [imagesData[0].category_image],
       });
+      categoryImageUrl = url;
     }
 
-    if (imageUrls.length <= 0) throw new Error("Unable upload images");
+    const { data, error } = await supabase.supabase
+      .from("categories")
+      .update({
+        category_name: values.category_name,
+        category_image: categoryImageUrl,
+      })
+      .eq("id", id)
+      .select()
+      .single();
 
-    const categoryData: Category = {
-      category_name: formData.category_name,
-      category_image: imageUrls[0],
-      id: formData.id
-    };
-
-    const updatedCategory = await updateCategory(categoryData);
-    return updatedCategory;
+    if (error) throw error;
+    return data;
   } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(error.message);
-    }
-    return null;
+    console.error("Error updating category:", error);
+    throw error;
   }
-};
+}
 
-export {
-  readAllCategories,
-  deleteCategoryById,
-  updateCategory,
-  addCategoryFileUpload,
-  updateCategoryFileUpload,
+export async function deleteCategory(id: number) {
+  try {
+    const { data: categoryData, error: fetchError } = await supabase.supabase
+      .from("categories")
+      .select("category_image")
+      .eq("id", id)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    const { error } = await supabase.supabase
+      .from("categories")
+      .delete()
+      .eq("id", id);
+
+    if (error) throw error;
+
+    if (categoryData && categoryData.category_image) {
+      await deleteFile([categoryData.category_image]);
+    }
+
+    return id;
+  } catch (error) {
+    console.error("Error deleting category:", error);
+    throw error;
+  }
+}
+
+export const searchCategories = async (query: QueryType<Category>) => {
+  const { count, error: countError } = await supabase.supabase
+    .from("categories")
+    .select("*", { count: "exact", head: true });
+  if (countError) {
+    throw new Error(countError.message);
+  }
+  const { data, error } = await supabase.supabase
+    .from("categories")
+    .select("*")
+    .ilike(`${query.search.query}`, `%${query.search.with}%`)
+    .order("created_at", { ascending: false })
+    .range(query.pagination.from, query.pagination.to);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const response = {
+    data: data ? data : [],
+    count: count ? count : 0,
+  };
+  return response;
 };

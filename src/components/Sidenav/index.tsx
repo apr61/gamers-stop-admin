@@ -2,6 +2,7 @@ import {
   BookOutlined,
   ClusterOutlined,
   DashboardOutlined,
+  GlobalOutlined,
   LoginOutlined,
   ProductOutlined,
   UserOutlined,
@@ -9,8 +10,11 @@ import {
 import { ReactElement } from "react";
 import { Link, NavLink } from "react-router-dom";
 import Button from "../ui/Button";
+import { useAppDispatch } from "../../redux/store/hooks";
+import { logOutUser, setAuthStatus } from "../../redux/slice/authSlice";
 
 const Sidenav = () => {
+  const dispatch = useAppDispatch();
   const navItems = [
     {
       href: "/admin",
@@ -37,10 +41,20 @@ const Sidenav = () => {
       text: "Orders",
       icon: <BookOutlined />,
     },
+    {
+      href: "/admin/addresses",
+      text: "Addresses",
+      icon: <GlobalOutlined />,
+    },
   ];
 
+  const handleLogout = async () => {
+    await dispatch(logOutUser());
+    dispatch(setAuthStatus("idle"));
+  };
+
   return (
-    <aside className="max-w-[16rem] 2xl:max-w-xs w-full bg-white rounded-md p-4 flex flex-col sticky top-4 h-[calc(100vh-2rem)] overflow-y-auto">
+    <aside className="max-w-[16rem] 2xl:max-w-xs w-full bg-white p-4 flex flex-col sticky top-0 overflow-y-auto">
       <Link to="/admin" className="text-xl lg:text-2xl 2xl:text-4xl block">
         Gamers Stop
       </Link>
@@ -58,6 +72,7 @@ const Sidenav = () => {
         <Button
           btnType="danger"
           className="w-full flex gap-2 justify-center items-center"
+          onClick={handleLogout}
         >
           <>
             <span className="text-xl">

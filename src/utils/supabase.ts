@@ -1,9 +1,16 @@
-
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
+import { Database } from "../types/supabase";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supbaseSecretKey = import.meta.env.VITE_SUPABASE_SECRET_KEY;
 
-export default supabase
-        
+const supabase = createClient<Database>(supabaseUrl, supabaseKey);
+const supabaseAdmin = createClient(supabaseUrl, supbaseSecretKey, {
+	auth: {
+		autoRefreshToken: false,
+		persistSession: false,
+	},
+});
+const adminAuthClient = supabaseAdmin.auth.admin;
+export default { supabase, adminAuthClient };

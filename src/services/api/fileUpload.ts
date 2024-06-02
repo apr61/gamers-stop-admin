@@ -7,7 +7,7 @@ export type EditFilesType = {
 };
 
 const uploadFile = async (file: File, bucketName: string) => {
-  const { data, error } = await supabase.storage
+  const { data, error } = await supabase.supabase.storage
     .from(bucketName)
     .upload(nanoid(), file);
 
@@ -43,7 +43,7 @@ const deleteFile = async (fileUrl: string[]) => {
       const bucketName = url.split("/").at(-2);
       const fileName = url.split("/").at(-1);
       if (bucketName && fileName) {
-        const { data, error } = await supabase.storage
+        const { data, error } = await supabase.supabase.storage
           .from(bucketName)
           .remove([fileName]);
         return { data, error };
@@ -75,7 +75,7 @@ const updateFile = async (editFileData: EditFilesType): Promise<string[]> => {
       }
 
       // Check if the file exists
-      const { error: checkError } = await supabase.storage
+      const { error: checkError } = await supabase.supabase.storage
         .from(bucketName)
         .download(fileName);
 
@@ -84,7 +84,7 @@ const updateFile = async (editFileData: EditFilesType): Promise<string[]> => {
         return uploadFile(file, bucketName);
       } else {
         // If file exists, update it
-        const { data: updateData, error: updateError } = await supabase.storage
+        const { data: updateData, error: updateError } = await supabase.supabase.storage
           .from(bucketName)
           .update(fileName, file, {
             cacheControl: '0',
@@ -115,7 +115,7 @@ const updateFile = async (editFileData: EditFilesType): Promise<string[]> => {
 };
 
 const getPublicUrl = (path: string, bucketName: string) => {
-  const { data } = supabase.storage.from(bucketName).getPublicUrl(path);
+  const { data } = supabase.supabase.storage.from(bucketName).getPublicUrl(path);
   return data.publicUrl;
 };
 

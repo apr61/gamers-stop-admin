@@ -11,16 +11,16 @@ import Input from "../ui/Input";
 import Button from "../ui/Button";
 import ImagePreview from "../ImagePreview";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
-import {
-  createNewEntity,
-  editEntity,
-  selectCurrentItem,
-} from "../../redux/slice/crudSlice";
 import UrlToFileList from "../../utils/urlToFileList";
 import {
   fetchCategories,
   selectCategories,
 } from "../../redux/slice/categorySlice";
+import {
+  addProduct,
+  editProduct,
+  selectProdcutsCurrentItem,
+} from "../../redux/slice/productsSlice";
 
 const ProductsForm = () => {
   const {
@@ -30,7 +30,9 @@ const ProductsForm = () => {
     setValue,
     reset,
   } = useForm<ProductFormValues>();
-  const { action, record, error, status } = useAppSelector(selectCurrentItem);
+  const { action, record, error, status } = useAppSelector(
+    selectProdcutsCurrentItem
+  );
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const dispatch = useAppDispatch();
 
@@ -40,7 +42,7 @@ const ProductsForm = () => {
     const files = e.target.files;
     if (files) {
       const filePreviews = Array.from(files).map((file) =>
-        URL.createObjectURL(file),
+        URL.createObjectURL(file)
       );
       setImagePreviews(filePreviews);
     }
@@ -48,18 +50,15 @@ const ProductsForm = () => {
 
   const onSubmit: SubmitHandler<ProductFormValues> = async (data) => {
     if (action === "create") {
-      await dispatch(
-        createNewEntity({ formData: data, tableName: "products" }),
-      );
+      await dispatch(addProduct({ formData: data, tableName: "products" }));
     } else {
       if (record && "name" in record)
         await dispatch(
-          editEntity({
+          editProduct({
             formData: data,
             tableName: "products",
-            path: record.images,
             id: record.id,
-          }),
+          })
         );
     }
     reset();
@@ -162,7 +161,11 @@ const ProductsForm = () => {
       {error && <p className="text-red-500">{error}</p>}
 
       <div className="flex gap-2">
-        <Button type="submit" disabled={isSubmitting || status === "pending"}>
+        <Button
+          type="submit"
+          disabled={isSubmitting || status === "pending"}
+          loading={isSubmitting || status === "pending"}
+        >
           Save
         </Button>
       </div>
@@ -175,7 +178,7 @@ export default ProductsForm;
 type CategorySelectProps = {
   register: UseFormRegister<ProductFormValues>;
   errors: FieldErrors<ProductFormValues>;
-  currentCategoryId: string | null;
+  currentCategoryId: number | null;
 };
 
 const CategorySelect = ({
@@ -183,7 +186,7 @@ const CategorySelect = ({
   errors,
   currentCategoryId,
 }: CategorySelectProps) => {
-  const { categories, status, error } = useAppSelector(selectCategories);
+  const { data: categories, status, error } = useAppSelector(selectCategories);
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(fetchCategories());
@@ -199,15 +202,19 @@ const CategorySelect = ({
           className={`w-full p-4 bg-white border rounded-md cursor-pointer`}
           {...register("category_id", { required: "Category is required" })}
         >
-          <option>Select category</option>
+          <option value="">Select category</option>
           {status === "pending" ? (
-            <option>Loading...</option>
+            <option value="">Loading...</option>
           ) : (
             categories.map((category) => (
               <option
                 key={category.id}
                 value={category.id}
-                className={`${currentCategoryId === category.id ? "bg-blue-500 text-white" : ""}`}
+                className={`${
+                  currentCategoryId === category.id
+                    ? "bg-blue-500 text-white"
+                    : ""
+                }`}
               >
                 {category.category_name}
               </option>

@@ -5,33 +5,26 @@ import {
   EllipsisOutlined,
 } from "@ant-design/icons";
 import Dropdown from "../../components/ui/Dropdown";
-import { Category, CrudConfig, QueryType } from "../../utils/types";
-import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
+import { CrudConfig, QueryType, ColumnConfig } from "../../utils/types";
+import { useAppDispatch } from "../../redux/store/hooks";
 import { ReactElement, useEffect, useState } from "react";
 import { useOnOutsideClick } from "../../hooks/useOnClickOutside";
-import {
-  entitySearch,
-  selectListItems,
-  setActionType,
-} from "../../redux/slice/crudSlice";
 import Table from "../ui/Table";
 import { openDeleteModal, openDrawer } from "../../redux/slice/uiActionsSlice";
 import Pagination from "../ui/Pagination";
 import { useSearchParams } from "react-router-dom";
-import { dataForTable } from "../../utils/dataStructure";
 
-type DataTableProps = {
-  config: CrudConfig;
+type DataTableProps<T> = {
+  config: CrudConfig<T>;
 };
 
-const DataTable = ({ config }: DataTableProps) => {
+const DataTable = <T,>({ config }: DataTableProps<T>) => {
   const dispatch = useAppDispatch();
   const {
-    data: categories,
     error,
     status,
-    totalItems,
-  } = useAppSelector(selectListItems);
+    search: { data, totalItems },
+  } = config.entity.entityData;
   const [searchParams, setSearchParams] = useSearchParams();
   const page = searchParams.get("page") || 1;
   const search = searchParams.get("search") || "";
@@ -56,20 +49,20 @@ const DataTable = ({ config }: DataTableProps) => {
     },
   ];
 
-  const handleRead = (record: Category) => {
-    dispatch(setActionType({ action: "read", record: record }));
+  const handleRead = (record: T) => {
+    config.entity.setCurrentItemFn("read", record);
     dispatch(openDrawer());
   };
-  const handleUpdate = (record: Category) => {
-    dispatch(setActionType({ action: "update", record: record }));
+  const handleUpdate = (record: T) => {
+    config.entity.setCurrentItemFn("update", record);
     dispatch(openDrawer());
   };
-  const handleDelete = (record: Category) => {
-    dispatch(setActionType({ action: "delete", record: record }));
+  const handleDelete = (record: T) => {
+    config.entity.setCurrentItemFn("delete", record);
     dispatch(openDeleteModal());
   };
 
-  const handleDropdownOnClick = (key: string, record: Category) => {
+  const handleDropdownOnClick = (key: string, record: T) => {
     switch (key) {
       case "read": {
         handleRead(record);
@@ -88,13 +81,11 @@ const DataTable = ({ config }: DataTableProps) => {
       }
     }
   };
-  let columns = dataForTable(config.fields);
-  columns = [
-    ...columns,
+  const columns: ColumnConfig<T>[] = [
+    ...config.columns,
     {
-      title: "",
-      dataIndex: "",
-      render: (record: Category) => (
+      title: "Actions",
+      render: (record: T) => (
         <CrudActions>
           <Dropdown
             onItemClick={(label) => handleDropdownOnClick(label, record)}
@@ -108,7 +99,7 @@ const DataTable = ({ config }: DataTableProps) => {
   useEffect(() => {
     const from = (+page - 1) * itemsPerPage;
     const to = from + itemsPerPage - 1;
-    const query: QueryType = {
+    const query: QueryType<T> = {
       pagination: {
         from: from,
         to: to,
@@ -119,7 +110,7 @@ const DataTable = ({ config }: DataTableProps) => {
       },
       tableName: config.TABLE_NAME,
     };
-    dispatch(entitySearch(query));
+    config.entity.searchFn(query);
   }, [dispatch, page, search, config.search, config.TABLE_NAME]);
 
   const setPage = (newPage: number) => {
@@ -129,13 +120,13 @@ const DataTable = ({ config }: DataTableProps) => {
     });
   };
 
-  if (error) return <p>{error}</p>;
+  if (error) return <p>{error}</p>;  
 
   return (
     <div className="mt-2">
       <Table
         columns={columns}
-        data={categories}
+        data={data as T[]}
         isLoading={status === "pending"}
       />
       <div className="flex w-full mt-4 justify-between">
