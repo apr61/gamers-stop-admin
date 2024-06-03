@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import CrudLayout from "../../layout/CrudLayout";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import { CrudConfig, Address, QueryType } from "../../utils/types";
-import { resetCrudState } from "../../redux/slice/crudSlice";
 import AddressForm from "../../components/forms/AddressForm";
 import {
   addressSearch,
@@ -27,7 +26,7 @@ const Addresses = () => {
 
   const setCurrentItemFn = (
     action: "read" | "update" | "delete",
-    record: Address
+    record: Address,
   ) => {
     dispatch(setAddressCurrentItem({ action, record }));
   };
@@ -72,7 +71,7 @@ const Addresses = () => {
   };
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(resetCrudState());
+    dispatch(resetAddressCurrentItem());
   }, [dispatch]);
   return <CrudLayout config={config} Form={AddressForm} />;
 };

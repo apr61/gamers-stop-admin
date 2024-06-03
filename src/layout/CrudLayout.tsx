@@ -1,7 +1,6 @@
 import DataTable from "../components/DataTable/Index";
 import DeleteModal from "../components/DeleteModal";
 import Drawer from "../components/ui/Drawer";
-import { resetActionType } from "../redux/slice/crudSlice";
 import { useAppDispatch, useAppSelector } from "../redux/store/hooks";
 import {
   closeDrawer,
@@ -29,7 +28,7 @@ const CrudLayout = <T,>({ config, Form }: CrudLayoutProps<T>) => {
 
   const handleDrawer = () => {
     dispatch(closeDrawer());
-    dispatch(resetActionType());
+    config.entity.resetEntityStateFn();
   };
 
   return (
@@ -45,7 +44,7 @@ const CrudLayout = <T,>({ config, Form }: CrudLayoutProps<T>) => {
           <Form />
         )}
       </Drawer>
-      <div className="px-8 py-4 w-full bg-white rounded-md">
+      <div className="px-4 lg:px-8 py-4 w-full bg-white rounded-md">
         <FixedHeaderContent config={config} />
         <DataTable config={config} />
       </div>
@@ -83,12 +82,14 @@ const FixedHeaderContent = <T,>({ config }: FixedHeaderContent<T>) => {
       </button>
       <h2 className="text-xl">{config.DATA_TABLE_TITLE}</h2>
       <div className="ml-auto flex gap-2">
-        <Input
-          type="search"
-          placeholder="search"
-          value={search}
-          onChange={(e) => handleChange(e)}
-        />
+        <div className="hidden md:block">
+          <Input
+            type="search"
+            placeholder="search"
+            value={search}
+            onChange={(e) => handleChange(e)}
+          />
+        </div>
         <Button
           className="flex items-center gap-2"
           onClick={() => dispatch(openDrawer())}

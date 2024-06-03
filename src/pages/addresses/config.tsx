@@ -117,9 +117,12 @@ const readItem: ColumnConfig<Address>[] = [
   },
   {
     title: "User Details",
-    render: (record: Address) => (
-      <ReadItem<CustomUser> record={record.user} readItem={UserReadItem} />
-    ),
+    render: (record: Address) =>
+      record?.user ? (
+        <ReadItem<CustomUser> record={record.user} readItem={UserReadItem} />
+      ) : (
+        ""
+      ),
   },
 ];
 

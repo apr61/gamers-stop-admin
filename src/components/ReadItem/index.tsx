@@ -12,7 +12,7 @@ const ReadItem = <T,>({ record, readItem }: ReadItemProps<T>) => {
   return (
     <div className="flex flex-col gap-4 my-8">
       {readItem.map((item) => (
-        <div className="flex gap-2">
+        <div className="flex gap-2" key={item.title}>
           <p className="font-medium">{item.title}</p>
           <p>:</p>
           <p>

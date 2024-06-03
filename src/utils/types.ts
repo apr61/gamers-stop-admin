@@ -106,6 +106,7 @@ export type ColumnConfig<T> = {
   title: string;
   dataIndex?: keyof T;
   render?: (record: T) => ReactElement | string | ReactElement[];
+  className?: string
 };
 
 export type CrudConfig<T> = {

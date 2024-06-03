@@ -3,7 +3,6 @@ import OrderForm from "../../components/forms/OrderForm";
 import CrudLayout from "../../layout/CrudLayout";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import { CrudConfig, Order, QueryType } from "../../utils/types";
-import { resetCrudState } from "../../redux/slice/crudSlice";
 import {
   orderSearch,
   removeOrder,
@@ -27,7 +26,7 @@ const Orders = () => {
 
   const setCurrentItemFn = (
     action: "read" | "update" | "delete",
-    record: Order
+    record: Order,
   ) => {
     dispatch(setOrderCurrentItem({ action, record }));
   };
@@ -73,7 +72,7 @@ const Orders = () => {
   };
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(resetCrudState());
+    dispatch(resetOrderCurrentItem());
   }, [dispatch]);
 
   return <CrudLayout config={config} Form={OrderForm} />;

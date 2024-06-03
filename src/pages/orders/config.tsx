@@ -1,7 +1,14 @@
 import ReadItem from "../../components/ReadItem";
-import { Address, ColumnConfig, Order, Product } from "../../utils/types";
+import {
+  Address,
+  ColumnConfig,
+  CustomUser,
+  Order,
+  Product,
+} from "../../utils/types";
 import { readItem as ProductReadItem } from "../products/config";
 import { readItem as AddressReadItem } from "../addresses/config";
+import BlankUserProfile from "../../assets/blank-profile-picture.webp";
 
 const columns: ColumnConfig<Order>[] = [
   {
@@ -25,6 +32,27 @@ const columns: ColumnConfig<Order>[] = [
     title: "Order Date",
     dataIndex: "order_date",
     render: (record: Order) => new Date(record.order_date).toLocaleDateString(),
+  },
+];
+
+const UserReadItem: ColumnConfig<CustomUser>[] = [
+  {
+    title: "UserId",
+    dataIndex: "id",
+  },
+  {
+    title: "Pic",
+    render: (record: CustomUser) => (
+      <img
+        className="w-10 h-10 rounded-full"
+        src={record.avatar_url ? record.avatar_url : BlankUserProfile}
+        alt={record.full_name}
+      />
+    ),
+  },
+  {
+    title: "Name",
+    dataIndex: "full_name",
   },
 ];
 
@@ -76,6 +104,12 @@ const readItem: ColumnConfig<Order>[] = [
     title: "Address",
     render: (record: Order) => (
       <ReadItem<Address> record={record.address!} readItem={AddressReadItem} />
+    ),
+  },
+  {
+    title: "User Details",
+    render: (record: Order) => (
+      <ReadItem<CustomUser> record={record.user!} readItem={UserReadItem} />
     ),
   },
 ];
