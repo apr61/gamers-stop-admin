@@ -120,15 +120,17 @@ const DataTable = <T,>({ config }: DataTableProps<T>) => {
     });
   };
 
-  if (error) return <p>{error}</p>;  
+  if (error) return <p>{error}</p>;
 
   return (
     <div className="mt-2">
-      <Table
-        columns={columns}
-        data={data as T[]}
-        isLoading={status === "pending"}
-      />
+      <div className="min-w-full overflow-x-auto">
+        <Table
+          columns={columns}
+          data={data as T[]}
+          isLoading={status === "pending"}
+        />
+      </div>
       <div className="flex w-full mt-4 justify-between">
         <p>
           Page {+page} of {totalPages}

@@ -16,7 +16,7 @@ const Table = <T,>({ columns, data, isLoading = false }: TableProps<T>) => {
   const TableHeader = (
     <tr>
       {columns.map((column) => (
-        <th key={column.title} className="text-start p-2">
+        <th key={column.title} className="text-start p-2 w-fit text-nowrap">
           {column.title}
         </th>
       ))}
@@ -37,7 +37,7 @@ const Table = <T,>({ columns, data, isLoading = false }: TableProps<T>) => {
         key={rowIndex}
       >
         {columns.map((column, colIndex) => (
-          <td className="text-start p-2" key={colIndex}>
+          <td className="text-start p-2 text-nowrap" key={colIndex}>
             {column.render
               ? column.render(record)
               : column.dataIndex
@@ -49,7 +49,7 @@ const Table = <T,>({ columns, data, isLoading = false }: TableProps<T>) => {
     ))
   );
   return (
-    <table className="w-full rounded-md overflow-x-auto">
+    <table className="min-w-full rounded-md">
       <thead className="text-black bg-gray-50 border-b-[1px]">
         {TableHeader}
       </thead>
