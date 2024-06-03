@@ -26,7 +26,7 @@ const AddressForm = () => {
     reset,
     setValue,
   } = useForm<AddressFormValues>();
-  const [checked, setChecked] = useState<boolean>(false);
+  const [isDefaultInput, setIsDefaultInput] = useState<boolean>(false);
   const { status, action, record } = useAppSelector(selectAddressCurrentItem);
   const formHeading = action === "create" ? "Add" : "Edit";
   const dispatch = useAppDispatch();
@@ -39,7 +39,7 @@ const AddressForm = () => {
       }
     }
     reset();
-    setChecked(false)
+    setIsDefaultInput(false);
     resetAddressCurrentItem();
   };
   useEffect(() => {
@@ -54,10 +54,11 @@ const AddressForm = () => {
         setValue("pincode", record.pincode);
         setValue("isDefault", record.isDefault);
         setValue("userId", record.userId);
-        setChecked(record.isDefault);
+        setIsDefaultInput(record.isDefault);
         return;
       }
       reset();
+      setIsDefaultInput(false);
     };
 
     initializeForm();
@@ -149,11 +150,11 @@ const AddressForm = () => {
         <p className="text-red-500">{errors.pincode.message}</p>
       )}
       <CheckBox
-        label="Is Default"
+        label="Mark Default"
         {...register("isDefault", {
-          onChange: (e) => setChecked(e.target.checked),
+          onChange: (e) => setIsDefaultInput(e.target.checked),
         })}
-        isChecked={checked}
+        isChecked={isDefaultInput}
       />
       <UserSelect
         register={register}

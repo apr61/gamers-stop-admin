@@ -5,6 +5,7 @@ import { resetCrudState } from "../../redux/slice/crudSlice";
 import { CrudConfig, User } from "../../utils/types";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import {
+  resetUserCurrentItem,
   resetUserState,
   selectUserCurrentItem,
   selectUsers,
@@ -26,7 +27,7 @@ const Users = () => {
 
   const setCurrentItemFn = (
     action: "read" | "update" | "delete",
-    record: User
+    record: User,
   ) => {
     dispatch(setUserCurrentItem({ action, record }));
   };
@@ -38,7 +39,7 @@ const Users = () => {
   const deleteFn = async (record: User) => {};
 
   const resetEntityStateFn = () => {
-    dispatch(resetUserState());
+    dispatch(resetUserCurrentItem());
   };
   const config: CrudConfig<User> = {
     DATA_TABLE_TITLE: "Users list",
@@ -69,7 +70,7 @@ const Users = () => {
   };
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(resetCrudState());
+    dispatch(resetUserCurrentItem());
   }, [dispatch]);
   return <CrudLayout config={config} Form={UserForm} />;
 };

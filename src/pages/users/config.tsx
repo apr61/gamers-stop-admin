@@ -1,4 +1,4 @@
-import { ColumnConfig, User } from "../../utils/types"
+import { ColumnConfig, User } from "../../utils/types";
 import BlankUserProfile from "../../assets/blank-profile-picture.webp";
 const ROLE_COLORS = {
   ADMIN: "bg-blue-200",
@@ -45,17 +45,6 @@ const columns: ColumnConfig<User>[] = [
     title: "Last login",
     dataIndex: "lastLogin",
     render: (record: User) => new Date(record.lastLogin).toLocaleDateString(),
-  },
-  {
-    title: "Last Updated",
-    dataIndex: "last_updated",
-    render: (record: User) =>
-      new Date(record.last_updated).toLocaleDateString(),
-  },
-  {
-    title: "Member Since",
-    dataIndex: "created_at",
-    render: (record: User) => new Date(record.created_at).toLocaleDateString(),
   },
 ];
 
@@ -113,4 +102,4 @@ const readItem: ColumnConfig<User>[] = [
   },
 ];
 
-export {columns, readItem, ROLE_COLORS}
+export { columns, readItem, ROLE_COLORS };

@@ -27,7 +27,7 @@ const Addresses = () => {
 
   const setCurrentItemFn = (
     action: "read" | "update" | "delete",
-    record: Address
+    record: Address,
   ) => {
     dispatch(setAddressCurrentItem({ action, record }));
   };
@@ -72,7 +72,7 @@ const Addresses = () => {
   };
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(resetCrudState());
+    dispatch(resetAddressCurrentItem());
   }, [dispatch]);
   return <CrudLayout config={config} Form={AddressForm} />;
 };

@@ -1,8 +1,4 @@
-import {
-  CrudConfig,
-  Product,
-  QueryType,
-} from "../../utils/types";
+import { CrudConfig, Product, QueryType } from "../../utils/types";
 import CrudLayout from "../../layout/CrudLayout";
 import ProductsForm from "../../components/forms/ProductsForm";
 import { useEffect } from "react";
@@ -31,7 +27,7 @@ const Products = () => {
 
   const setCurrentItemFn = (
     action: "read" | "update" | "delete",
-    record: Product
+    record: Product,
   ) => {
     dispatch(setProductCurrentItem({ action, record }));
   };
@@ -76,7 +72,7 @@ const Products = () => {
   };
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(resetCrudState());
+    dispatch(resetProductCurrentItem());
   }, [dispatch]);
 
   return <CrudLayout config={config} Form={ProductsForm} />;

@@ -29,7 +29,7 @@ const CrudLayout = <T,>({ config, Form }: CrudLayoutProps<T>) => {
 
   const handleDrawer = () => {
     dispatch(closeDrawer());
-    dispatch(resetActionType());
+    config.entity.resetEntityStateFn();
   };
 
   return (

@@ -2,11 +2,7 @@ import { useEffect } from "react";
 import CategoriesForm from "../../components/forms/CategoriesForm";
 import CrudLayout from "../../layout/CrudLayout";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
-import {
-  Category,
-  CrudConfig,
-  QueryType,
-} from "../../utils/types";
+import { Category, CrudConfig, QueryType } from "../../utils/types";
 import { resetCrudState } from "../../redux/slice/crudSlice";
 import {
   categorySearch,
@@ -22,7 +18,7 @@ import { columns, readItem } from "./config";
 const Categories = () => {
   const { data, error, status } = useAppSelector(selectCategories);
   const { data: searchData, totalItems } = useAppSelector(
-    selectCategoriesSearch
+    selectCategoriesSearch,
   );
   const {
     record,
@@ -33,7 +29,7 @@ const Categories = () => {
 
   const setCurrentItemFn = (
     action: "read" | "update" | "delete",
-    record: Category
+    record: Category,
   ) => {
     dispatch(setCategoryCurrentItem({ action, record }));
   };
@@ -80,7 +76,7 @@ const Categories = () => {
 
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(resetCrudState());
+    dispatch(resetCategoryCurrentItem());
   }, [dispatch]);
   return <CrudLayout config={config} Form={CategoriesForm} />;
 };

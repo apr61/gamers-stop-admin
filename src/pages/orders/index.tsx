@@ -27,7 +27,7 @@ const Orders = () => {
 
   const setCurrentItemFn = (
     action: "read" | "update" | "delete",
-    record: Order
+    record: Order,
   ) => {
     dispatch(setOrderCurrentItem({ action, record }));
   };
@@ -73,7 +73,7 @@ const Orders = () => {
   };
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(resetCrudState());
+    dispatch(resetOrderCurrentItem());
   }, [dispatch]);
 
   return <CrudLayout config={config} Form={OrderForm} />;
