@@ -1,12 +1,10 @@
 import { useEffect } from "react";
 import UserForm from "../../components/forms/UserForm";
 import CrudLayout from "../../layout/CrudLayout";
-import { resetCrudState } from "../../redux/slice/crudSlice";
 import { CrudConfig, User } from "../../utils/types";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import {
   resetUserCurrentItem,
-  resetUserState,
   selectUserCurrentItem,
   selectUsers,
   selectUsersSearch,

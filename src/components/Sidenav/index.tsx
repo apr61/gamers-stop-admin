@@ -61,10 +61,10 @@ const Sidenav = () => {
   const sideNavMobile = windowSize.width > 0 && windowSize.width <= 768;
   const handleClickOutside = () => {
     if (sideNavMobile) {
-      console.log("called");
       dispatch(setSideNav(false));
     }
   };
+  
   const sideNavRef = useOnOutsideClick(handleClickOutside);
   return (
     <div
@@ -73,10 +73,10 @@ const Sidenav = () => {
           ? `fixed md:static top-0 bottom-0 left-0 right-0 opacity-100 bg-black bg-opacity-20 z-10`
           : ""
       }
-      ref={sideNavRef}
     >
       <aside
         className={`bg-white h-full p-4 flex flex-col w-[16rem] sm:w-[18rem] top-0 bottom-0 absolute lg:sticky z-50 overflow-y-auto transition-all shadow-lg ${!sidenavOpen ? "-ml-[18rem] " : ""}`}
+        ref={sideNavRef}
       >
         <div className="flex items-center justify-between">
           <Link to="/admin" className="text-2xl 2xl:text-4xl block">

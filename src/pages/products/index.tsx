@@ -2,7 +2,6 @@ import { CrudConfig, Product, QueryType } from "../../utils/types";
 import CrudLayout from "../../layout/CrudLayout";
 import ProductsForm from "../../components/forms/ProductsForm";
 import { useEffect } from "react";
-import { resetCrudState } from "../../redux/slice/crudSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import {
   productSearch,

@@ -3,7 +3,6 @@ import CategoriesForm from "../../components/forms/CategoriesForm";
 import CrudLayout from "../../layout/CrudLayout";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import { Category, CrudConfig, QueryType } from "../../utils/types";
-import { resetCrudState } from "../../redux/slice/crudSlice";
 import {
   categorySearch,
   removeCategory,
