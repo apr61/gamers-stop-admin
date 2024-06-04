@@ -16,23 +16,25 @@ const columns: ColumnConfig<Product>[] = [
       ),
   },
   {
-    title: "Description",
-    dataIndex: "description",
-  },
-  {
     title: "Price",
     dataIndex: "price",
     render: (record: Product) => `$${record.price}`,
   },
   {
-    title: "Quantity",
-    dataIndex: "quantity",
+    title: "Stock",
+    render: (record: Product) =>
+      record.quantity > 0 ? "InStock" : "OutOfStock",
   },
   {
     title: "Category",
     dataIndex: "category",
     render: (record: Product) =>
       record && record.category ? record.category!.category_name : "",
+  },
+  {
+    title: "Brand",
+    render: (record: Product) =>
+      record && record.brand ? record.brand!.brand_name : "",
   },
 ];
 
@@ -73,6 +75,11 @@ const readItem: ColumnConfig<Product>[] = [
     dataIndex: "category",
     render: (record: Product) =>
       record && record.category ? record.category!.category_name : "",
+  },
+  {
+    title: "Brand",
+    render: (record: Product) =>
+      record && record.brand ? record.brand!.brand_name : "",
   },
 ];
 

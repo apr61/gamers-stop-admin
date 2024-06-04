@@ -11,6 +11,15 @@ export type CategoryFormValues = {
   category_image: FileList | null;
 };
 
+export type Brand = {
+  id: number;
+  brand_name: string;
+};
+
+export type BrandFormValues = {
+  brand_name: string;
+};
+
 export type Product = {
   id: number;
   name: string;
@@ -20,6 +29,7 @@ export type Product = {
   category_id: number;
   images: string[];
   category: Category | null;
+  brand: Brand | null;
 };
 
 export type ProductFormValues = {
@@ -29,6 +39,7 @@ export type ProductFormValues = {
   price: number;
   description: string;
   category_id: number;
+  brand_id: number;
 };
 
 export type Address = {
@@ -106,7 +117,7 @@ export type ColumnConfig<T> = {
   title: string;
   dataIndex?: keyof T;
   render?: (record: T) => ReactElement | string | ReactElement[];
-  className?: string
+  className?: string;
 };
 
 export type CrudConfig<T> = {
@@ -116,7 +127,7 @@ export type CrudConfig<T> = {
   ADD_NEW_ITEM: string;
   search: keyof T;
   columns: ColumnConfig<T>[];
-  readItem: ColumnConfig<T>[],
+  readItem: ColumnConfig<T>[];
   entity: {
     entityData: {
       data: T[];
@@ -145,7 +156,8 @@ export type TableName =
   | "categories"
   | "orders"
   | "users"
-  | "addresses";
+  | "addresses"
+  | "brands";
 export type user_role = "USER" | "ADMIN";
 
 export type QueryType<T> = {

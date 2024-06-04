@@ -23,7 +23,7 @@ const searchOrders = async (query: QueryType<Order>) => {
       quantity,
       user:profiles (*),
       address: addresses (id, address, name, phoneNumber, pincode, townLocality, cityDistrict, state)
-    `
+    `,
     )
     .ilike(`${query.search.query}`, `%${query.search.with}%`)
     .order("order_date", { ascending: false })
@@ -37,7 +37,7 @@ const searchOrders = async (query: QueryType<Order>) => {
     await supabase.supabase
       .from("order_products")
       .select(
-        "order_id, product_id, products (id, name, description, price, quantity, category_id, images, category:categories(*))"
+        "order_id, product_id, products (id, name, description, price, quantity, category_id, images, category:categories(*))",
       )
       .in("order_id", orderIds);
 
@@ -60,7 +60,7 @@ const searchOrders = async (query: QueryType<Order>) => {
 
 const updateOrder = async (
   orderId: number,
-  updatedOrder: any
+  updatedOrder: any,
 ): Promise<Order | null> => {
   const { data, error } = await supabase.supabase
     .from("orders")
@@ -107,7 +107,7 @@ const fetchAllOrders = async () => {
   try {
     // Fetch orders with user details and address
     const { data: orders, error: ordersError } = await supabase.supabase.from(
-      "orders"
+      "orders",
     ).select(`
         id,
         user_id,
@@ -128,7 +128,7 @@ const fetchAllOrders = async () => {
       await supabase.supabase
         .from("order_products")
         .select(
-          "order_id, product_id, products (id, name, description, price, quantity, category_id, images)"
+          "order_id, product_id, products (id, name, description, price, quantity, category_id, images)",
         )
         .in("order_id", orderIds);
 
@@ -192,7 +192,7 @@ const getOrdersByUserId = async (userId: string) => {
       quantity,
       user:profiles (*),
       address: addresses (id, address, name, phoneNumber, pincode, townLocality, cityDistrict, state)
-    `
+    `,
     )
     .eq("user_id", userId);
 
@@ -204,7 +204,7 @@ const getOrdersByUserId = async (userId: string) => {
     await supabase.supabase
       .from("order_products")
       .select(
-        "order_id, product_id, products (id, name, description, price, quantity, category_id, images, category:categories(*))"
+        "order_id, product_id, products (id, name, description, price, quantity, category_id, images, category:categories(*))",
       )
       .in("order_id", orderIds);
 
@@ -219,8 +219,53 @@ const getOrdersByUserId = async (userId: string) => {
   }));
   return {
     data: ordersWithProducts,
-    totalItems : ordersWithProducts.length
-  }
+    totalItems: ordersWithProducts.length,
+  };
+};
+
+const getRecentOrders = async () => {
+  const { data: orders, error: ordersError } = await supabase.supabase
+    .from("orders")
+    .select(
+      `
+    id,
+    user_id,
+    address_id,
+    orderstatus,
+    totalprice,
+    paymentstatus,
+    order_date,
+    ordernumber,
+    quantity,
+    user:profiles (*),
+    address: addresses (id, address, name, phoneNumber, pincode, townLocality, cityDistrict, state)
+  `,
+    )
+    .order("order_date", { ascending: false })
+    .limit(5);
+
+  if (ordersError || orders === null) throw ordersError;
+
+  // Fetch products for each order by querying order_products and products tables
+  const orderIds = orders.map((order) => order.id);
+  const { data: orderProducts, error: orderProductsError } =
+    await supabase.supabase
+      .from("order_products")
+      .select(
+        "order_id, product_id, products (id, name, description, price, quantity, category_id, images, category:categories(*))",
+      )
+      .in("order_id", orderIds);
+
+  if (orderProductsError) throw orderProductsError;
+
+  // Map products to their respective orders
+  const ordersWithProducts = orders.map((order) => ({
+    ...order,
+    products: orderProducts
+      .filter((op) => op.order_id === order.id)
+      .map((op) => op.products),
+  }));
+  return ordersWithProducts;
 };
 
 export {
@@ -230,5 +275,6 @@ export {
   deleteOrder,
   createOrder,
   getOrders,
-  getOrdersByUserId
+  getOrdersByUserId,
+  getRecentOrders,
 };

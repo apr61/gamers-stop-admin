@@ -11,7 +11,7 @@ const Navbar = () => {
 
 	return (
 		<nav
-			className={`${sidenavOpen ? "md:pl-[18.5rem] lg:pl-2" : ""} flex items-center bg-white w-full p-2 shadow-md transition-all`}
+			className={`${sidenavOpen ? "md:pl-[18.5rem] lg:pl-2" : ""} sticky top-0 flex items-center bg-white w-full p-2 shadow-md transition-all`}
 		>
 			<Button
 				btnType="icon"

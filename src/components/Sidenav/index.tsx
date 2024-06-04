@@ -6,6 +6,7 @@ import {
   GlobalOutlined,
   LoginOutlined,
   ProductOutlined,
+  TrademarkOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { ReactElement } from "react";
@@ -50,6 +51,11 @@ const Sidenav = () => {
       text: "Addresses",
       icon: <GlobalOutlined />,
     },
+    {
+      href: "/admin/brands",
+      text: "Brands",
+      icon: <TrademarkOutlined />,
+    },
   ];
   const sidenavOpen = useAppSelector(selectSideNav);
 
@@ -64,7 +70,7 @@ const Sidenav = () => {
       dispatch(setSideNav(false));
     }
   };
-  
+
   const sideNavRef = useOnOutsideClick(handleClickOutside);
   return (
     <div
@@ -75,7 +81,7 @@ const Sidenav = () => {
       }
     >
       <aside
-        className={`bg-white h-full p-4 flex flex-col w-[16rem] sm:w-[18rem] top-0 bottom-0 absolute lg:sticky z-50 overflow-y-auto transition-all shadow-lg ${!sidenavOpen ? "-ml-[18rem] " : ""}`}
+        className={`bg-white min-h-screen p-4 flex flex-col w-[16rem] sm:w-[18rem] top-0 bottom-0 absolute lg:sticky z-50 overflow-y-auto transition-all shadow-lg ${!sidenavOpen ? "-ml-[18rem] " : ""}`}
         ref={sideNavRef}
       >
         <div className="flex items-center justify-between">

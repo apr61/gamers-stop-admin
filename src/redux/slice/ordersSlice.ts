@@ -10,6 +10,7 @@ import {
   createOrder,
   deleteOrder,
   getOrdersByUserId,
+  getRecentOrders,
   searchOrders,
   updateOrder,
 } from "../../services/api/orders";
@@ -52,6 +53,18 @@ const initialState: OrderState = {
   },
 };
 
+export const recentOrders = createAsyncThunk(
+  "order/recent",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await getRecentOrders();
+      return data as Order[];
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
+
 export const orderSearch = createAsyncThunk(
   "order/search",
   async (query: QueryType<Order>, { rejectWithValue }) => {
@@ -73,7 +86,7 @@ export const orderSearch = createAsyncThunk(
         return rejectWithValue(error.message);
       }
     }
-  }
+  },
 );
 
 export const fetchOrdersByUser = createAsyncThunk(
@@ -97,7 +110,7 @@ export const fetchOrdersByUser = createAsyncThunk(
         return rejectWithValue(error.message);
       }
     }
-  }
+  },
 );
 
 export const addOrder = createAsyncThunk(
@@ -108,7 +121,7 @@ export const addOrder = createAsyncThunk(
     }: {
       formData: AddressFormValues;
     },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     try {
       const newEntity = await createOrder(formData);
@@ -118,7 +131,7 @@ export const addOrder = createAsyncThunk(
         return rejectWithValue(error.message);
       }
     }
-  }
+  },
 );
 
 export const removeOrder = createAsyncThunk(
@@ -132,7 +145,7 @@ export const removeOrder = createAsyncThunk(
         return rejectWithValue(err.message);
       }
     }
-  }
+  },
 );
 
 export const editOrder = createAsyncThunk(
@@ -146,7 +159,7 @@ export const editOrder = createAsyncThunk(
       tableName: TableName;
       id: number;
     },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     try {
       const data = await updateOrder(id, formData);
@@ -156,7 +169,7 @@ export const editOrder = createAsyncThunk(
         return rejectWithValue(err.message);
       }
     }
-  }
+  },
 );
 
 const ordersSlice = createSlice({
@@ -165,7 +178,7 @@ const ordersSlice = createSlice({
   reducers: {
     setOrderCurrentItem: (
       state,
-      action: PayloadAction<Omit<CurrentType, "status" | "error">>
+      action: PayloadAction<Omit<CurrentType, "status" | "error">>,
     ) => {
       state.current.record = action.payload.record;
       state.current.action = action.payload.action;
@@ -200,6 +213,18 @@ const ordersSlice = createSlice({
           totalItems: 0,
         };
       })
+      .addCase(recentOrders.fulfilled, (state, action) => {
+        state.list.status = "succeeded";
+        state.list.data = action.payload!;
+      })
+      .addCase(recentOrders.pending, (state) => {
+        state.list.status = "pending";
+      })
+      .addCase(recentOrders.rejected, (state, action) => {
+        state.list.status = "failed";
+        state.list.error = action.payload as string;
+        state.list.data = [];
+      })
       .addCase(fetchOrdersByUser.fulfilled, (state, action) => {
         state.list.status = "succeeded";
         state.search.data = action.payload?.data!;
@@ -230,7 +255,7 @@ const ordersSlice = createSlice({
       .addCase(removeOrder.fulfilled, (state, action) => {
         state.current.status = "succeeded";
         state.list.data = state.list.data.filter(
-          (item) => item.id !== action.payload!
+          (item) => item.id !== action.payload!,
         );
       })
       .addCase(removeOrder.pending, (state) => {

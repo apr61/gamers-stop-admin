@@ -21,6 +21,7 @@ import {
   editProduct,
   selectProdcutsCurrentItem,
 } from "../../redux/slice/productsSlice";
+import { fetchBrands, selectBrands } from "../../redux/slice/brandsSlice";
 
 const ProductsForm = () => {
   const {
@@ -31,7 +32,7 @@ const ProductsForm = () => {
     reset,
   } = useForm<ProductFormValues>();
   const { action, record, error, status } = useAppSelector(
-    selectProdcutsCurrentItem
+    selectProdcutsCurrentItem,
   );
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const dispatch = useAppDispatch();
@@ -42,7 +43,7 @@ const ProductsForm = () => {
     const files = e.target.files;
     if (files) {
       const filePreviews = Array.from(files).map((file) =>
-        URL.createObjectURL(file)
+        URL.createObjectURL(file),
       );
       setImagePreviews(filePreviews);
     }
@@ -58,7 +59,7 @@ const ProductsForm = () => {
             formData: data,
             tableName: "products",
             id: record.id,
-          })
+          }),
         );
     }
     reset();
@@ -80,6 +81,7 @@ const ProductsForm = () => {
         setValue("quantity", record.quantity);
         setValue("category_id", record.category_id);
         setValue("images", fileList);
+        setValue("brand_id", record.brand?.id!);
         setImagePreviews(record.images);
         return;
       }
@@ -120,6 +122,20 @@ const ProductsForm = () => {
         <p className="text-red-500">{errors.description.message}</p>
       )}
 
+      <CategorySelect
+        register={register}
+        errors={errors}
+        currentCategoryId={
+          record && "name" in record ? record.category_id : null
+        }
+      />
+
+      <BrandSelect
+        register={register}
+        errors={errors}
+        currentBrandId={record && "name" in record ? record.brand?.id! : null}
+      />
+
       <Input
         placeholder="Quantity"
         label="Quantity"
@@ -149,17 +165,7 @@ const ProductsForm = () => {
         })}
       />
       {errors.price && <p className="text-red-500">{errors.price.message}</p>}
-
-      <CategorySelect
-        register={register}
-        errors={errors}
-        currentCategoryId={
-          record && "name" in record ? record.category_id : null
-        }
-      />
-
       {error && <p className="text-red-500">{error}</p>}
-
       <div className="flex gap-2">
         <Button
           type="submit"
@@ -224,6 +230,59 @@ const CategorySelect = ({
       </div>
       {errors.category_id && (
         <p className="text-red-500">{errors.category_id.message}</p>
+      )}
+      {error && <p className="text-red-500">{error}</p>}
+    </>
+  );
+};
+
+type BrandSelectProps = {
+  register: UseFormRegister<ProductFormValues>;
+  errors: FieldErrors<ProductFormValues>;
+  currentBrandId: number | null;
+};
+
+const BrandSelect = ({
+  register,
+  errors,
+  currentBrandId,
+}: BrandSelectProps) => {
+  const { data, status, error } = useAppSelector(selectBrands);
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(fetchBrands());
+  }, [dispatch]);
+  return (
+    <>
+      <div className="w-full flex gap-2 flex-col">
+        <label htmlFor="brand" className="text-lg cursor-pointer">
+          Brand
+        </label>
+        <select
+          id="brand"
+          className={`w-full p-4 bg-white border rounded-md cursor-pointer`}
+          {...register("brand_id", { required: "Brand is required" })}
+        >
+          <option value="">Select brand</option>
+          {status === "pending" ? (
+            <option value="">Loading...</option>
+          ) : (
+            data.map((brand) => (
+              <option
+                key={brand.id}
+                value={brand.id}
+                className={`${
+                  currentBrandId === brand.id ? "bg-blue-500 text-white" : ""
+                }`}
+              >
+                {brand.brand_name}
+              </option>
+            ))
+          )}
+        </select>
+      </div>
+      {errors.brand_id && (
+        <p className="text-red-500">{errors.brand_id.message}</p>
       )}
       {error && <p className="text-red-500">{error}</p>}
     </>

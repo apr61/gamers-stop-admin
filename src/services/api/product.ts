@@ -11,7 +11,9 @@ export const searchProducts = async (query: QueryType<Product>) => {
   }
   const { data, error } = await supabase.supabase
     .from("products")
-    .select(`*, category:categories(id, category_name, category_image)`)
+    .select(
+      `*, category:categories(id, category_name, category_image), brand:brands(id, brand_name)`,
+    )
     .ilike(`${query.search.query}`, `%${query.search.with}%`)
     .order("created_at", { ascending: false })
     .range(query.pagination.from, query.pagination.to);
@@ -25,9 +27,7 @@ export const searchProducts = async (query: QueryType<Product>) => {
   return response;
 };
 
-export async function createProduct(
-  values: ProductFormValues,
-) {
+export async function createProduct(values: ProductFormValues) {
   try {
     let imageUrls: string[] = [];
 
@@ -45,8 +45,10 @@ export async function createProduct(
         category_id: values.category_id,
         images: imageUrls,
       })
-      .select(`*, category:categories(id, category_name, category_image)`)
-      .single()
+      .select(
+        `*, category:categories(id, category_name, category_image), brand:brands(id, brand_name)`,
+      )
+      .single();
 
     if (error) throw error;
 
@@ -61,7 +63,7 @@ export async function getProducts() {
   try {
     const { data, error } = await supabase.supabase
       .from("products")
-      .select("*, category:categories(*)");
+      .select("*, category:categories(*), brand:brands(id, brand_name)");
 
     if (error) throw error;
 
@@ -76,7 +78,7 @@ export async function getProductById(id: number) {
   try {
     const { data, error } = await supabase.supabase
       .from("products")
-      .select("*, category:categories(*)")
+      .select("*, category:categories(*), brand:brands(id, brand_name)")
       .eq("id", id)
       .single();
 
@@ -120,7 +122,9 @@ export async function updateProduct(id: number, values: ProductFormValues) {
         images: imageUrls,
       })
       .eq("id", id)
-      .select(`*, category:categories(id, category_name, category_image)`)
+      .select(
+        `*, category:categories(id, category_name, category_image), brand:brands(id, brand_name)`,
+      )
       .single();
 
     if (error) throw error;

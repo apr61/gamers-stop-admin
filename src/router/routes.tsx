@@ -13,6 +13,7 @@ import Unautorized from "../pages/Unauthorized";
 import { Suspense } from "react";
 import PageLoader from "../components/PageLoader";
 import Addresses from "../pages/addresses";
+import Brands from "../pages/brands";
 
 const routes = createBrowserRouter([
   {
@@ -48,6 +49,10 @@ const routes = createBrowserRouter([
           {
             path: "/admin/addresses",
             element: <Addresses />,
+          },
+          {
+            path: "/admin/brands",
+            element: <Brands />,
           },
         ],
       },
