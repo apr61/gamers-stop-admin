@@ -42,6 +42,18 @@ export type ProductFormValues = {
   brand_id: number;
 };
 
+export type OrderFormValues = {
+  user_id: string;
+  address_id: number;
+  paymentstatus: string;
+  orderstatus: string;
+  totalprice: number;
+  products: {
+    id: number;
+    quantity: number;
+  }[];
+};
+
 export type Address = {
   id: number;
   created_at: string;

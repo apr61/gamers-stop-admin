@@ -3,7 +3,7 @@ import {
   Order,
   QueryType,
   TableName,
-  AddressFormValues,
+  OrderFormValues,
 } from "../../utils/types";
 import { RootState } from "../store/store";
 import {
@@ -119,7 +119,7 @@ export const addOrder = createAsyncThunk(
     {
       formData,
     }: {
-      formData: AddressFormValues;
+      formData: OrderFormValues;
     },
     { rejectWithValue },
   ) => {
@@ -155,7 +155,7 @@ export const editOrder = createAsyncThunk(
       formData,
       id,
     }: {
-      formData: AddressFormValues;
+      formData: OrderFormValues;
       tableName: TableName;
       id: number;
     },

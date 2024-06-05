@@ -1,18 +1,12 @@
-import {
-  DeleteOutlined,
-  EditOutlined,
-  EyeOutlined,
-  EllipsisOutlined,
-} from "@ant-design/icons";
-import Dropdown from "../../components/ui/Dropdown";
+import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { CrudConfig, QueryType, ColumnConfig } from "../../utils/types";
 import { useAppDispatch } from "../../redux/store/hooks";
-import { ReactElement, useEffect, useState } from "react";
-import { useOnOutsideClick } from "../../hooks/useOnClickOutside";
+import { useEffect } from "react";
 import Table from "../ui/Table";
 import { openDeleteModal, openDrawer } from "../../redux/slice/uiActionsSlice";
 import Pagination from "../ui/Pagination";
 import { useSearchParams } from "react-router-dom";
+import Button from "../ui/Button";
 
 type DataTableProps<T> = {
   config: CrudConfig<T>;
@@ -36,16 +30,19 @@ const DataTable = <T,>({ config }: DataTableProps<T>) => {
       label: "Show",
       icon: <EyeOutlined />,
       key: "read",
+      className: "bg-blue-200 text-blue-500 hover:bg-blue-500",
     },
     {
       label: "Edit",
       icon: <EditOutlined />,
       key: "update",
+      className: "bg-purple-200 text-purple-500 hover:bg-purple-500",
     },
     {
       label: "Delete",
       icon: <DeleteOutlined />,
       key: "delete",
+      className: "bg-red-200 text-red-500 hover:bg-red-500",
     },
   ];
 
@@ -86,12 +83,21 @@ const DataTable = <T,>({ config }: DataTableProps<T>) => {
     {
       title: "Actions",
       render: (record: T) => (
-        <CrudActions>
-          <Dropdown
-            onItemClick={(label) => handleDropdownOnClick(label, record)}
-            items={dropDownItems}
-          />
-        </CrudActions>
+        <div className="flex gap-1 items-center">
+          {dropDownItems.map((item) => (
+            <Button
+              title={item.label}
+              btnType="icon"
+              onClick={() => handleDropdownOnClick(item.key, record)}
+            >
+              <span
+                className={`grid place-content-center p-2 w-8 h-8 rounded-full hover:text-white ${item.className}`}
+              >
+                {item.icon}
+              </span>
+            </Button>
+          ))}
+        </div>
       ),
     },
   ];
@@ -144,20 +150,3 @@ const DataTable = <T,>({ config }: DataTableProps<T>) => {
 };
 
 export default DataTable;
-
-type DropDownActionsProps = {
-  children: ReactElement | ReactElement[];
-};
-
-const CrudActions = ({ children }: DropDownActionsProps) => {
-  const [dropDown, setDropDown] = useState(false);
-  const dropDownRef = useOnOutsideClick(() => setDropDown(false));
-  return (
-    <div className="relative w-fit" ref={dropDownRef}>
-      <button className="text-2xl" onClick={() => setDropDown((prev) => !prev)}>
-        <EllipsisOutlined />
-      </button>
-      {dropDown && children}
-    </div>
-  );
-};

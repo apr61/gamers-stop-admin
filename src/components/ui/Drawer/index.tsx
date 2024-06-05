@@ -20,15 +20,17 @@ const Drawer = ({
   };
   return (
     <div
-      className={
-        isDrawerOpen
-          ? "fixed top-0 bottom-0 left-0 right-0 opacity-100 bg-black bg-opacity-20 z-50"
-          : "hidden"
-      }
+      className={`
+        ${
+          isDrawerOpen
+            ? "fixed top-0 bottom-0 left-0 right-0 opacity-100 bg-black bg-opacity-20 z-50"
+            : ""
+        }
+      `}
       onClick={closeDrawer}
     >
       <div
-        className="opacity-100 fixed top-0 bottom-0 right-0 bg-white max-w-sm w-full p-4 overflow-y-auto"
+        className={`opacity-100 fixed top-0 bottom-0 right-0 bg-white max-w-[24rem] transition-all w-full p-4 overflow-y-auto ${isDrawerOpen ? "" : "-mr-[30rem]"}`}
         onClick={handleInnerClick}
       >
         <div className="flex justify-between items-center">

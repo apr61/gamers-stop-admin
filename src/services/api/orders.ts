@@ -93,6 +93,7 @@ const createOrder = async (order: any): Promise<Order | null> => {
   const { data, error } = await supabase.supabase
     .from("orders")
     .insert([order])
+    .select('*')
     .single();
 
   if (error) {
