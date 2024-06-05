@@ -12,7 +12,7 @@ import { useEffect } from "react";
 
 const OrderForm = () => {
   const { action, record, status, error } = useAppSelector(
-    selectOrdersCurrentItem,
+    selectOrdersCurrentItem
   );
   const {
     register,
@@ -34,7 +34,7 @@ const OrderForm = () => {
             id: record.id!,
             tableName: "brands",
             formData: data,
-          }),
+          })
         );
     }
     reset();
@@ -51,6 +51,18 @@ const OrderForm = () => {
     initializeForm();
   }, [record, reset, setValue]);
 
+  const handleSave = async () => {
+    const newOrder: OrderFormValues = {
+      user_id: "a1899ff7-8b91-409d-aa11-c4a19f0892ad",
+      address_id: 1,
+      payment_status: "paid",
+      order_status: "confirmed",
+      total_price: 2600,
+      products_ordered: [{ "id": 8, "quantity": 1 }, { "id": 11, "quantity": 1 }],
+    };
+    await dispatch(addOrder({ formData: newOrder }));
+  };
+
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
       <h3 className="text-xl">{formHeading} order</h3>
@@ -58,9 +70,10 @@ const OrderForm = () => {
       {error && <p className="text-red-500">{error}</p>}
       <div className="flex gap-2">
         <Button
-          type="submit"
+          type="button"
           disabled={isSubmitting || status === "pending"}
           loading={isSubmitting || status === "pending"}
+          onClick={handleSave}
         >
           Save
         </Button>

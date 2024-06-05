@@ -48,7 +48,7 @@ const Orders = () => {
     DRAWER_TITLE: "Order",
     ADD_NEW_ITEM: "Add new order",
     TABLE_NAME: "orders",
-    search: "orderstatus",
+    search: "order_status",
     columns: columns,
     readItem: readItem,
     entity: {

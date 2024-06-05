@@ -72,9 +72,9 @@ export const orderSearch = createAsyncThunk(
       const response = await searchOrders(query);
       if (response) {
         const data = {
-          data: response.data as Order[],
+          data: response.data,
           totalCount: response.count,
-        };
+        };        
         return data;
       }
       return {
@@ -243,7 +243,7 @@ const ordersSlice = createSlice({
       })
       .addCase(addOrder.fulfilled, (state, action) => {
         state.current.status = "succeeded";
-        state.list.data.unshift(action.payload!);
+        state.search.data.unshift(action.payload!);
       })
       .addCase(addOrder.pending, (state) => {
         state.current.status = "pending";
@@ -254,7 +254,7 @@ const ordersSlice = createSlice({
       })
       .addCase(removeOrder.fulfilled, (state, action) => {
         state.current.status = "succeeded";
-        state.list.data = state.list.data.filter(
+        state.search.data = state.search.data.filter(
           (item) => item.id !== action.payload!,
         );
       })
@@ -267,7 +267,7 @@ const ordersSlice = createSlice({
       })
       .addCase(editOrder.fulfilled, (state, action) => {
         state.current.status = "succeeded";
-        state.list.data = state.list.data.map((item) => {
+        state.search.data = state.search.data.map((item) => {
           if (item.id === action.payload?.id) return action.payload as Order;
           return item;
         });

@@ -89,6 +89,7 @@ const DataTable = <T,>({ config }: DataTableProps<T>) => {
               title={item.label}
               btnType="icon"
               onClick={() => handleDropdownOnClick(item.key, record)}
+              key={item.label}
             >
               <span
                 className={`grid place-content-center p-2 w-8 h-8 rounded-full hover:text-white ${item.className}`}

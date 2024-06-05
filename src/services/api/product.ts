@@ -44,6 +44,7 @@ export async function createProduct(values: ProductFormValues) {
         quantity: values.quantity,
         category_id: values.category_id,
         images: imageUrls,
+        brand_id: values.brand_id
       })
       .select(
         `*, category:categories(id, category_name, category_image), brand:brands(id, brand_name)`,
@@ -120,6 +121,7 @@ export async function updateProduct(id: number, values: ProductFormValues) {
         quantity: values.quantity,
         category_id: values.category_id,
         images: imageUrls,
+        brand_id: values.brand_id
       })
       .eq("id", id)
       .select(

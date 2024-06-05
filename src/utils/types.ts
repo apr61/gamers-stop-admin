@@ -45,10 +45,10 @@ export type ProductFormValues = {
 export type OrderFormValues = {
   user_id: string;
   address_id: number;
-  paymentstatus: string;
-  orderstatus: string;
-  totalprice: number;
-  products: {
+  payment_status: string;
+  order_status: string;
+  total_price: number;
+  products_ordered: {
     id: number;
     quantity: number;
   }[];
@@ -75,16 +75,14 @@ export type AddressFormValues = Omit<Address, "id" | "created_at" | "user"> & {
 
 export type Order = {
   id: number;
-  user_id: string;
   user: CustomUser | null;
-  products: Product[];
-  address: Address | null;
-  paymentstatus: string;
-  orderstatus: string;
-  totalprice: number;
-  ordernumber: number;
+  products_ordered: { product: Product | null; quantity_ordered: number }[];
+  address: Omit<Address, "user" | "userId" | "created_at" | "isDefault"> | null;
+  payment_status: string;
+  order_status: string;
+  total_price: number;
+  order_number: number;
   order_date: string;
-  quantity: number;
 };
 
 export type User = {
@@ -102,8 +100,10 @@ export type User = {
 export type CustomUser = {
   id: string;
   full_name: string;
-  user_role: user_role;
+  user_role: string;
   avatar_url: string;
+  email: string,
+  phone: string
 };
 
 export type OrderFields = {

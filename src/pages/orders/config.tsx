@@ -1,19 +1,15 @@
 import ReadItem from "../../components/ReadItem";
 import {
-  Address,
   ColumnConfig,
   CustomUser,
   Order,
-  Product,
 } from "../../utils/types";
-import { readItem as ProductReadItem } from "../products/config";
-import { readItem as AddressReadItem } from "../addresses/config";
 import BlankUserProfile from "../../assets/blank-profile-picture.webp";
 
 const columns: ColumnConfig<Order>[] = [
   {
     title: "Order Number",
-    dataIndex: "ordernumber",
+    dataIndex: "order_number",
   },
   {
     title: "Name",
@@ -21,12 +17,12 @@ const columns: ColumnConfig<Order>[] = [
   },
   {
     title: "Total Price",
-    dataIndex: "totalprice",
-    render: (record: Order) => `$${record.totalprice}`,
+    dataIndex: "total_price",
+    render: (record: Order) => `$${record.total_price}`,
   },
   {
     title: "Order Status",
-    dataIndex: "orderstatus",
+    dataIndex: "order_status",
   },
   {
     title: "Order Date",
@@ -61,7 +57,7 @@ const UserReadItem: ColumnConfig<CustomUser>[] = [
 const readItem: ColumnConfig<Order>[] = [
   {
     title: "Order Number",
-    dataIndex: "ordernumber",
+    dataIndex: "order_number",
   },
   {
     title: "Name",
@@ -69,12 +65,12 @@ const readItem: ColumnConfig<Order>[] = [
   },
   {
     title: "Total Price",
-    dataIndex: "totalprice",
-    render: (record: Order) => `$${record.totalprice}`,
+    dataIndex: "total_price",
+    render: (record: Order) => `$${record.total_price}`,
   },
   {
     title: "Order Status",
-    dataIndex: "orderstatus",
+    dataIndex: "order_status",
   },
   {
     title: "Order Date",
@@ -82,29 +78,8 @@ const readItem: ColumnConfig<Order>[] = [
     render: (record: Order) => new Date(record.order_date).toLocaleDateString(),
   },
   {
-    title: "Quantity ordered",
-    dataIndex: "quantity",
-  },
-  {
     title: "Payment status",
-    dataIndex: "paymentstatus",
-  },
-  {
-    title: "Quantity ordered",
-    dataIndex: "quantity",
-  },
-  {
-    title: "Products Ordered",
-    render: (record: Order) =>
-      record.products.map((product) => (
-        <ReadItem<Product> record={product} readItem={ProductReadItem} />
-      )),
-  },
-  {
-    title: "Address",
-    render: (record: Order) => (
-      <ReadItem<Address> record={record.address!} readItem={AddressReadItem} />
-    ),
+    dataIndex: "payment_status",
   },
   {
     title: "User Details",
