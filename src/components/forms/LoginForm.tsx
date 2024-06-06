@@ -31,7 +31,7 @@ const LoginForm = () => {
   useEffect(() => {
     if (status === "succeeded") {
       reset();
-      navigate("/admin");
+      navigate("/dashboard");
       dispatch(setAuthStatus("idle"));
     }
   }, [dispatch, reset, navigate, status]);

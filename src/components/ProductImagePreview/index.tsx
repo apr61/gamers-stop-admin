@@ -19,12 +19,12 @@ const ProductPreviewImage = ({ images, name }: ProductPreviewImageProps) => {
 						style={{ transform: `translateX(-${image * 100}%)` }}
 						src={img}
 						alt={name}
-						className="w-full h-full object-cover transistion-transform ease-in-out duration-300"
+						className="w-full h-full object-cover transistion-transform ease-in-out duration-300 flex-shrink-0"
 						loading="lazy"
 					/>
 				))}
 			</div>
-			<div className="flex gap-2 items-center">
+			<div className="flex gap-2 items-center flex-wrap">
 				{images.map((img, ind) => (
 					<div
 						key={`${img}-${ind}`}
