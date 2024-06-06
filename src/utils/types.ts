@@ -27,6 +27,7 @@ export type Product = {
   price: number;
   quantity: number;
   category_id: number;
+  created_at: string;
   images: string[];
   category: Category | null;
   brand: Brand | null;
@@ -73,10 +74,15 @@ export type AddressFormValues = Omit<Address, "id" | "created_at" | "user"> & {
   userId: string;
 };
 
+export type ProductsOrdered = {
+  product: Product | null;
+  quantity_ordered: number;
+};
+
 export type Order = {
   id: number;
   user: CustomUser | null;
-  products_ordered: { product: Product | null; quantity_ordered: number }[];
+  products_ordered: ProductsOrdered[];
   address: Omit<Address, "user" | "userId" | "created_at" | "isDefault"> | null;
   payment_status: string;
   order_status: string;
@@ -102,8 +108,8 @@ export type CustomUser = {
   full_name: string;
   user_role: string;
   avatar_url: string;
-  email: string,
-  phone: string
+  email: string;
+  phone: string;
 };
 
 export type OrderFields = {
@@ -128,7 +134,7 @@ export type LoginFormValues = {
 export type ColumnConfig<T> = {
   title: string;
   dataIndex?: keyof T;
-  render?: (record: T) => ReactElement | string | ReactElement[];
+  render?: (record: T) => ReactElement | string | ReactElement[] | null;
   className?: string;
 };
 

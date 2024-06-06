@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import { columns, readItem } from "./config";
 import { Brand, CrudConfig, QueryType } from "../../utils/types";
 import BrandForm from "../../components/forms/BrandForm";
+import { openDrawer } from "../../redux/slice/uiActionsSlice";
 
 const Brands = () => {
 	const { data, error, status } = useAppSelector(selectBrands);
@@ -29,6 +30,7 @@ const Brands = () => {
 		record: Brand,
 	) => {
 		dispatch(setBrandCurrentItem({ action, record }));
+		dispatch(openDrawer());
 	};
 
 	const searchFn = (query: QueryType<Brand>) => {

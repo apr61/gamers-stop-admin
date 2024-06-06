@@ -13,6 +13,7 @@ import {
   setCategoryCurrentItem,
 } from "../../redux/slice/categorySlice";
 import { columns, readItem } from "./config";
+import { openDrawer } from "../../redux/slice/uiActionsSlice";
 
 const Categories = () => {
   const { data, error, status } = useAppSelector(selectCategories);
@@ -31,6 +32,7 @@ const Categories = () => {
     record: Category,
   ) => {
     dispatch(setCategoryCurrentItem({ action, record }));
+    dispatch(openDrawer());
   };
 
   const searchFn = (query: QueryType<Category>) => {

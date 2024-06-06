@@ -12,6 +12,7 @@ import {
   userSearch,
 } from "../../redux/slice/usersSlice";
 import { columns, readItem } from "./config";
+import { openDrawer } from "../../redux/slice/uiActionsSlice";
 
 const Users = () => {
   const { data, error, status } = useAppSelector(selectUsers);
@@ -28,6 +29,7 @@ const Users = () => {
     record: User,
   ) => {
     dispatch(setUserCurrentItem({ action, record }));
+    dispatch(openDrawer());
   };
 
   const searchFn = () => {

@@ -5,6 +5,7 @@ import {
   Order,
 } from "../../utils/types";
 import BlankUserProfile from "../../assets/blank-profile-picture.webp";
+import { currencyFormatter } from "../../utils/currencyFormatter";
 
 const columns: ColumnConfig<Order>[] = [
   {
@@ -18,7 +19,7 @@ const columns: ColumnConfig<Order>[] = [
   {
     title: "Total Price",
     dataIndex: "total_price",
-    render: (record: Order) => `$${record.total_price}`,
+    render: (record: Order) => `${currencyFormatter(record.total_price)}`,
   },
   {
     title: "Order Status",

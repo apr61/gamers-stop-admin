@@ -13,6 +13,7 @@ import {
   setAddressCurrentItem,
 } from "../../redux/slice/addressSlice";
 import { columns, readItem } from "./config";
+import { openDrawer } from "../../redux/slice/uiActionsSlice";
 
 const Addresses = () => {
   const { data, error, status } = useAppSelector(selectAddresses);
@@ -29,6 +30,7 @@ const Addresses = () => {
     record: Address,
   ) => {
     dispatch(setAddressCurrentItem({ action, record }));
+    dispatch(openDrawer());
   };
 
   const searchFn = (query: QueryType<Address>) => {

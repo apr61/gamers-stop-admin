@@ -7,18 +7,17 @@ const ROLE_COLORS = {
 
 const columns: ColumnConfig<User>[] = [
   {
-    title: "Pic",
+    title: "Customer",
     render: (record: User) => (
-      <img
-        className="w-10 h-10 rounded-full"
-        src={record.avatar_url ? record.avatar_url : BlankUserProfile}
-        alt={record.full_name}
-      />
+      <div className="flex gap-2 items-center">
+        <img
+          className="w-10 h-10 rounded-full"
+          src={record?.avatar_url ? record?.avatar_url : BlankUserProfile}
+          alt={record?.full_name}
+        />
+        <p>{record.full_name}</p>
+      </div>
     ),
-  },
-  {
-    title: "Name",
-    dataIndex: "full_name",
   },
   {
     title: "Email",

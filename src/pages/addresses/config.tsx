@@ -1,4 +1,9 @@
-import { Address, ColumnConfig, CustomUser } from "../../utils/types";
+import {
+  Address,
+  ColumnConfig,
+  CustomUser,
+  user_role,
+} from "../../utils/types";
 import BlankUserProfile from "../../assets/blank-profile-picture.webp";
 import ReadItem from "../../components/ReadItem";
 import { ROLE_COLORS } from "../users/config";
@@ -28,7 +33,7 @@ const UserReadItem: ColumnConfig<CustomUser>[] = [
     render: (record: CustomUser) => (
       <p
         className={`py-1 px-4 rounded-2xl w-fit ${
-          ROLE_COLORS[record.user_role]
+          ROLE_COLORS[record.user_role as user_role]
         }`}
       >
         {record.user_role}
@@ -39,20 +44,19 @@ const UserReadItem: ColumnConfig<CustomUser>[] = [
 
 const columns: ColumnConfig<Address>[] = [
   {
-    title: "Pic",
+    title: "Customer",
     render: (record: Address) => (
-      <img
-        className="w-10 h-10 rounded-full"
-        src={
-          record?.user.avatar_url ? record?.user.avatar_url : BlankUserProfile
-        }
-        alt={record?.user.full_name}
-      />
+      <div className="flex gap-2 items-center">
+        <img
+          className="w-10 h-10 rounded-full"
+          src={
+            record?.user.avatar_url ? record?.user.avatar_url : BlankUserProfile
+          }
+          alt={record?.user.full_name}
+        />
+        <p>{record.user.full_name}</p>
+      </div>
     ),
-  },
-  {
-    title: "Name",
-    dataIndex: "name",
   },
   {
     title: "Default",

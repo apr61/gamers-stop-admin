@@ -13,6 +13,8 @@ import {
   setProductCurrentItem,
 } from "../../redux/slice/productsSlice";
 import { columns, readItem } from "./config";
+import { openDrawer } from "../../redux/slice/uiActionsSlice";
+import { useNavigate } from "react-router-dom";
 
 const Products = () => {
   const { data, error, status } = useAppSelector(selectProducts);
@@ -23,12 +25,16 @@ const Products = () => {
     status: currentStatus,
     action,
   } = useAppSelector(selectProdcutsCurrentItem);
-
+  const navigate = useNavigate();
   const setCurrentItemFn = (
     action: "read" | "update" | "delete",
     record: Product,
   ) => {
     dispatch(setProductCurrentItem({ action, record }));
+    if (action === "read") {
+      navigate(`./${record.id}`);
+      return;
+    }
   };
 
   const searchFn = (query: QueryType<Product>) => {

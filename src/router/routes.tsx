@@ -14,6 +14,8 @@ import { Suspense } from "react";
 import PageLoader from "../components/PageLoader";
 import Addresses from "../pages/addresses";
 import Brands from "../pages/brands";
+import SingleOrder from "../pages/SingleOrder";
+import SingleProduct from "../pages/SingleProduct";
 
 const routes = createBrowserRouter([
   {
@@ -27,31 +29,49 @@ const routes = createBrowserRouter([
         ),
         children: [
           {
-            path: "/admin",
+            path: "/dashboard",
             element: <Dashboard />,
           },
           {
-            path: "/admin/users",
+            path: "/users",
             element: <Users />,
           },
           {
-            path: "/admin/products",
-            element: <Products />,
+            path: "/products",
+            children: [
+              {
+                path: "",
+                element: <Products />,
+              },
+              {
+                path: ":id",
+                element: <SingleProduct />,
+              },
+            ],
           },
           {
-            path: "/admin/orders",
-            element: <Orders />,
+            path: "/orders",
+            children: [
+              {
+                path: "",
+                element: <Orders />,
+              },
+              {
+                path: ":id",
+                element: <SingleOrder />,
+              },
+            ],
           },
           {
-            path: "/admin/categories",
+            path: "/categories",
             element: <Categories />,
           },
           {
-            path: "/admin/addresses",
+            path: "/addresses",
             element: <Addresses />,
           },
           {
-            path: "/admin/brands",
+            path: "/brands",
             element: <Brands />,
           },
         ],

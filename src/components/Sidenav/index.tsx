@@ -3,7 +3,7 @@ import {
   CloseOutlined,
   ClusterOutlined,
   DashboardOutlined,
-  GlobalOutlined,
+  EnvironmentOutlined,
   LoginOutlined,
   ProductOutlined,
   TrademarkOutlined,
@@ -22,37 +22,37 @@ const Sidenav = () => {
   const dispatch = useAppDispatch();
   const navItems = [
     {
-      href: "/admin",
+      href: "/dashboard",
       text: "Dashboard",
       icon: <DashboardOutlined />,
     },
     {
-      href: "/admin/users",
+      href: "/users",
       text: "Users",
       icon: <UserOutlined />,
     },
     {
-      href: "/admin/products",
+      href: "/products",
       text: "Products",
       icon: <ProductOutlined />,
     },
     {
-      href: "/admin/categories",
+      href: "/categories",
       text: "Categories",
       icon: <ClusterOutlined />,
     },
     {
-      href: "/admin/orders",
+      href: "/orders",
       text: "Orders",
       icon: <BookOutlined />,
     },
     {
-      href: "/admin/addresses",
+      href: "/addresses",
       text: "Addresses",
-      icon: <GlobalOutlined />,
+      icon: <EnvironmentOutlined />,
     },
     {
-      href: "/admin/brands",
+      href: "/brands",
       text: "Brands",
       icon: <TrademarkOutlined />,
     },
@@ -76,7 +76,7 @@ const Sidenav = () => {
     <div
       className={
         sidenavOpen
-          ? `fixed md:static top-0 bottom-0 left-0 right-0 opacity-100 bg-black bg-opacity-20 z-10`
+          ? `fixed md:static top-0 bottom-0 left-0 right-0 opacity-100 bg-black bg-opacity-20 z-50`
           : ""
       }
     >
@@ -85,7 +85,7 @@ const Sidenav = () => {
         ref={sideNavRef}
       >
         <div className="flex items-center justify-between">
-          <Link to="/admin" className="text-2xl 2xl:text-4xl block">
+          <Link to="/dashboard" className="text-2xl 2xl:text-4xl block">
             Gamers Stop
           </Link>
           <Button
@@ -145,7 +145,6 @@ const NavItem = ({ href, text, Icon }: NavItemProps) => {
               : "hover:bg-gray-100"
           }`
         }
-        end
       >
         <span className="text-xl">{Icon}</span>
         {text}

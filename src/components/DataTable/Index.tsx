@@ -48,7 +48,6 @@ const DataTable = <T,>({ config }: DataTableProps<T>) => {
 
   const handleRead = (record: T) => {
     config.entity.setCurrentItemFn("read", record);
-    dispatch(openDrawer());
   };
   const handleUpdate = (record: T) => {
     config.entity.setCurrentItemFn("update", record);

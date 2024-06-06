@@ -13,6 +13,7 @@ import {
   setOrderCurrentItem,
 } from "../../redux/slice/ordersSlice";
 import { columns, readItem } from "./config";
+import { useNavigate } from "react-router-dom";
 
 const Orders = () => {
   const { data, error, status } = useAppSelector(selectOrders);
@@ -23,12 +24,17 @@ const Orders = () => {
     status: currentStatus,
     action,
   } = useAppSelector(selectOrdersCurrentItem);
+  const navigate = useNavigate();
 
   const setCurrentItemFn = (
     action: "read" | "update" | "delete",
     record: Order,
   ) => {
     dispatch(setOrderCurrentItem({ action, record }));
+    if (action === "read") {
+      navigate(`./${record.id}`);
+      return;
+    }
   };
 
   const searchFn = (query: QueryType<Order>) => {
