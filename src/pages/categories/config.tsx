@@ -12,7 +12,7 @@ const columns: ColumnConfig<Category>[] = [
       <img
         src={record.category_image}
         alt={record.category_name}
-        className="w-10 h-10"
+        className="w-10 h-10 brightness-[90%]"
       />
     ),
   },

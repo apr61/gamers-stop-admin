@@ -7,7 +7,7 @@ const columns: ColumnConfig<Product>[] = [
     render: (record: Product) => (
       <div className="flex gap-2 items-start">
         {record.images && record.images.length > 0 ? (
-          <img src={record.images[0]} alt={record.name} className="w-10 h-10" />
+          <img src={record.images[0]} alt={record.name} className="w-10 h-10 brightness-[90%]" />
         ) : null}
         <p>{record.name}</p>
       </div>

@@ -4,16 +4,24 @@ import {
   ShoppingCartOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+import { useAppDispatch, useAppSelector } from "../redux/store/hooks";
+import { recentOrders, selectOrders } from "../redux/slice/ordersSlice";
+import { useEffect } from "react";
 
 function numberWithCommas(x: number) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 const Dashboard = () => {
+  const { data: recentOrdersData, status: ordersStatus } = useAppSelector(selectOrders);
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(recentOrders());
+  }, []);
   return (
     <div className="bg-white p-4 rounded-md flex gap-4 flex-col">
       <div className="grid grid-cols-4 gap-4">
-        <div className="border p-4 rounded-sm shadow-sm flex items-center gap-4">
+        <div className="border p-4 rounded-sm shadow-sm flex items-center gap-4 transition-transform hover:scale-[1.01]">
           <div className="p-4 bg-amber-200 rounded-sm">
             <UserOutlined className="bg-amber-400 text-white p-2 rounded-sm" />
           </div>
@@ -69,16 +77,20 @@ const Dashboard = () => {
       <div className="grid grid-cols-2 gap-4">
         <section className="border p-4 rounded-md shadow-sm">
           <h2>Recent Orders</h2>
-          <ul className="flex flex-col gap-2">
-            {[...Array(5)].map((val, index) => (
-              <li
-                key={index}
-                className="p-2 border border-transparent border-b-black"
-              >
-                {index}
-              </li>
-            ))}
-          </ul>
+          {ordersStatus === "pending" ? (
+            <h1>Loading...</h1>
+          ) : (
+            <ul className="flex flex-col gap-2">
+              {recentOrdersData.map((order) => (
+                <li
+                  key={order.id}
+                  className="p-2 border-b border-b-slate-300"
+                >
+                  {order.order_date}
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
         <section className="border p-4 rounded-md shadow-sm">
           <h2>Recent Users</h2>
