@@ -2,11 +2,7 @@ import DataTable from "../components/DataTable/Index";
 import DeleteModal from "../components/DeleteModal";
 import Drawer from "../components/ui/Drawer";
 import { useAppDispatch, useAppSelector } from "../redux/store/hooks";
-import {
-  closeDrawer,
-  openDrawer,
-  selectDrawer,
-} from "../redux/slice/uiActionsSlice";
+import { closeDrawer, selectDrawer } from "../redux/slice/uiActionsSlice";
 import { ArrowLeftOutlined, PlusOutlined } from "@ant-design/icons";
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
@@ -17,7 +13,7 @@ import ReadItem from "../components/ReadItem";
 
 type CrudLayoutProps<T> = {
   config: CrudConfig<T>;
-  Form: FC<unknown>;
+  Form?: FC<unknown>;
 };
 
 const CrudLayout = <T,>({ config, Form }: CrudLayoutProps<T>) => {
@@ -33,17 +29,20 @@ const CrudLayout = <T,>({ config, Form }: CrudLayoutProps<T>) => {
 
   return (
     <>
-      <Drawer
-        isDrawerOpen={drawer}
-        closeDrawer={handleDrawer}
-        title={config.DRAWER_TITLE}
-      >
-        {currentItem.action === "read" ? (
-          <ReadItem readItem={config.readItem} record={currentItem.record!} />
-        ) : (
-          <Form />
-        )}
-      </Drawer>
+      {Form && (
+        <Drawer
+          isDrawerOpen={drawer}
+          closeDrawer={handleDrawer}
+          title={config.DRAWER_TITLE}
+        >
+          {currentItem.action === "read" ? (
+            <ReadItem readItem={config.readItem} record={currentItem.record!} />
+          ) : (
+            <Form />
+          )}
+        </Drawer>
+      )}
+
       <div className="px-4 lg:px-8 py-4 w-full bg-white rounded-md">
         <FixedHeaderContent config={config} />
         <DataTable config={config} />
@@ -61,7 +60,6 @@ type FixedHeaderContent<T> = {
 
 const FixedHeaderContent = <T,>({ config }: FixedHeaderContent<T>) => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const [search, setSearch] = useState<string>("");
   const [_, setSearchParams] = useSearchParams();
 
@@ -92,7 +90,7 @@ const FixedHeaderContent = <T,>({ config }: FixedHeaderContent<T>) => {
         </div>
         <Button
           className="flex items-center gap-2"
-          onClick={() => dispatch(openDrawer())}
+          onClick={() => config.entity.setCurrentItemFn("create", null)}
         >
           <>
             <PlusOutlined />

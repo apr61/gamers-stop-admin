@@ -2,6 +2,7 @@ import {
   FieldErrors,
   SubmitHandler,
   UseFormRegister,
+  UseFormSetValue,
   useForm,
 } from "react-hook-form";
 import { ProductFormValues } from "../../utils/types";
@@ -32,22 +33,12 @@ const ProductsForm = () => {
     reset,
   } = useForm<ProductFormValues>();
   const { action, record, error, status } = useAppSelector(
-    selectProdcutsCurrentItem,
+    selectProdcutsCurrentItem
   );
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const dispatch = useAppDispatch();
 
   const FormHeading = action === "create" ? "Add new" : "Edit";
-
-  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      const filePreviews = Array.from(files).map((file) =>
-        URL.createObjectURL(file),
-      );
-      setImagePreviews(filePreviews);
-    }
-  };
 
   const onSubmit: SubmitHandler<ProductFormValues> = async (data) => {
     if (action === "create") {
@@ -59,16 +50,11 @@ const ProductsForm = () => {
             formData: data,
             tableName: "products",
             id: record.id,
-          }),
+          })
         );
     }
     reset();
     setImagePreviews([]);
-  };
-
-  const handleDelete = async (url: string) => {
-    setImagePreviews((prev) => prev.filter((imgUrl) => imgUrl != url));
-    setValue("images", null);
   };
 
   useLayoutEffect(() => {
@@ -93,78 +79,72 @@ const ProductsForm = () => {
   }, [record, reset, setValue]);
 
   return (
-    <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+    <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
       <h3 className="text-xl">{FormHeading} product</h3>
-      <Input
-        placeholder="Product name"
-        label="Name"
-        {...register("name", { required: "Product name is required" })}
-      />
-      {errors.name && <p className="text-red-500">{errors.name.message}</p>}
-      <FileInput
-        label="Image"
-        {...register("images", {
-          required:
-            imagePreviews.length === 0 ? "Category image is required" : false,
-          onChange: handleFileChange,
-        })}
-        multiple={true}
-      />
-      <ImagePreview images={imagePreviews} handleOnClick={handleDelete} />
-      {errors.images && <p className="text-red-500">{errors.images.message}</p>}
+      <div className="flex gap-6 flex-col md:flex-row">
+        <div className="flex flex-col gap-6 flex-[1] md:flex-[1.5] lg:flex-[3]">
+          <ProductMain register={register} errors={errors} />
+          <ProductGallery
+            register={register}
+            errors={errors}
+            setImagePreviews={setImagePreviews}
+            imagePreviews={imagePreviews}
+            setValue={setValue}
+          />
+        </div>
+        <div className="flex-[1] flex gap-6 flex-col">
+          <CategorySelect
+            register={register}
+            errors={errors}
+            currentCategoryId={
+              record && "name" in record ? record.category_id : null
+            }
+          />
 
-      <Input
-        placeholder="Description"
-        label="Description"
-        {...register("description", { required: "Description is required" })}
-      />
-      {errors.description && (
-        <p className="text-red-500">{errors.description.message}</p>
-      )}
+          <BrandSelect
+            register={register}
+            errors={errors}
+            currentBrandId={
+              record && "name" in record ? record.brand?.id! : null
+            }
+          />
+          <div className="bg-white p-4 rounded-md shadow-md">
+            <Input
+              placeholder="Stock"
+              label="Stock"
+              type="number"
+              {...register("quantity", {
+                required: "Quantity is required",
+                min: {
+                  value: 1,
+                  message: "Quantity must be greater that 1",
+                },
+              })}
+            />
+            {errors.quantity && (
+              <p className="text-red-500">{errors.quantity.message}</p>
+            )}
+          </div>
+          <div className="bg-white p-4 rounded-md shadow-md">
+            <Input
+              placeholder="Price"
+              label="Price"
+              type="number"
+              {...register("price", {
+                required: "Price is required",
+                min: {
+                  value: 1,
+                  message: "Price must be greater that 1",
+                },
+              })}
+            />
+            {errors.price && (
+              <p className="text-red-500">{errors.price.message}</p>
+            )}
+          </div>
+        </div>
+      </div>
 
-      <CategorySelect
-        register={register}
-        errors={errors}
-        currentCategoryId={
-          record && "name" in record ? record.category_id : null
-        }
-      />
-
-      <BrandSelect
-        register={register}
-        errors={errors}
-        currentBrandId={record && "name" in record ? record.brand?.id! : null}
-      />
-
-      <Input
-        placeholder="Quantity"
-        label="Quantity"
-        type="number"
-        {...register("quantity", {
-          required: "Quantity is required",
-          min: {
-            value: 1,
-            message: "Quantity must be greater that 1",
-          },
-        })}
-      />
-      {errors.quantity && (
-        <p className="text-red-500">{errors.quantity.message}</p>
-      )}
-
-      <Input
-        placeholder="Price"
-        label="Price"
-        type="number"
-        {...register("price", {
-          required: "Price is required",
-          min: {
-            value: 1,
-            message: "Price must be greater that 1",
-          },
-        })}
-      />
-      {errors.price && <p className="text-red-500">{errors.price.message}</p>}
       {error && <p className="text-red-500">{error}</p>}
       <div className="flex gap-2">
         <Button
@@ -181,9 +161,12 @@ const ProductsForm = () => {
 
 export default ProductsForm;
 
-type CategorySelectProps = {
+type ProductFromType = {
   register: UseFormRegister<ProductFormValues>;
   errors: FieldErrors<ProductFormValues>;
+};
+
+type CategorySelectProps = ProductFromType & {
   currentCategoryId: number | null;
 };
 
@@ -199,7 +182,7 @@ const CategorySelect = ({
   }, [dispatch]);
   return (
     <>
-      <div className="w-full flex gap-2 flex-col">
+      <div className="w-full flex gap-2 flex-col bg-white shadow-md p-4 rounded-md">
         <label htmlFor="category" className="text-lg cursor-pointer">
           Category
         </label>
@@ -236,9 +219,7 @@ const CategorySelect = ({
   );
 };
 
-type BrandSelectProps = {
-  register: UseFormRegister<ProductFormValues>;
-  errors: FieldErrors<ProductFormValues>;
+type BrandSelectProps = ProductFromType & {
   currentBrandId: number | null;
 };
 
@@ -254,7 +235,7 @@ const BrandSelect = ({
   }, [dispatch]);
   return (
     <>
-      <div className="w-full flex gap-2 flex-col">
+      <div className="w-full flex gap-2 flex-col bg-white shadow-md p-4 rounded-md">
         <label htmlFor="brand" className="text-lg cursor-pointer">
           Brand
         </label>
@@ -286,5 +267,78 @@ const BrandSelect = ({
       )}
       {error && <p className="text-red-500">{error}</p>}
     </>
+  );
+};
+
+const ProductMain = ({ register, errors }: ProductFromType) => {
+  return (
+    <div className="bg-white shadow-md p-4 rounded-md flex flex-col gap-2">
+      <Input
+        placeholder="Product name"
+        label="Name"
+        {...register("name", { required: "Product name is required" })}
+      />
+      {errors.name && <p className="text-red-500">{errors.name.message}</p>}
+      <div className="flex gap-2 flex-col">
+        <label htmlFor="description" className="text-lg cursor-pointer">
+          Description
+        </label>
+        <textarea
+          id="description"
+          {...register("description", { required: "Description is required" })}
+          className="focus:outline focus:outline-2 focus:outline-blue-500 border rounded-md p-2 resize-none"
+          rows={10}
+        ></textarea>
+      </div>
+      {errors.description && (
+        <p className="text-red-500">{errors.description.message}</p>
+      )}
+    </div>
+  );
+};
+
+type ProductGalleryType = ProductFromType & {
+  setImagePreviews: React.Dispatch<React.SetStateAction<string[]>>;
+  imagePreviews: string[];
+  setValue: UseFormSetValue<ProductFormValues>;
+};
+
+const ProductGallery = ({
+  register,
+  errors,
+  setImagePreviews,
+  imagePreviews,
+  setValue,
+}: ProductGalleryType) => {
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const filePreviews = Array.from(files).map((file) =>
+        URL.createObjectURL(file)
+      );
+      setImagePreviews(filePreviews);
+    }
+  };
+  const handleDelete = async (url: string) => {
+    setImagePreviews((prev) => prev.filter((imgUrl) => imgUrl != url));
+    setValue("images", null);
+  };
+  return (
+    <div className="bg-white shadow-md p-4 rounded-md flex flex-col gap-2">
+      <h2 className="text-lg">Product Gallery</h2>
+      <div className="min-h-[10rem]">
+        <FileInput
+          label="Click to upload images"
+          {...register("images", {
+            required:
+              imagePreviews.length === 0 ? "Category image is required" : false,
+            onChange: handleFileChange,
+          })}
+          multiple={true}
+        />
+      </div>
+      <ImagePreview images={imagePreviews} handleOnClick={handleDelete} />
+      {errors.images && <p className="text-red-500">{errors.images.message}</p>}
+    </div>
   );
 };

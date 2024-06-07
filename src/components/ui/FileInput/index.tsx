@@ -10,10 +10,10 @@ const FileInput = forwardRef<HTMLInputElement, FileInputProps>(
   ({ label, multiple = false, ...props }, ref) => {
     const id = useId();
     return (
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col min-h-full">
         <label
           htmlFor={id}
-          className="border-2 border-dashed rounded-md p-4 flex gap-2 justify-center text-lg cursor-pointer"
+          className="border-2 border-dashed h-[10rem] rounded-md p-4 flex gap-2 justify-center items-center text-lg cursor-pointer"
         >
           <PlusOutlined />
           {label}

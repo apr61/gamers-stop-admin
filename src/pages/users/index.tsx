@@ -25,9 +25,13 @@ const Users = () => {
   } = useAppSelector(selectUserCurrentItem);
 
   const setCurrentItemFn = (
-    action: "read" | "update" | "delete",
-    record: User,
+    action: "read" | "update" | "delete" | "create",
+    record: User | null
   ) => {
+    if (action === "create") {
+      dispatch(openDrawer());
+      return;
+    }
     dispatch(setUserCurrentItem({ action, record }));
     dispatch(openDrawer());
   };

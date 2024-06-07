@@ -26,9 +26,13 @@ const Addresses = () => {
   } = useAppSelector(selectAddressCurrentItem);
 
   const setCurrentItemFn = (
-    action: "read" | "update" | "delete",
-    record: Address,
+    action: "read" | "update" | "delete" | "create",
+    record: Address | null
   ) => {
+    if (action === "create") {
+      dispatch(openDrawer());
+      return;
+    }
     dispatch(setAddressCurrentItem({ action, record }));
     dispatch(openDrawer());
   };

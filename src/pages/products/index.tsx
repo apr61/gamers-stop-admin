@@ -13,7 +13,6 @@ import {
   setProductCurrentItem,
 } from "../../redux/slice/productsSlice";
 import { columns, readItem } from "./config";
-import { openDrawer } from "../../redux/slice/uiActionsSlice";
 import { useNavigate } from "react-router-dom";
 
 const Products = () => {
@@ -27,12 +26,21 @@ const Products = () => {
   } = useAppSelector(selectProdcutsCurrentItem);
   const navigate = useNavigate();
   const setCurrentItemFn = (
-    action: "read" | "update" | "delete",
-    record: Product,
+    action: "read" | "update" | "delete" | "create",
+    record: Product | null
   ) => {
+    if (action === "create") {
+      navigate("./new");
+      return;
+    }
+    if (record === null) return;
     dispatch(setProductCurrentItem({ action, record }));
     if (action === "read") {
-      navigate(`./${record.id}`);
+      navigate(`./${record.id}/show`);
+      return;
+    }
+    if (action === "update") {
+      navigate(`./${record.id}/edit`);
       return;
     }
   };
@@ -49,7 +57,7 @@ const Products = () => {
     dispatch(resetProductCurrentItem());
   };
   const config: CrudConfig<Product> = {
-    DATA_TABLE_TITLE: "Products list",
+    DATA_TABLE_TITLE: "Product list",
     DRAWER_TITLE: "Products",
     ADD_NEW_ITEM: "Add new product",
     TABLE_NAME: "products",
@@ -80,7 +88,7 @@ const Products = () => {
     dispatch(resetProductCurrentItem());
   }, [dispatch]);
 
-  return <CrudLayout config={config} Form={ProductsForm} />;
+  return <CrudLayout config={config} />;
 };
 
 export default Products;

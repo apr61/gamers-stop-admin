@@ -7,10 +7,19 @@ import {
 import { currencyFormatter } from "../utils/currencyFormatter";
 import Table from "../components/ui/Table";
 import { Link } from "react-router-dom";
-import { ColumnConfig, CustomUser, Order } from "../utils/types";
+import {
+  ColumnConfig,
+  CustomUser,
+  Order,
+  ProductsOrdered,
+} from "../utils/types";
 import BlankUserProfile from "../assets/blank-profile-picture.webp";
 import { useCustomQuery } from "../hooks/useCustomQuery";
-import { getRecentOrders, getRecentProfiles, getTopSellingProducts } from "../services/api/dashboard";
+import {
+  getRecentOrders,
+  getRecentProfiles,
+  getTopSellingProducts,
+} from "../services/api/dashboard";
 
 function numberWithCommas(x: number) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -191,11 +200,51 @@ const RecentUsers = () => {
 };
 
 const TopSellingProducts = () => {
-  const { data, loading, error } = useCustomQuery<any>({
+  const { data, loading, error } = useCustomQuery<ProductsOrdered>({
     fn: () => getTopSellingProducts(),
   });
 
-  console.log(data)
+  const columns: ColumnConfig<ProductsOrdered>[] = [
+    {
+      title: "Product",
+      render: (record: ProductsOrdered) => (
+        <div className="flex gap-2 items-start">
+          {record.product?.images && record.product?.images.length > 0 ? (
+            <img
+              src={record.product?.images[0]}
+              alt={record.product?.name}
+              className="w-10 h-10 brightness-[90%]"
+            />
+          ) : null}
+          <p>{record.product?.name}</p>
+        </div>
+      ),
+    },
+    {
+      title: "Price",
+      render: (record: ProductsOrdered) =>
+        `${currencyFormatter(record.product?.price!)}`,
+    },
+    {
+      title: "Stock",
+      render: (record: ProductsOrdered) =>
+        record.product?.quantity && record.product?.quantity > 0
+          ? "InStock"
+          : "OutOfStock",
+    },
+    {
+      title: "Category",
+      render: (record: ProductsOrdered) =>
+        record && record.product?.category
+          ? record.product?.category!.category_name
+          : "",
+    },
+    {
+      title: "Total sold",
+      render: (record: ProductsOrdered) =>
+        record ? <span>{record.quantity_ordered}</span> : "",
+    },
+  ];
 
   if (error) return <h1>{error}</h1>;
   return (
@@ -203,6 +252,7 @@ const TopSellingProducts = () => {
       <h2 className="p-2 text-gray-700 text-lg font-semibold">
         Top Selling products
       </h2>
+      {loading ? <h1>Loading...</h1> : <Table data={data} columns={columns} />}
     </section>
   );
 };

@@ -16,6 +16,7 @@ import Addresses from "../pages/addresses";
 import Brands from "../pages/brands";
 import SingleOrder from "../pages/SingleOrder";
 import SingleProduct from "../pages/SingleProduct";
+import ProductsForm from "../components/forms/ProductsForm";
 
 const routes = createBrowserRouter([
   {
@@ -44,8 +45,16 @@ const routes = createBrowserRouter([
                 element: <Products />,
               },
               {
-                path: ":id",
+                path: "new",
+                element: <ProductsForm />,
+              },
+              {
+                path: ":id/show",
                 element: <SingleProduct />,
+              },
+              {
+                path: ":id/edit",
+                element: <ProductsForm />,
               },
             ],
           },

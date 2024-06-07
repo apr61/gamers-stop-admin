@@ -28,9 +28,13 @@ const Categories = () => {
   } = useAppSelector(selectCategoryCurrentItem);
 
   const setCurrentItemFn = (
-    action: "read" | "update" | "delete",
-    record: Category,
+    action: "read" | "update" | "delete" | "create",
+    record: Category | null,
   ) => {
+    if (action === "create") {
+      dispatch(openDrawer());
+      return;
+    }
     dispatch(setCategoryCurrentItem({ action, record }));
     dispatch(openDrawer());
   };

@@ -165,7 +165,10 @@ export type CrudConfig<T> = {
     searchFn: (query: QueryType<T>) => void;
     deleteFn: (record: T) => Promise<void>;
     resetEntityStateFn: () => void;
-    setCurrentItemFn: (action: "read" | "update" | "delete", record: T) => void;
+    setCurrentItemFn: (
+      action: "read" | "update" | "delete" | "create",
+      record: T | null
+    ) => void;
   };
 };
 

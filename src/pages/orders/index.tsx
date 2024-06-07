@@ -14,6 +14,7 @@ import {
 } from "../../redux/slice/ordersSlice";
 import { columns, readItem } from "./config";
 import { useNavigate } from "react-router-dom";
+import { openDrawer } from "../../redux/slice/uiActionsSlice";
 
 const Orders = () => {
   const { data, error, status } = useAppSelector(selectOrders);
@@ -27,9 +28,14 @@ const Orders = () => {
   const navigate = useNavigate();
 
   const setCurrentItemFn = (
-    action: "read" | "update" | "delete",
-    record: Order,
+    action: "read" | "update" | "delete" | "create",
+    record: Order | null
   ) => {
+    if (action === "create") {
+      dispatch(openDrawer());
+      return;
+    }
+    if (record === null) return;
     dispatch(setOrderCurrentItem({ action, record }));
     if (action === "read") {
       navigate(`./${record.id}`);
