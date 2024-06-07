@@ -2,7 +2,7 @@ import supabase from "../../utils/supabase";
 import { Order, OrderFormValues, QueryType } from "../../utils/types";
 
 const searchOrders = async (
-  query: QueryType<Order>
+  query: QueryType<Order>,
 ): Promise<{ data: Order[]; count: number }> => {
   const { count, error: countError } = await supabase.supabase
     .from("orders")
@@ -22,7 +22,7 @@ const searchOrders = async (
       order_number,
       user:profiles (full_name, id, avatar_url, user_role, email, phone),
       address: addresses (id, address, name, phoneNumber, pincode, townLocality, cityDistrict, state)
-    `
+    `,
     )
     .ilike(`${query.search.query}`, `%${query.search.with}%`)
     .order("order_date", { ascending: false })
@@ -36,7 +36,7 @@ const searchOrders = async (
     await supabase.supabase
       .from("order_products")
       .select(
-        "order_id, quantity, product: products (id, name, description, price, quantity, images, category_id, category:categories(*), brand:brands(id, brand_name))"
+        "order_id, quantity, product: products (id, name, description, price, created_at,quantity, images, category_id, category:categories(*), brand:brands(id, brand_name))",
       )
       .in("order_id", orderIds);
 
@@ -62,7 +62,7 @@ const searchOrders = async (
 
 const updateOrder = async (
   orderId: number,
-  updatedOrder: any
+  updatedOrder: any,
 ): Promise<Order | null> => {
   const { data, error } = await supabase.supabase
     .from("orders")
@@ -107,7 +107,7 @@ const createOrder = async (order: OrderFormValues): Promise<Order | null> => {
     order_number,
     user:profiles (full_name, id, avatar_url, user_role, email, phone),
     address: addresses (id, address, name, phoneNumber, pincode, townLocality, cityDistrict, state)
-  `
+  `,
     )
     .single();
 
@@ -120,7 +120,7 @@ const createOrder = async (order: OrderFormValues): Promise<Order | null> => {
     await supabase.supabase
       .from("order_products")
       .select(
-        "order_id, quantity, product: products (id, name, description, price, quantity, images, category_id, category:categories(*), brand:brands(id, brand_name))"
+        "order_id, quantity, product: products (id, name, description, price, created_at, quantity, images, category_id, category:categories(*), brand:brands(id, brand_name))",
       )
       .eq("order_id", data.id);
 
@@ -143,7 +143,7 @@ const fetchAllOrders = async (): Promise<Order[]> => {
   try {
     // Fetch orders with user details and address
     const { data: orders, error: ordersError } = await supabase.supabase.from(
-      "orders"
+      "orders",
     ).select(`
         id,
         user_id,
@@ -164,7 +164,7 @@ const fetchAllOrders = async (): Promise<Order[]> => {
       await supabase.supabase
         .from("order_products")
         .select(
-          "order_id, quantity, product: products (id, name, description, price, quantity, images, category_id, category:categories(*), brand:brands(id, brand_name))"
+          "order_id, quantity, product: products (id, name, description, price, created_at,quantity, images, category_id, category:categories(*), brand:brands(id, brand_name))",
         )
         .in("order_id", orderIds);
 
@@ -173,7 +173,7 @@ const fetchAllOrders = async (): Promise<Order[]> => {
     // Map products to their respective orders
     const ordersWithProducts = orders.map((order) => {
       const currentOrder = orderProducts.filter(
-        (op) => op.order_id === order.id
+        (op) => op.order_id === order.id,
       );
       return {
         ...order,
@@ -227,7 +227,7 @@ const getOrdersByUserId = async (userId: string) => {
       order_number,
       user:profiles (full_name, id, avatar_url, user_role, email, phone),
       address: addresses (id, address, name, phoneNumber, pincode, townLocality, cityDistrict, state)
-    `
+    `,
     )
     .eq("user_id", userId);
 
@@ -239,7 +239,7 @@ const getOrdersByUserId = async (userId: string) => {
     await supabase.supabase
       .from("order_products")
       .select(
-        "order_id, quantity, product: products (id, name, description, price, quantity, images, category_id, category:categories(*), brand:brands(id, brand_name))"
+        "order_id, quantity, product: products (id, name, description, price, quantity,created_at, images, category_id, category:categories(*), brand:brands(id, brand_name))",
       )
       .in("order_id", orderIds);
 
@@ -262,54 +262,6 @@ const getOrdersByUserId = async (userId: string) => {
   };
 };
 
-const getRecentOrders = async (): Promise<Order[]> => {
-  const { data: orders, error: ordersError } = await supabase.supabase
-    .from("orders")
-    .select(
-      `
-      id,
-      user_id,
-      address_id,
-      order_status,
-      total_price,
-      payment_status,
-      order_date,
-      order_number,
-      user:profiles (full_name, id, avatar_url, user_role, email, phone),
-      address: addresses (id, address, name, phoneNumber, pincode, townLocality, cityDistrict, state)
-    `
-    )
-    .order("order_date", { ascending: false })
-    .limit(5);
-
-  if (ordersError || orders === null) throw ordersError;
-
-  // Fetch products for each order by querying order_products and products tables
-  const orderIds = orders.map((order) => order.id);
-  const { data: orderProducts, error: orderProductsError } =
-    await supabase.supabase
-      .from("order_products")
-      .select(
-        "order_id, quantity, product: products (id, name, description, price, quantity, images, category_id, category:categories(*), brand:brands(id, brand_name))"
-      )
-      .in("order_id", orderIds);
-
-  if (orderProductsError) throw orderProductsError;
-
-  // Map products to their respective orders
-  const ordersWithProducts = orders.map((order) => {
-    const currentOrder = orderProducts.filter((op) => op.order_id === order.id);
-    return {
-      ...order,
-      products_ordered: currentOrder.map((product) => ({
-        product: product.product,
-        quantity_ordered: product.quantity,
-      })),
-    };
-  });
-  return ordersWithProducts;
-};
-
 export {
   fetchAllOrders,
   updateOrder,
@@ -318,5 +270,4 @@ export {
   createOrder,
   getOrders,
   getOrdersByUserId,
-  getRecentOrders,
 };

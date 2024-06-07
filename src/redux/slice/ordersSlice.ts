@@ -10,7 +10,6 @@ import {
   createOrder,
   deleteOrder,
   getOrdersByUserId,
-  getRecentOrders,
   searchOrders,
   updateOrder,
 } from "../../services/api/orders";
@@ -52,18 +51,6 @@ const initialState: OrderState = {
     error: null,
   },
 };
-
-export const recentOrders = createAsyncThunk(
-  "order/recent",
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await getRecentOrders();
-      return data as Order[];
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  },
-);
 
 export const orderSearch = createAsyncThunk(
   "order/search",
@@ -212,18 +199,6 @@ const ordersSlice = createSlice({
           data: [],
           totalItems: 0,
         };
-      })
-      .addCase(recentOrders.fulfilled, (state, action) => {
-        state.list.status = "succeeded";
-        state.list.data = action.payload!;
-      })
-      .addCase(recentOrders.pending, (state) => {
-        state.list.status = "pending";
-      })
-      .addCase(recentOrders.rejected, (state, action) => {
-        state.list.status = "failed";
-        state.list.error = action.payload as string;
-        state.list.data = [];
       })
       .addCase(fetchOrdersByUser.fulfilled, (state, action) => {
         state.list.status = "succeeded";

@@ -12,7 +12,7 @@ import { useEffect } from "react";
 
 const OrderForm = () => {
   const { action, record, status, error } = useAppSelector(
-    selectOrdersCurrentItem
+    selectOrdersCurrentItem,
   );
   const {
     register,
@@ -34,7 +34,7 @@ const OrderForm = () => {
             id: record.id!,
             tableName: "brands",
             formData: data,
-          })
+          }),
         );
     }
     reset();
@@ -56,9 +56,9 @@ const OrderForm = () => {
       user_id: "a1899ff7-8b91-409d-aa11-c4a19f0892ad",
       address_id: 1,
       payment_status: "paid",
-      order_status: "confirmed",
-      total_price: 2600,
-      products_ordered: [{ "id": 8, "quantity": 1 }, { "id": 11, "quantity": 1 }],
+      order_status: "delivered",
+      total_price: 2200,
+      products_ordered: [{ id: 8, quantity: 2 }],
     };
     await dispatch(addOrder({ formData: newOrder }));
   };

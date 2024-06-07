@@ -1,9 +1,5 @@
 import ReadItem from "../../components/ReadItem";
-import {
-  ColumnConfig,
-  CustomUser,
-  Order,
-} from "../../utils/types";
+import { ColumnConfig, CustomUser, Order } from "../../utils/types";
 import BlankUserProfile from "../../assets/blank-profile-picture.webp";
 import { currencyFormatter } from "../../utils/currencyFormatter";
 
@@ -13,8 +9,21 @@ const columns: ColumnConfig<Order>[] = [
     dataIndex: "order_number",
   },
   {
-    title: "Name",
-    render: (record: Order) => (record.user ? record?.user.full_name : ""),
+    title: "Customer",
+    render: (record: Order) => (
+      <div className="flex gap-2 items-center">
+        <img
+          className="w-10 h-10 rounded-full"
+          src={
+            record?.user?.avatar_url
+              ? record?.user.avatar_url
+              : BlankUserProfile
+          }
+          alt={record?.user?.full_name}
+        />
+        <p>{record.user?.full_name}</p>
+      </div>
+    ),
   },
   {
     title: "Total Price",
@@ -61,8 +70,21 @@ const readItem: ColumnConfig<Order>[] = [
     dataIndex: "order_number",
   },
   {
-    title: "Name",
-    render: (record: Order) => (record.user ? record?.user.full_name : ""),
+    title: "Customer",
+    render: (record: Order) => (
+      <div className="flex gap-2 items-center">
+        <img
+          className="w-10 h-10 rounded-full"
+          src={
+            record?.user?.avatar_url
+              ? record?.user.avatar_url
+              : BlankUserProfile
+          }
+          alt={record?.user?.full_name}
+        />
+        <p>{record.user?.full_name}</p>
+      </div>
+    ),
   },
   {
     title: "Total Price",
