@@ -4,6 +4,7 @@ import CrudLayout from "../../layout/CrudLayout";
 import { CrudConfig, User } from "../../utils/types";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import {
+  removeUser,
   resetUserCurrentItem,
   selectUserCurrentItem,
   selectUsers,
@@ -32,6 +33,10 @@ const Users = () => {
       dispatch(openDrawer());
       return;
     }
+    if (action === "delete") {
+      dispatch(setUserCurrentItem({ action, record }));
+      return;
+    }
     dispatch(setUserCurrentItem({ action, record }));
     dispatch(openDrawer());
   };
@@ -40,7 +45,9 @@ const Users = () => {
     dispatch(userSearch());
   };
 
-  const deleteFn = async (record: User) => {};
+  const deleteFn = async (record: User) => {
+    await dispatch(removeUser(record.id));
+  };
 
   const resetEntityStateFn = () => {
     dispatch(resetUserCurrentItem());

@@ -3,7 +3,7 @@ import { Address, AddressFormValues, QueryType } from "../../utils/types";
 
 // Create a new address
 const createAddress = async (address: AddressFormValues): Promise<Address> => {
-  const { data, error } = await supabase.supabase
+  const { data, error } = await supabase()
     .from("addresses")
     .insert([address])
     .select(`*, user:profiles(id, full_name, user_role, avatar_url)`)
@@ -18,7 +18,7 @@ const createAddress = async (address: AddressFormValues): Promise<Address> => {
 
 // Get all addresses
 const getAddresses = async (): Promise<Address[]> => {
-  const { data, error } = await supabase.supabase
+  const { data, error } = await supabase()
     .from("addresses")
     .select(`*, user:profiles(id, full_name, user_role, avatar_url)`);
 
@@ -31,7 +31,7 @@ const getAddresses = async (): Promise<Address[]> => {
 
 // Get address by ID
 const getAddressById = async (id: number): Promise<Address> => {
-  const { data, error } = await supabase.supabase
+  const { data, error } = await supabase()
     .from("addresses")
     .select(`*, user:profiles(id, full_name, user_role, avatar_url)`)
     .eq("id", id)
@@ -50,8 +50,8 @@ const updateAddress = async (
   address: AddressFormValues
 ): Promise<Address> => {
   console.log(address);
-  
-  const { data, error } = await supabase.supabase
+
+  const { data, error } = await supabase()
     .from("addresses")
     .update(address)
     .eq("id", id)
@@ -67,10 +67,7 @@ const updateAddress = async (
 
 // Delete an address
 const deleteAddress = async (id: number): Promise<number> => {
-  const { error } = await supabase.supabase
-    .from("addresses")
-    .delete()
-    .eq("id", id);
+  const { error } = await supabase().from("addresses").delete().eq("id", id);
   if (error) {
     throw new Error(error.message);
   }
@@ -79,7 +76,7 @@ const deleteAddress = async (id: number): Promise<number> => {
 
 // Get addresses by user ID
 const getAddressesByUserId = async (userId: string): Promise<Address[]> => {
-  const { data, error } = await supabase.supabase
+  const { data, error } = await supabase()
     .from("addresses")
     .select(`*, user:profiles(id, full_name, user_role, avatar_url)`)
     .eq("userId", userId);
@@ -92,13 +89,13 @@ const getAddressesByUserId = async (userId: string): Promise<Address[]> => {
 };
 
 const searchAddresses = async (query: QueryType<Address>) => {
-  const { count, error: countError } = await supabase.supabase
+  const { count, error: countError } = await supabase()
     .from("addresses")
     .select("*", { count: "exact", head: true });
   if (countError) {
     throw new Error(countError.message);
   }
-  const { data, error } = await supabase.supabase
+  const { data, error } = await supabase()
     .from("addresses")
     .select(`*, user:profiles(*)`)
     .ilike(`${query.search.query}`, `%${query.search.with}%`)

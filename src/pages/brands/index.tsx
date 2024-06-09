@@ -33,6 +33,10 @@ const Brands = () => {
       dispatch(openDrawer());
       return;
     }
+    if (action === "delete") {
+      dispatch(setBrandCurrentItem({ action, record }));
+      return;
+    }
     dispatch(setBrandCurrentItem({ action, record }));
     dispatch(openDrawer());
   };
@@ -81,7 +85,6 @@ const Brands = () => {
   useEffect(() => {
     dispatch(resetBrandCurrentItem());
   }, [dispatch]);
-  console.log(searchData);
   return <CrudLayout config={config} Form={BrandForm} />;
 };
 

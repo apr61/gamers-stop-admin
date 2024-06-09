@@ -2,7 +2,7 @@ import supabase from "../../utils/supabase";
 import { CustomUser, Order, ProductsOrdered } from "../../utils/types";
 
 const getRecentOrders = async (): Promise<Order[]> => {
-  const { data: orders, error: ordersError } = await supabase.supabase
+  const { data: orders, error: ordersError } = await supabase()
     .from("orders")
     .select(
       `
@@ -26,7 +26,7 @@ const getRecentOrders = async (): Promise<Order[]> => {
   // Fetch products for each order by querying order_products and products tables
   const orderIds = orders.map((order) => order.id);
   const { data: orderProducts, error: orderProductsError } =
-    await supabase.supabase
+    await supabase()
       .from("order_products")
       .select(
         "order_id, quantity, product: products (id, name, description, price,created_at, quantity, images, category_id, category:categories(*), brand:brands(id, brand_name))"
@@ -51,7 +51,7 @@ const getRecentOrders = async (): Promise<Order[]> => {
 
 const getRecentProfiles = async () => {
   try {
-    const { data, error } = await supabase.supabase
+    const { data, error } = await supabase()
       .from("profiles")
       .select("*")
       .neq("user_role", "ADMIN")
@@ -68,7 +68,7 @@ const getRecentProfiles = async () => {
 };
 
 const getTopSellingProducts = async (): Promise<ProductsOrdered[]> => {
-  const { data, error } = await supabase.supabase
+  const { data, error } = await supabase()
     .from("orders")
     .select("products_ordered")
     .eq("order_status", "delivered");
@@ -91,7 +91,7 @@ const getTopSellingProducts = async (): Promise<ProductsOrdered[]> => {
     });
   });
   const productIds = Object.keys(productQuantities);
-  const { data: productData, error: perror } = await supabase.supabase
+  const { data: productData, error: perror } = await supabase()
     .from("products")
     .select("*, category:categories(*), brand:brands(id, brand_name)")
     .in("id", productIds);

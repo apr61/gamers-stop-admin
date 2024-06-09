@@ -1,7 +1,12 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { User } from "../../utils/types";
+import { User, UserFormData } from "../../utils/types";
 import { RootState } from "../store/store";
-import { listAllUsers } from "../../services/api/users";
+import {
+  createUser,
+  deleteUser,
+  listAllUsers,
+  updateUser,
+} from "../../services/api/users";
 
 export type CurrentType = {
   action: "create" | "read" | "update" | "delete";
@@ -46,13 +51,11 @@ export const userSearch = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await listAllUsers();
-      if (response) {
-        const data = {
-          data: response.data as User[],
-          totalItems: response.count,
-        };
-        return data;
-      }
+      const data = {
+        data: response.data as User[],
+        totalItems: response.count,
+      };
+      return data;
     } catch (error) {
       if (error instanceof Error) {
         return rejectWithValue(error.message);
@@ -61,6 +64,54 @@ export const userSearch = createAsyncThunk(
         data: [],
         totalItems: 0,
       };
+    }
+  }
+);
+
+export const addUser = createAsyncThunk(
+  "users/add",
+  async (data: UserFormData, { rejectWithValue }) => {
+    try {
+      const response = await createUser(data);
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      }
+      return null;
+    }
+  }
+);
+
+export const editUser = createAsyncThunk(
+  "users/edit",
+  async (
+    { data, id }: { data: UserFormData; id: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await updateUser(id, data);
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      }
+      return null;
+    }
+  }
+);
+
+export const removeUser = createAsyncThunk(
+  "users/remove",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await deleteUser(id);
+      return response;
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      }
+      return null;
     }
   }
 );
@@ -105,14 +156,60 @@ const userSlice = createSlice({
           data: [],
           totalItems: 0,
         };
+      })
+      .addCase(addUser.fulfilled, (state, action) => {
+        state.list.status = "succeeded";
+        const user = action.payload;
+        if (user) {
+          state.search.data.unshift(user);
+        }
+      })
+      .addCase(addUser.pending, (state) => {
+        state.current.status = "pending";
+      })
+      .addCase(addUser.rejected, (state, action) => {
+        state.list.status = "failed";
+        state.current.error = action.payload as string;
+      })
+      .addCase(editUser.fulfilled, (state, action) => {
+        state.list.status = "succeeded";
+        const user = action.payload;
+        if (user) {
+          state.search.data = state.search.data.map((u) => {
+            if (u.id === user.id) {
+              return user;
+            }
+            return u;
+          });
+        }
+      })
+      .addCase(editUser.pending, (state) => {
+        state.current.status = "pending";
+      })
+      .addCase(editUser.rejected, (state, action) => {
+        state.list.status = "failed";
+        state.current.error = action.payload as string;
+      })
+      .addCase(removeUser.fulfilled, (state, action) => {
+        state.list.status = "succeeded";
+        const id = action.payload;
+        if (id) {
+          state.search.data = state.search.data.filter((u) => u.id !== id);
+        }
+      })
+      .addCase(removeUser.pending, (state) => {
+        state.current.status = "pending";
+      })
+      .addCase(removeUser.rejected, (state, action) => {
+        state.list.status = "failed";
+        state.current.error = action.payload as string;
       });
   },
 });
 
 export const selectUsers = (state: RootState) => state.users.list;
 export const selectUsersSearch = (state: RootState) => state.users.search;
-export const selectUserCurrentItem = (state: RootState) =>
-  state.users.current;
+export const selectUserCurrentItem = (state: RootState) => state.users.current;
 
 export const { setUserCurrentItem, resetUserCurrentItem, resetUserState } =
   userSlice.actions;

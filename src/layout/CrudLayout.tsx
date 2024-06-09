@@ -17,8 +17,6 @@ type CrudLayoutProps<T> = {
 };
 
 const CrudLayout = <T,>({ config, Form }: CrudLayoutProps<T>) => {
-  const currentItem = config.entity.current;
-
   const dispatch = useAppDispatch();
   const drawer = useAppSelector(selectDrawer);
 
@@ -29,19 +27,13 @@ const CrudLayout = <T,>({ config, Form }: CrudLayoutProps<T>) => {
 
   return (
     <>
-      {Form && (
-        <Drawer
-          isDrawerOpen={drawer}
-          closeDrawer={handleDrawer}
-          title={config.DRAWER_TITLE}
-        >
-          {currentItem.action === "read" ? (
-            <ReadItem readItem={config.readItem} record={currentItem.record!} />
-          ) : (
-            <Form />
-          )}
-        </Drawer>
-      )}
+      <Drawer
+        isDrawerOpen={drawer}
+        closeDrawer={handleDrawer}
+        title={config.DRAWER_TITLE}
+      >
+        <DrawerContent config={config} Form={Form} />
+      </Drawer>
 
       <div className="px-4 lg:px-8 py-4 w-full bg-white rounded-md">
         <FixedHeaderContent config={config} />
@@ -100,4 +92,17 @@ const FixedHeaderContent = <T,>({ config }: FixedHeaderContent<T>) => {
       </div>
     </header>
   );
+};
+
+const DrawerContent = <T,>({ Form, config }: CrudLayoutProps<T>) => {
+  const currentItem = config.entity.current;
+
+  if (currentItem.action === "read")
+    return <ReadItem readItem={config.readItem} record={currentItem.record!} />;
+  if (currentItem.action === "update" || currentItem.action === "create") {
+    if (Form) {
+      return <Form />;
+    }
+  }
+  return null;
 };

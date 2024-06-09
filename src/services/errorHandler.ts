@@ -1,6 +1,6 @@
 import toast from "react-hot-toast";
 
-const errorHandler = (
+const errorHandler = async (
   error: string,
   statusCode: string | number | undefined = undefined,
 ) => {
@@ -11,7 +11,7 @@ const errorHandler = (
     message = `500 - ${error}`;
   }
   toast.error(message);
-  throw new Error(error)
+  // throw new Error(error)
 };
 
 export default errorHandler;

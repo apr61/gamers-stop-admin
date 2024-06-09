@@ -1,6 +1,5 @@
 import { CrudConfig, Product, QueryType } from "../../utils/types";
 import CrudLayout from "../../layout/CrudLayout";
-import ProductsForm from "../../components/forms/ProductsForm";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import {

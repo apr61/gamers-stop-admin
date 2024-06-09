@@ -4,13 +4,13 @@ import { Order, OrderFormValues, QueryType } from "../../utils/types";
 const searchOrders = async (
   query: QueryType<Order>,
 ): Promise<{ data: Order[]; count: number }> => {
-  const { count, error: countError } = await supabase.supabase
+  const { count, error: countError } = await supabase()
     .from("orders")
     .select("*", { count: "exact", head: true });
   if (countError) {
     throw new Error(countError.message);
   }
-  const { data: orders, error: ordersError } = await supabase.supabase
+  const { data: orders, error: ordersError } = await supabase()
     .from("orders")
     .select(
       `
@@ -33,7 +33,7 @@ const searchOrders = async (
   // Fetch products for each order by querying order_products and products tables
   const orderIds = orders.map((order) => order.id);
   const { data: orderProducts, error: orderProductsError } =
-    await supabase.supabase
+    await supabase()
       .from("order_products")
       .select(
         "order_id, quantity, product: products (id, name, description, price, created_at,quantity, images, category_id, category:categories(*), brand:brands(id, brand_name))",
@@ -64,7 +64,7 @@ const updateOrder = async (
   orderId: number,
   updatedOrder: any,
 ): Promise<Order | null> => {
-  const { data, error } = await supabase.supabase
+  const { data, error } = await supabase()
     .from("orders")
     .update(updatedOrder)
     .eq("id", orderId)
@@ -79,7 +79,7 @@ const updateOrder = async (
 };
 
 const deleteOrder = async (orderId: number): Promise<number> => {
-  const { error } = await supabase.supabase
+  const { error } = await supabase()
     .from("orders")
     .delete()
     .eq("id", orderId);
@@ -92,7 +92,7 @@ const deleteOrder = async (orderId: number): Promise<number> => {
 };
 
 const createOrder = async (order: OrderFormValues): Promise<Order | null> => {
-  const { data, error } = await supabase.supabase
+  const { data, error } = await supabase()
     .from("orders")
     .insert([order])
     .select(
@@ -117,7 +117,7 @@ const createOrder = async (order: OrderFormValues): Promise<Order | null> => {
   }
 
   const { data: orderProducts, error: orderProductsError } =
-    await supabase.supabase
+    await supabase()
       .from("order_products")
       .select(
         "order_id, quantity, product: products (id, name, description, price, created_at, quantity, images, category_id, category:categories(*), brand:brands(id, brand_name))",
@@ -142,7 +142,7 @@ const createOrder = async (order: OrderFormValues): Promise<Order | null> => {
 const fetchAllOrders = async (): Promise<Order[]> => {
   try {
     // Fetch orders with user details and address
-    const { data: orders, error: ordersError } = await supabase.supabase.from(
+    const { data: orders, error: ordersError } = await supabase().from(
       "orders",
     ).select(`
         id,
@@ -161,7 +161,7 @@ const fetchAllOrders = async (): Promise<Order[]> => {
     // Fetch products for each order by querying order_products and products tables
     const orderIds = orders.map((order) => order.id);
     const { data: orderProducts, error: orderProductsError } =
-      await supabase.supabase
+      await supabase()
         .from("order_products")
         .select(
           "order_id, quantity, product: products (id, name, description, price, created_at,quantity, images, category_id, category:categories(*), brand:brands(id, brand_name))",
@@ -191,7 +191,7 @@ const fetchAllOrders = async (): Promise<Order[]> => {
 };
 
 const getOrders = async (): Promise<any> => {
-  const { data, error } = await supabase.supabase.from("orders").select(`
+  const { data, error } = await supabase().from("orders").select(`
       id,
       user_id,
       address_id,
@@ -213,7 +213,7 @@ const getOrders = async (): Promise<any> => {
 };
 
 const getOrdersByUserId = async (userId: string) => {
-  const { data: orders, error: ordersError } = await supabase.supabase
+  const { data: orders, error: ordersError } = await supabase()
     .from("orders")
     .select(
       `
@@ -236,7 +236,7 @@ const getOrdersByUserId = async (userId: string) => {
   // Fetch products for each order by querying order_products and products tables
   const orderIds = orders.map((order) => order.id);
   const { data: orderProducts, error: orderProductsError } =
-    await supabase.supabase
+    await supabase()
       .from("order_products")
       .select(
         "order_id, quantity, product: products (id, name, description, price, quantity,created_at, images, category_id, category:categories(*), brand:brands(id, brand_name))",

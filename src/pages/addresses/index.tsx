@@ -33,6 +33,10 @@ const Addresses = () => {
       dispatch(openDrawer());
       return;
     }
+    if (action === "delete") {
+      dispatch(setAddressCurrentItem({ action, record }));
+      return;
+    }
     dispatch(setAddressCurrentItem({ action, record }));
     dispatch(openDrawer());
   };

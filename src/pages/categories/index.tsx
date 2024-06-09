@@ -18,7 +18,7 @@ import { openDrawer } from "../../redux/slice/uiActionsSlice";
 const Categories = () => {
   const { data, error, status } = useAppSelector(selectCategories);
   const { data: searchData, totalItems } = useAppSelector(
-    selectCategoriesSearch,
+    selectCategoriesSearch
   );
   const {
     record,
@@ -29,10 +29,14 @@ const Categories = () => {
 
   const setCurrentItemFn = (
     action: "read" | "update" | "delete" | "create",
-    record: Category | null,
+    record: Category | null
   ) => {
     if (action === "create") {
       dispatch(openDrawer());
+      return;
+    }
+    if (action === "delete") {
+      dispatch(setCategoryCurrentItem({ action, record }));
       return;
     }
     dispatch(setCategoryCurrentItem({ action, record }));

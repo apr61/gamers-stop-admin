@@ -1,6 +1,7 @@
 import supabase from "../../utils/supabase";
 import { uploadFiles, deleteFile, updateFile } from "../api/fileUpload";
 import { Category, CategoryFormValues, QueryType } from "../../utils/types";
+import errorHandler from "../errorHandler";
 
 export async function createCategory(
   values: CategoryFormValues,
@@ -13,13 +14,13 @@ export async function createCategory(
       categoryImageUrl = url;
     }
 
-    const { data, error } = await supabase.supabase
+    const { data, error } = await supabase()
       .from("categories")
       .insert({
         category_name: values.category_name,
         category_image: categoryImageUrl,
       })
-      .select()
+      .select('*')
       .single()
 
     if (error) throw error;
@@ -33,7 +34,7 @@ export async function createCategory(
 
 export async function getCategories() {
   try {
-    const { data, error } = await supabase.supabase
+    const { data, error } = await supabase()
       .from("categories")
       .select("*");
 
@@ -48,7 +49,7 @@ export async function getCategories() {
 
 export async function getCategoryById(id: number) {
   try {
-    const { data, error } = await supabase.supabase
+    const { data, error } = await supabase()
       .from("categories")
       .select("*")
       .eq("id", id)
@@ -67,7 +68,7 @@ export async function updateCategory(id: number, values: CategoryFormValues) {
   try {
     let categoryImageUrl = "";
 
-    const { data: imagesData, error: imagesError } = await supabase.supabase
+    const { data: imagesData, error: imagesError } = await supabase()
       .from("categories")
       .select("category_image")
       .eq("id", id);
@@ -82,7 +83,7 @@ export async function updateCategory(id: number, values: CategoryFormValues) {
       categoryImageUrl = url;
     }
 
-    const { data, error } = await supabase.supabase
+    const { data, error } = await supabase()
       .from("categories")
       .update({
         category_name: values.category_name,
@@ -102,7 +103,7 @@ export async function updateCategory(id: number, values: CategoryFormValues) {
 
 export async function deleteCategory(id: number) {
   try {
-    const { data: categoryData, error: fetchError } = await supabase.supabase
+    const { data: categoryData, error: fetchError } = await supabase()
       .from("categories")
       .select("category_image")
       .eq("id", id)
@@ -110,7 +111,7 @@ export async function deleteCategory(id: number) {
 
     if (fetchError) throw fetchError;
 
-    const { error } = await supabase.supabase
+    const { error } = await supabase()
       .from("categories")
       .delete()
       .eq("id", id);
@@ -129,13 +130,13 @@ export async function deleteCategory(id: number) {
 }
 
 export const searchCategories = async (query: QueryType<Category>) => {
-  const { count, error: countError } = await supabase.supabase
+  const { count, error: countError } = await supabase()
     .from("categories")
     .select("*", { count: "exact", head: true });
   if (countError) {
     throw new Error(countError.message);
   }
-  const { data, error } = await supabase.supabase
+  const { data, error } = await supabase()
     .from("categories")
     .select("*")
     .ilike(`${query.search.query}`, `%${query.search.with}%`)
@@ -143,7 +144,8 @@ export const searchCategories = async (query: QueryType<Category>) => {
     .range(query.pagination.from, query.pagination.to);
 
   if (error) {
-    throw new Error(error.message);
+    return errorHandler(error.message)
+    // throw new Error(error.message);
   }
 
   const response = {

@@ -18,7 +18,7 @@ type ProductNewData = Omit<Product, "id">;
 type NewData = CategoryNewData | ProductNewData;
 
 const insertNewRecord = async (tableName: TableName, newData: NewData) => {
-  const { data, error } = await supabase.supabase
+  const { data, error } = await supabase()
     .from(tableName)
     .insert(newData)
     .select();
@@ -28,7 +28,7 @@ const insertNewRecord = async (tableName: TableName, newData: NewData) => {
   return data[0];
 };
 
-// Function to insert a document into supabase.supabase
+// Function to insert a document into supabase()
 const insertRecordWithUpload = async (
   documentData: DocumentData,
   tableName: TableName,
@@ -58,13 +58,13 @@ const insertRecordWithUpload = async (
   return null;
 };
 
-// Function to update a document in supabase.supabase by ID
+// Function to update a document in supabase() by ID
 const updateRecordById = async (
   documentData: NewData,
   tableName: TableName,
   id: string,
 ) => {
-  const { error } = await supabase.supabase
+  const { error } = await supabase()
     .from(tableName)
     .update(documentData)
     .eq("id", id);
@@ -114,7 +114,7 @@ const updateRecordByIdWithUpload = async (
   return null;
 };
 
-// Function to delete a document from supabase.supabase by ID
+// Function to delete a document from supabase() by ID
 const deleteRecordById = async ({
   tableName,
   id,
@@ -129,7 +129,7 @@ const deleteRecordById = async ({
       urls = data.images;
     }
     const [deleteCategoryResult] = await Promise.all([
-      supabase.supabase.from(tableName).delete().eq("id", id),
+      supabase().from(tableName).delete().eq("id", id),
       deleteFile(urls),
     ]);
 
@@ -140,7 +140,7 @@ const deleteRecordById = async ({
     }
     return id;
   } else {
-    const { error } = await supabase.supabase
+    const { error } = await supabase()
       .from(tableName)
       .delete()
       .eq("id", id);
@@ -151,10 +151,10 @@ const deleteRecordById = async ({
   }
 };
 
-// Function to read a document from supabase.supabase by ID
+// Function to read a document from supabase() by ID
 const readRecordById = async ({ tableName, id }: CrudType) => {
   try {
-    const { data, error } = await supabase.supabase
+    const { data, error } = await supabase()
       .from(tableName)
       .select("*")
       .eq("id", id);
@@ -169,10 +169,10 @@ const readRecordById = async ({ tableName, id }: CrudType) => {
   }
 };
 
-// Function to read all documents from a table in supabase.supabase
+// Function to read all documents from a table in supabase()
 const search = async (tableName: TableName, query: QueryType) => {
   try {
-    const { count, error: countError } = await supabase.supabase
+    const { count, error: countError } = await supabase()
       .from(tableName)
       .select("*", { count: "exact", head: true });
     if (countError) {
@@ -188,7 +188,7 @@ const search = async (tableName: TableName, query: QueryType) => {
       return response;
     }
 
-    const { data, error } = await supabase.supabase
+    const { data, error } = await supabase()
       .from(tableName)
       .select("*")
       .ilike(`${query.search.query}`, `%${query.search.with}%`)
@@ -211,7 +211,7 @@ const search = async (tableName: TableName, query: QueryType) => {
 
 const readAll = async (tableName: TableName): Promise<Data[]> => {
   try {
-    const { data, error } = await supabase.supabase.from(tableName).select("*");
+    const { data, error } = await supabase().from(tableName).select("*");
     if (error) {
       throw new Error(error.message);
     }

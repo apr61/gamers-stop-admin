@@ -3,14 +3,8 @@ import { Database } from "../types/supabase";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-const supbaseSecretKey = import.meta.env.VITE_SUPABASE_SECRET_KEY;
 
-const supabase = createClient<Database>(supabaseUrl, supabaseKey);
-const supabaseAdmin = createClient(supabaseUrl, supbaseSecretKey, {
-	auth: {
-		autoRefreshToken: false,
-		persistSession: false,
-	},
-});
-const adminAuthClient = supabaseAdmin.auth.admin;
-export default { supabase, adminAuthClient };
+const client = createClient<Database>(supabaseUrl, supabaseKey);
+
+const supabase = () => client;
+export default supabase;

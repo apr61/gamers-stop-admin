@@ -103,6 +103,14 @@ export type User = {
   avatar_url: string;
 };
 
+export type UserFormData = {
+  email: string,
+  full_name: string,
+  user_role: user_role,
+  phone: string,
+  avatar_url: string
+}
+
 export type CustomUser = {
   id: string;
   full_name: string;
@@ -112,22 +120,15 @@ export type CustomUser = {
   phone: string;
 };
 
-export type OrderFields = {
-  name: Field;
-  paymentStatus: Field;
-  orderStatus: Field;
-  totalPrice: Field;
-  orderNumber: Field;
-};
-
 export type SignUpFormValues = {
   full_name: string;
   email: string;
   password: string;
+  phone: string
 };
 
 export type LoginFormValues = {
-  email: string;
+  email: string
   password: string;
 };
 
@@ -194,42 +195,3 @@ export type QueryType<T> = {
 };
 
 export type Data = Order | Product | Category | CustomUser;
-
-export type CrudType = {
-  id: number;
-  tableName: TableName;
-  withFile: boolean;
-  data: Data;
-};
-
-type Field = {
-  type: string;
-  required: boolean;
-  label: string;
-};
-
-export type CategoryFields = {
-  category_name: Field;
-  category_image: Field;
-};
-
-export type ProductFields = {
-  name: Field;
-  image: Field;
-  price: Field;
-  quantity: Field;
-  description: Field;
-};
-
-export type FetchDataListType = {
-  from: number;
-  to: number;
-  search: string;
-};
-
-export type CategoryFormData = {
-  category_name: string;
-  files: FileList;
-  imageUrls: string[];
-  id: string;
-};

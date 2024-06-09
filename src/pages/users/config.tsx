@@ -43,7 +43,7 @@ const columns: ColumnConfig<User>[] = [
   {
     title: "Last login",
     dataIndex: "lastLogin",
-    render: (record: User) => new Date(record.lastLogin).toLocaleDateString(),
+    render: (record: User) => record.lastLogin ? new Date(record.lastLogin).toLocaleDateString() : "never",
   },
 ];
 

@@ -3,13 +3,13 @@ import { QueryType, ProductFormValues, Product } from "../../utils/types";
 import { uploadFiles, deleteFile } from "../api/fileUpload";
 
 export const searchProducts = async (query: QueryType<Product>) => {
-  const { count, error: countError } = await supabase.supabase
+  const { count, error: countError } = await supabase()
     .from("products")
     .select("*", { count: "exact", head: true });
   if (countError) {
     throw new Error(countError.message);
   }
-  const { data, error } = await supabase.supabase
+  const { data, error } = await supabase()
     .from("products")
     .select(
       `*, category:categories(id, category_name, category_image), brand:brands(id, brand_name)`,
@@ -35,7 +35,7 @@ export async function createProduct(values: ProductFormValues) {
       imageUrls = await uploadFiles(values.images, "product_images");
     }
 
-    const { data, error } = await supabase.supabase
+    const { data, error } = await supabase()
       .from("products")
       .insert({
         name: values.name,
@@ -62,7 +62,7 @@ export async function createProduct(values: ProductFormValues) {
 
 export async function getProducts() {
   try {
-    const { data, error } = await supabase.supabase
+    const { data, error } = await supabase()
       .from("products")
       .select("*, category:categories(*), brand:brands(id, brand_name)");
 
@@ -77,7 +77,7 @@ export async function getProducts() {
 
 export async function getProductById(id: number) {
   try {
-    const { data, error } = await supabase.supabase
+    const { data, error } = await supabase()
       .from("products")
       .select("*, category:categories(*), brand:brands(id, brand_name)")
       .eq("id", id)
@@ -96,7 +96,7 @@ export async function updateProduct(id: number, values: ProductFormValues) {
   try {
     let imageUrls: string[] = [];
 
-    const { data: imagesData, error: imagesError } = await supabase.supabase
+    const { data: imagesData, error: imagesError } = await supabase()
       .from("products")
       .select("images")
       .eq("id", id)
@@ -112,7 +112,7 @@ export async function updateProduct(id: number, values: ProductFormValues) {
       imageUrls = await uploadFiles(values.images, "product_images");
     }
 
-    const { data, error } = await supabase.supabase
+    const { data, error } = await supabase()
       .from("products")
       .update({
         name: values.name,
@@ -140,7 +140,7 @@ export async function updateProduct(id: number, values: ProductFormValues) {
 
 export async function deleteProduct(id: number) {
   try {
-    const { data: productData, error: fetchError } = await supabase.supabase
+    const { data: productData, error: fetchError } = await supabase()
       .from("products")
       .select("images")
       .eq("id", id)
@@ -148,7 +148,7 @@ export async function deleteProduct(id: number) {
 
     if (fetchError) throw fetchError;
 
-    const { error } = await supabase.supabase
+    const { error } = await supabase()
       .from("products")
       .delete()
       .eq("id", id);

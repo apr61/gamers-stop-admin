@@ -3,7 +3,7 @@ import { CustomUser } from "../../utils/types";
 
 export async function getProfiles() {
 	try {
-		const { data, error } = await supabase.supabase
+		const { data, error } = await supabase()
 			.from("profiles")
 			.select("*");
 
