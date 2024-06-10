@@ -1,38 +1,30 @@
 import { useOnOutsideClick } from "../../hooks/useOnClickOutside";
-import {
-  closeDeleteModal,
-  selectDeleteModal,
-} from "../../redux/slice/uiActionsSlice";
-import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import Modal from "../ui/Modal";
 import Button from "../ui/Button";
-import { CrudConfig } from "../../utils/types";
 
-type DeleteModalProps<T> = {
-  config: CrudConfig<T>;
+type DeleteModalProps = {
+  handleCancel: () => void;
+  onSubmit: () => Promise<void>;
+  isModalOpen: boolean;
+  modalClose: () => void;
+  status: "idle" | "pending" | "succeeded" | "failed";
+  error: string | null;
 };
 
-function DeleteModal<T>({ config }: DeleteModalProps<T>) {
-  const dispatch = useAppDispatch();
-  const modalRef = useOnOutsideClick(() => dispatch(closeDeleteModal()));
-  const deleteModal = useAppSelector(selectDeleteModal);
-  const { record, status, error } = config.entity.current;
-  const handleCancel = () => {
-    dispatch(closeDeleteModal());
-    config.entity.resetEntityStateFn();
-  };
-  const handleDelete = async () => {
-    if (record) {
-      await config.entity.deleteFn(record);
-      dispatch(closeDeleteModal());
-      config.entity.resetEntityStateFn();
-    }
-  };
+function DeleteModal({
+  handleCancel,
+  onSubmit,
+  isModalOpen,
+  modalClose,
+  status,
+  error,
+}: DeleteModalProps) {
+  const modalRef = useOnOutsideClick(() => modalClose());
 
   return (
     <Modal
-      isOpen={deleteModal}
-      handleClose={() => dispatch(closeDeleteModal())}
+      isOpen={isModalOpen}
+      handleClose={() => modalClose()}
       ref={modalRef}
       title="Delete Confirmation"
     >
@@ -45,7 +37,7 @@ function DeleteModal<T>({ config }: DeleteModalProps<T>) {
           </Button>
           <Button
             btnType="primary"
-            onClick={handleDelete}
+            onClick={onSubmit}
             disabled={status === "pending"}
             loading={status === "pending"}
           >

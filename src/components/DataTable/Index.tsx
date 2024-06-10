@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
-import { CrudConfig, QueryType, ColumnConfig } from "../../utils/types";
+import { CrudConfig, QueryType, ColumnConfig } from "@/types/api";
 import { useAppDispatch } from "../../redux/store/hooks";
 import { useEffect } from "react";
 import Table from "../ui/Table";
@@ -117,7 +117,7 @@ const DataTable = <T,>({ config }: DataTableProps<T>) => {
       tableName: config.TABLE_NAME,
     };
     config.entity.searchFn(query);
-  }, [dispatch, page, search, config.search, config.TABLE_NAME]);
+  }, [page, search, config.search]);
 
   const setPage = (newPage: number) => {
     setSearchParams((prev) => {
