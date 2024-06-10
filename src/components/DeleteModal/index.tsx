@@ -6,7 +6,6 @@ type DeleteModalProps = {
   handleCancel: () => void;
   onSubmit: () => Promise<void>;
   isModalOpen: boolean;
-  modalClose: () => void;
   status: "idle" | "pending" | "succeeded" | "failed";
   error: string | null;
 };
@@ -15,16 +14,15 @@ function DeleteModal({
   handleCancel,
   onSubmit,
   isModalOpen,
-  modalClose,
   status,
   error,
 }: DeleteModalProps) {
-  const modalRef = useOnOutsideClick(() => modalClose());
+  const modalRef = useOnOutsideClick(() => handleCancel());
 
   return (
     <Modal
       isOpen={isModalOpen}
-      handleClose={() => modalClose()}
+      handleClose={handleCancel}
       ref={modalRef}
       title="Delete Confirmation"
     >

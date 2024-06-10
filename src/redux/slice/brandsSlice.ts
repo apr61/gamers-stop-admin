@@ -4,7 +4,7 @@ import {
   BrandFormValues,
   QueryType,
   TableName,
-} from "../../utils/types";
+} from "@/types/api";
 import { RootState } from "../store/store";
 import {
   createBrand,

@@ -3,7 +3,7 @@ import CategoryForm from "./CategoryForm";
 import {
 	resetCategoryCurrentItem,
 	selectCategoryCurrentItem,
-} from "@/redux/slice/categorySlice";
+} from "../categorySlice";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { useAppDispatch, useAppSelector } from "@/redux/store/hooks";
 import { useEffect } from "react";

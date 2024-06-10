@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/store/hooks";
 import {
 	resetCategoryCurrentItem,
 	selectCategoryCurrentItem,
-} from "@/redux/slice/categorySlice";
+} from "../categorySlice";
 import { useEffect } from "react";
 
 const EditCategory = () => {
