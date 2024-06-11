@@ -6,13 +6,18 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import { ChangeEvent, useState } from "react";
-import { useAppDispatch } from "@/redux/store/hooks";
-import { setCategoryCurrentItem } from "../categorySlice";
+import { useAppDispatch, useAppSelector } from "@/redux/store/hooks";
+import {
+  selectCategoryItemsView,
+  setCategoryCurrentItem,
+  setCategoryItemsView,
+} from "../categorySlice";
 import { useSearchParams } from "react-router-dom";
 
 const CategoryHeader = () => {
   const [search, setSearch] = useState<string>("");
   const dispatch = useAppDispatch();
+  const itemsView = useAppSelector(selectCategoryItemsView);
   const [_, setSearchParams] = useSearchParams();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +46,7 @@ const CategoryHeader = () => {
             Add new category
           </>
         </Button>
-        <div className="flex gap-4">
+        <div className="flex gap-2">
           <Input
             type="search"
             placeholder="search"
@@ -52,14 +57,24 @@ const CategoryHeader = () => {
             <Button
               type="button"
               btnType="icon"
-              className="py-2 px-4 border border-blue-500 text-lg"
+              className={`text-lg py-2 px-4 w-12 hover:text-blue-500 ${
+                itemsView === "LIST"
+                  ? "rounded-none border-2 border-blue-500 text-lg rounded-tl-lg rounded-bl-lg"
+                  : ""
+              }`}
+              onClick={() => dispatch(setCategoryItemsView("LIST"))}
             >
               <BarsOutlined />
             </Button>
             <Button
               type="button"
               btnType="icon"
-              className="py-2 px-4 border border-blue-500 text-lg"
+              className={`text-lg py-2 px-4 w-12 hover:text-blue-500 ${
+                itemsView === "GRID"
+                  ? "rounded-none border-2 border-blue-500 text-lg rounded-tr-lg rounded-br-lg"
+                  : ""
+              }`}
+              onClick={() => dispatch(setCategoryItemsView("GRID"))}
             >
               <AppstoreOutlined />
             </Button>

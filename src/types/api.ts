@@ -1,5 +1,7 @@
 import { ReactElement } from "react";
 
+export type ItemsViewType = "GRID" | "LIST"
+
 export type Category = {
   id: number;
   category_name: string;

@@ -2,6 +2,7 @@ import {
   categorySearch,
   selectCategories,
   selectCategoriesSearch,
+  selectCategoryItemsView,
   setCategoryCurrentItem,
 } from "../categorySlice";
 import { useAppDispatch, useAppSelector } from "@/redux/store/hooks";
@@ -10,7 +11,8 @@ import { useEffect } from "react";
 import { Category, ColumnConfig, QueryType } from "@/types/api";
 import Pagination from "@/components/ui/Pagination";
 import Table from "@/components/ui/Table";
-import TableActions from "@/components/TableActions";
+import { GridItemsAction, TableActions } from "@/components/ItemActions";
+import ItemsGridLayout from "@/components/layouts/ItemsGridLayout";
 
 const columns: ColumnConfig<Category>[] = [
   {
@@ -36,9 +38,10 @@ const ListCategories = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = searchParams.get("page") || 1;
   const search = searchParams.get("search") || "";
-  const itemsPerPage = 5;
+  const itemsPerPage = 12;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const dispatch = useAppDispatch();
+  const itemsView = useAppSelector(selectCategoryItemsView);
 
   const handleRead = (record: Category) => {
     dispatch(setCategoryCurrentItem({ record: record, action: "read" }));
@@ -89,15 +92,30 @@ const ListCategories = () => {
     });
   };
   if (error) return <p>Error: {error}</p>;
+  
   return (
     <div className="mt-2">
-      <div className="bg-white">
-        <Table
-          columns={tableColumns}
-          data={data as Category[]}
-          isLoading={status === "pending"}
-        />
-      </div>
+      {itemsView === "LIST" ? (
+        <div className="bg-white">
+          <Table
+            columns={tableColumns}
+            data={data as Category[]}
+            isLoading={status === "pending"}
+          />
+        </div>
+      ) : (
+        <ItemsGridLayout>
+          {data.map((category) => (
+            <CategoryGridItem
+              key={category.id}
+              category={category}
+              editFn={handleUpdate}
+              readFn={handleRead}
+              deleteFn={handleDelete}
+            />
+          ))}
+        </ItemsGridLayout>
+      )}
       <div className="flex w-full mt-4 justify-between">
         <p>
           Page {+page} of {totalPages}
@@ -113,3 +131,38 @@ const ListCategories = () => {
 };
 
 export default ListCategories;
+
+type CategoryGridItemProps = {
+  category: Category;
+  readFn: (record: Category) => void;
+  editFn: (record: Category) => void;
+  deleteFn: (record: Category) => void;
+};
+
+const CategoryGridItem = ({
+  category,
+  readFn,
+  deleteFn,
+  editFn,
+}: CategoryGridItemProps) => {
+  return (
+    <article className="border p-4 shadow-md bg-white rounded-md">
+      <GridItemsAction
+        record={category}
+        readFn={readFn}
+        deleteFn={deleteFn}
+        editFn={editFn}
+      />
+      <div className="mt-6 flex gap-2 flex-col">
+        <div className="max-w-[20rem] w-full h-[15rem]">
+          <img
+            src={category.category_image}
+            alt={category.category_name}
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <h3 className="text-xl">{category.category_name}</h3>
+      </div>
+    </article>
+  );
+};

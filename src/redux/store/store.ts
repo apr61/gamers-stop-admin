@@ -1,7 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import fileHandlingSlice from "../slice/fileHandlingSlice";
 import crudSlice from "../slice/crudSlice";
-import categorySlice from "../slice/categorySlice";
 import productsSlice from "../slice/productsSlice";
 import uiActionsSlice from "../slice/uiActionsSlice";
 import authSlice from "../slice/authSlice";
@@ -10,6 +9,7 @@ import addressSlice from "../slice/addressSlice";
 import ordersSlice from "../slice/ordersSlice";
 import usersSlice from "../slice/usersSlice";
 import brandsSlice from "../slice/brandsSlice";
+import categorySlice from "@/features/categories/categorySlice";
 
 export const store = configureStore({
   reducer: {

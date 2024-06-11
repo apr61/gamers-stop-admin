@@ -8,7 +8,7 @@ type TableActionsProps<T> = {
 	record: T;
 };
 
-const TableActions = <T,>({
+export const TableActions = <T,>({
 	readFn,
 	deleteFn,
 	editFn,
@@ -73,5 +73,3 @@ const TableActions = <T,>({
 	);
 };
 
-
-export default TableActions
