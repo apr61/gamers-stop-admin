@@ -59,10 +59,7 @@ const Sidenav = () => {
   ];
   const sidenavOpen = useAppSelector(selectSideNav);
 
-  const handleLogout = async () => {
-    await dispatch(logOutUser());
-    dispatch(setAuthStatus("idle"));
-  };
+
   const windowSize = useWindowSize();
   const sideNavMobile = windowSize.width > 0 && windowSize.width <= 768;
   const handleClickOutside = () => {
@@ -106,20 +103,6 @@ const Sidenav = () => {
             />
           ))}
         </ul>
-        <div className="mt-auto">
-          <Button
-            btnType="danger"
-            className="w-full flex gap-2 justify-center items-center"
-            onClick={handleLogout}
-          >
-            <>
-              <span className="text-xl">
-                <LoginOutlined />
-              </span>
-              Logout
-            </>
-          </Button>
-        </div>
       </aside>
     </div>
   );

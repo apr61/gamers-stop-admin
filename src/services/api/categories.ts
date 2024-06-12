@@ -1,6 +1,6 @@
 import supabase from "../../utils/supabase";
 import { uploadFiles, deleteFile, updateFile } from "../api/fileUpload";
-import { Category, CategoryFormValues, QueryType } from "../../utils/types";
+import { Category, CategoryFormValues, QueryType } from "@/types/api";
 import errorHandler from "../errorHandler";
 
 export async function createCategory(
@@ -150,7 +150,7 @@ export const searchCategories = async (query: QueryType<Category>) => {
 
   const response = {
     data: data ? data : [],
-    count: count ? count : 0,
+    count: data.length > 0 && query.search.with ? data.length : count,
   };
   return response;
 };

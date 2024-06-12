@@ -57,9 +57,9 @@ const CategoryHeader = () => {
             <Button
               type="button"
               btnType="icon"
-              className={`text-lg py-2 px-4 w-12 hover:text-blue-500 ${
+              className={`text-lg py-2 px-4 w-12 hover:text-blue-500 focus:outline-blue-500 ${
                 itemsView === "LIST"
-                  ? "rounded-none border-2 border-blue-500 text-lg rounded-tl-lg rounded-bl-lg"
+                  ? "rounded-none border-2 border-blue-500 rounded-tl-lg rounded-bl-lg "
                   : ""
               }`}
               onClick={() => dispatch(setCategoryItemsView("LIST"))}
@@ -69,9 +69,9 @@ const CategoryHeader = () => {
             <Button
               type="button"
               btnType="icon"
-              className={`text-lg py-2 px-4 w-12 hover:text-blue-500 ${
+              className={`text-lg py-2 px-4 w-12 hover:text-blue-500 focus:outline-blue-500 ${
                 itemsView === "GRID"
-                  ? "rounded-none border-2 border-blue-500 text-lg rounded-tr-lg rounded-br-lg"
+                  ? "rounded-none border-2 border-blue-500 rounded-tr-lg rounded-br-lg"
                   : ""
               }`}
               onClick={() => dispatch(setCategoryItemsView("GRID"))}

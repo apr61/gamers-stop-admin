@@ -10,10 +10,9 @@ type ColumnConfig<T> = {
 type TableProps<T> = {
   columns: ColumnConfig<T>[];
   data: T[];
-  isLoading?: boolean;
 };
 
-const Table = <T,>({ columns, data, isLoading = false }: TableProps<T>) => {
+const Table = <T,>({ columns, data }: TableProps<T>) => {
   const TableHeader = (
     <tr>
       {columns.map((column) => (
@@ -26,11 +25,7 @@ const Table = <T,>({ columns, data, isLoading = false }: TableProps<T>) => {
       ))}
     </tr>
   );
-  const TableBody = isLoading ? (
-    <tr>
-      <td>Loading...</td>
-    </tr>
-  ) : data.length === 0 ? (
+  const TableBody = data.length === 0 ? (
     <tr>
       <td>No data found</td>
     </tr>

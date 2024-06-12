@@ -38,7 +38,7 @@ const ListCategories = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = searchParams.get("page") || 1;
   const search = searchParams.get("search") || "";
-  const itemsPerPage = 12;
+  const itemsPerPage = 6;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const dispatch = useAppDispatch();
   const itemsView = useAppSelector(selectCategoryItemsView);
@@ -92,7 +92,7 @@ const ListCategories = () => {
     });
   };
   if (error) return <p>Error: {error}</p>;
-  
+
   return (
     <div className="mt-2">
       {itemsView === "LIST" ? (
@@ -100,21 +100,15 @@ const ListCategories = () => {
           <Table
             columns={tableColumns}
             data={data as Category[]}
-            isLoading={status === "pending"}
           />
         </div>
       ) : (
-        <ItemsGridLayout>
-          {data.map((category) => (
-            <CategoryGridItem
-              key={category.id}
-              category={category}
-              editFn={handleUpdate}
-              readFn={handleRead}
-              deleteFn={handleDelete}
-            />
-          ))}
-        </ItemsGridLayout>
+        <CategoryGridView
+          data={data}
+          readFn={handleRead}
+          editFn={handleUpdate}
+          deleteFn={handleDelete}
+        />
       )}
       <div className="flex w-full mt-4 justify-between">
         <p>
@@ -132,37 +126,30 @@ const ListCategories = () => {
 
 export default ListCategories;
 
-type CategoryGridItemProps = {
-  category: Category;
+type CategoryGridViewProps = {
+  data: Category[];
   readFn: (record: Category) => void;
   editFn: (record: Category) => void;
   deleteFn: (record: Category) => void;
 };
 
-const CategoryGridItem = ({
-  category,
-  readFn,
-  deleteFn,
-  editFn,
-}: CategoryGridItemProps) => {
+const CategoryGridView = ({ data, ...props }: CategoryGridViewProps) => {
   return (
-    <article className="border p-4 shadow-md bg-white rounded-md">
-      <GridItemsAction
-        record={category}
-        readFn={readFn}
-        deleteFn={deleteFn}
-        editFn={editFn}
-      />
-      <div className="mt-6 flex gap-2 flex-col">
-        <div className="max-w-[20rem] w-full h-[15rem]">
-          <img
-            src={category.category_image}
-            alt={category.category_name}
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <h3 className="text-xl">{category.category_name}</h3>
-      </div>
-    </article>
+    <ItemsGridLayout>
+      {data.map((category) => (
+        <GridItemsAction key={category.id} record={category} {...props}>
+          <div className="mt-6 flex gap-2 flex-col items-center">
+            <div className="max-w-[20rem] w-full h-[15rem]">
+              <img
+                src={category.category_image}
+                alt={category.category_name}
+                className="w-full h-full object-cover brightness-[95%] rounded-sm overflow-hidden"
+              />
+            </div>
+            <h3 className="text-xl">{category.category_name}</h3>
+          </div>
+        </GridItemsAction>
+      ))}
+    </ItemsGridLayout>
   );
 };

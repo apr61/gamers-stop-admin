@@ -1,11 +1,11 @@
 import { cn } from "@/utils/cn";
-import { ReactElement, ButtonHTMLAttributes } from "react";
+import { ButtonHTMLAttributes, PropsWithChildren } from "react";
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  children: ReactElement | ReactElement[] | string;
-  btnType?: "primary" | "ghost" | "danger" | "icon";
-  loading?: boolean;
-};
+type ButtonProps = PropsWithChildren &
+  ButtonHTMLAttributes<HTMLButtonElement> & {
+    btnType?: "primary" | "ghost" | "danger" | "icon";
+    loading?: boolean;
+  };
 
 const Button = ({
   children,
@@ -17,15 +17,14 @@ const Button = ({
   ...props
 }: ButtonProps) => {
   let baseClass =
-    "hover:bg-opacity-90 rounded-md w-fit focus:outline-2 focus:outline-offset-2 disabled:bg-opacity-75 flex items-center justify-center gap-2";
+    "hover:bg-opacity-90 rounded-md w-fit focus:outline-2 focus:outline-2 focus:outline-offset-2 disabled:bg-opacity-75 flex items-center justify-center gap-2";
   const styles = {
     primary: "px-2 py-1 bg-blue-500 text-white focus:outline-blue-400",
     ghost:
       "px-2 py-1 bg-transparent text-gray-500 border border-gray-500 hover:bg-gray-500 hover:text-white focus:outline-gray-400 focus:border-transparent",
     danger: "py-2 bg-red-500 text-white focus:outline-red-400",
-    icon: "p-1 text-md",
+    icon: "p-1 text-md focus:outline-black",
   };
-  console.log(cn(baseClass, styles[btnType], className))
   return (
     <button
       type={type}
