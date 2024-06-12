@@ -7,7 +7,7 @@ import {
 } from "@ant-design/icons";
 import { PropsWithChildren, useState } from "react";
 import Button from "../ui/Button";
-import Dropdown, {
+import {
   DropDownItem,
   DropDownList,
   DropDownMenu,
@@ -29,27 +29,6 @@ export const GridItemsAction = <T,>({
 }: GridItemsActionsProps<T>) => {
   const [dropDown, setDropDown] = useState(false);
   const dropDownRef = useOnOutsideClick(() => setDropDown(false));
-  const dropDownItems = [
-    {
-      label: "Show",
-      icon: <EyeOutlined />,
-      key: "read",
-      className: "bg-blue-200 text-blue-500 hover:bg-blue-500",
-    },
-    {
-      label: "Edit",
-      icon: <EditOutlined />,
-      key: "update",
-      className: "bg-purple-200 text-purple-500 hover:bg-purple-500",
-    },
-    {
-      label: "Delete",
-      icon: <DeleteOutlined />,
-      key: "delete",
-      className: "bg-red-200 text-red-500 hover:bg-red-500",
-    },
-  ];
-
   return (
     <article className="border p-4 shadow-md bg-white rounded-md">
       <div className="relative" ref={dropDownRef}>

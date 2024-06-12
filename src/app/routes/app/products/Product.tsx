@@ -1,10 +1,10 @@
 import { Navigate } from "react-router-dom";
-import { selectProdcutsCurrentItem } from "../../redux/slice/productsSlice";
-import { useAppSelector } from "../../redux/store/hooks";
-import ProductPreviewImage from "../../components/ProductImagePreview";
-import { currencyFormatter } from "../../utils/currencyFormatter";
+import { selectProdcutsCurrentItem } from "@/redux/slice/productsSlice";
+import { useAppSelector } from "@/redux/store/hooks";
+import ProductPreviewImage from "@/components/ProductImagePreview";
+import { currencyFormatter } from "@/utils/currencyFormatter";
 
-const SingleProduct = () => {
+export const SingleProduct = () => {
   const { record } = useAppSelector(selectProdcutsCurrentItem);
   if (record === null) return <Navigate to="/products" />;
   return (
@@ -131,4 +131,3 @@ const SingleProduct = () => {
   );
 };
 
-export default SingleProduct;

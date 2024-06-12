@@ -2,7 +2,7 @@ import ListCategories from "@/features/categories/components/ListCategories";
 import CategoryHeader from "@/features/categories/components/CategoryHeader";
 import EditCategory from "@/features/categories/components/EditCategory";
 import CreateCategory from "@/features/categories/components/CreateCategory";
-import CategoryDelete from "@/features/categories/components/CategoryDelete";
+import CategoryDelete from "@/features/categories/components/DeleteCategory";
 import ReadCategory from "@/features/categories/components/ReadCategory";
 
 const Categories = () => {
