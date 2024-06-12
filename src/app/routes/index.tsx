@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import Dashboard from "@/pages/Dashboard";
-import Products from "@/pages/products";
+import Products from "./app/products";
 import Orders from "@/pages/orders";
 import Categories from "./app/categories";
 import Users from "@/pages/users";
