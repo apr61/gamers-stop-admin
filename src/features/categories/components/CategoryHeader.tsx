@@ -1,8 +1,6 @@
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import {
-  AppstoreOutlined,
-  BarsOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
 import { ChangeEvent, useState } from "react";
@@ -13,6 +11,7 @@ import {
   setCategoryItemsView,
 } from "../categorySlice";
 import { useSearchParams } from "react-router-dom";
+import ItemViewSelect from "@/components/ItemViewSelect/ItemViewSelect";
 
 const CategoryHeader = () => {
   const [search, setSearch] = useState<string>("");
@@ -37,7 +36,7 @@ const CategoryHeader = () => {
               setCategoryCurrentItem({
                 record: null,
                 action: "create",
-              })
+              }),
             )
           }
         >
@@ -53,32 +52,10 @@ const CategoryHeader = () => {
             value={search}
             onChange={(e) => handleChange(e)}
           />
-          <div className="bg-white flex rounded-lg border">
-            <Button
-              type="button"
-              btnType="icon"
-              className={`text-lg py-2 px-4 w-12 hover:text-blue-500 focus:outline-blue-500 ${
-                itemsView === "LIST"
-                  ? "rounded-none border-2 border-blue-500 rounded-tl-lg rounded-bl-lg "
-                  : ""
-              }`}
-              onClick={() => dispatch(setCategoryItemsView("LIST"))}
-            >
-              <BarsOutlined />
-            </Button>
-            <Button
-              type="button"
-              btnType="icon"
-              className={`text-lg py-2 px-4 w-12 hover:text-blue-500 focus:outline-blue-500 ${
-                itemsView === "GRID"
-                  ? "rounded-none border-2 border-blue-500 rounded-tr-lg rounded-br-lg"
-                  : ""
-              }`}
-              onClick={() => dispatch(setCategoryItemsView("GRID"))}
-            >
-              <AppstoreOutlined />
-            </Button>
-          </div>
+          <ItemViewSelect
+            itemsView={itemsView}
+            onClick={(value) => dispatch(setCategoryItemsView(value))}
+          />
         </div>
       </div>
     </header>

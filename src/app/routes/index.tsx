@@ -7,7 +7,7 @@ import Login from "@/app/routes/auth/login";
 import SignUp from "@/app/routes/auth/signup";
 import RequireAuth from "@/layout/RequireAuth";
 import Unautorized from "@/pages/Unauthorized";
-import Addresses from "@/pages/addresses";
+import Addresses from "./app/addresses/addresses";
 import Brands from "@/pages/brands";
 import SingleOrder from "@/pages/SingleOrder";
 import { NotFoundRoute } from "./not-found";

@@ -4,12 +4,12 @@ import crudSlice from "../slice/crudSlice";
 import uiActionsSlice from "../slice/uiActionsSlice";
 import authSlice from "../slice/authSlice";
 import profilesSlice from "../slice/profilesSlice";
-import addressSlice from "../slice/addressSlice";
 import ordersSlice from "../slice/ordersSlice";
 import usersSlice from "../slice/usersSlice";
 import brandsSlice from "../slice/brandsSlice";
 import categorySlice from "@/features/categories/categorySlice";
 import productsSlice from "@/features/products/productSlice";
+import addressSlice from "@/features/addresses/addressSlice";
 
 export const store = configureStore({
   reducer: {
