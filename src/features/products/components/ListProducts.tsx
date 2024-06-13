@@ -17,6 +17,10 @@ import { currencyFormatter } from "@/utils/currencyFormatter";
 
 const columns: ColumnConfig<Product>[] = [
   {
+    title: "ID",
+    dataIndex: "id",
+  },
+  {
     title: "Product",
     render: (record: Product) => (
       <div className="flex gap-2 items-start">

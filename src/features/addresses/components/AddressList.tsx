@@ -17,6 +17,10 @@ import BlankUserProfile from "@/assets/blank-profile-picture.webp";
 
 const columns: ColumnConfig<Address>[] = [
 	{
+		title: "ID",
+		dataIndex: "id",
+	},
+	{
 		title: "Customer",
 		render: (record: Address) => (
 			<div className="flex gap-2 items-center">

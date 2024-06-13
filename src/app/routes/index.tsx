@@ -1,15 +1,13 @@
 import { createBrowserRouter } from "react-router-dom";
 import Dashboard from "@/pages/Dashboard";
-import Orders from "@/pages/orders";
 import Categories from "./app/categories";
-import Users from "@/pages/users";
 import Login from "@/app/routes/auth/login";
 import SignUp from "@/app/routes/auth/signup";
 import RequireAuth from "@/layout/RequireAuth";
 import Unautorized from "@/pages/Unauthorized";
 import Addresses from "./app/addresses/addresses";
-import Brands from "@/pages/brands";
-import SingleOrder from "@/pages/SingleOrder";
+import Brands from "./app/brands/Brands";
+import Users from "./app/users/Users";
 import { NotFoundRoute } from "./not-found";
 import AppRoot from "./app/root";
 import {
@@ -18,6 +16,8 @@ import {
   ProductEdit,
   ProductNew,
 } from "./app/products";
+import Orders from "./app/orders/Orders";
+import Order from "./app/orders/Order";
 
 const router = createBrowserRouter([
   {
@@ -63,8 +63,12 @@ const router = createBrowserRouter([
                 element: <Orders />,
               },
               {
-                path: ":id",
-                element: <SingleOrder />,
+                path: ":id/show",
+                element: <Order />,
+              },
+              {
+                path: ":id/edit",
+                element: <Order />,
               },
             ],
           },

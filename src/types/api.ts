@@ -2,6 +2,14 @@ import { ReactElement } from "react";
 
 export type ItemsViewType = "GRID" | "LIST"
 
+export type ItemActionsType = {
+  label: string;
+  icon: JSX.Element;
+  key: "READ" | "UPDATE" | "DELETE";
+  className: string;
+};
+
+
 export type Category = {
   id: number;
   category_name: string;

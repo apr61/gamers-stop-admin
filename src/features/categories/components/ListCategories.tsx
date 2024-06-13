@@ -16,6 +16,10 @@ import ItemsGridLayout from "@/components/layouts/ItemsGridLayout";
 
 const columns: ColumnConfig<Category>[] = [
   {
+    title: "ID",
+    dataIndex: "id",
+  },
+  {
     title: "Name",
     dataIndex: "category_name",
   },
@@ -43,9 +47,6 @@ const ListCategories = () => {
   const dispatch = useAppDispatch();
   const itemsView = useAppSelector(selectCategoryItemsView);
 
-  const handleRead = (record: Category) => {
-    dispatch(setCategoryCurrentItem({ record: record, action: "read" }));
-  };
   const handleUpdate = (record: Category) => {
     dispatch(setCategoryCurrentItem({ record: record, action: "update" }));
   };
@@ -60,9 +61,9 @@ const ListCategories = () => {
       render: (record: Category) => (
         <TableActions
           record={record}
-          readFn={handleRead}
           deleteFn={handleDelete}
           editFn={handleUpdate}
+          allowedActions={["UPDATE", "DELETE"]}
         />
       ),
     },
@@ -105,9 +106,9 @@ const ListCategories = () => {
       ) : (
         <CategoryGridView
           data={data}
-          readFn={handleRead}
           editFn={handleUpdate}
           deleteFn={handleDelete}
+          allowedActions={["UPDATE", "DELETE"]}
         />
       )}
       <div className="flex w-full mt-4 justify-between">
@@ -128,9 +129,10 @@ export default ListCategories;
 
 type CategoryGridViewProps = {
   data: Category[];
-  readFn: (record: Category) => void;
-  editFn: (record: Category) => void;
-  deleteFn: (record: Category) => void;
+  readFn?: (record: Category) => void;
+  editFn?: (record: Category) => void;
+  deleteFn?: (record: Category) => void;
+  allowedActions?: ("READ" | "UPDATE" | "DELETE")[];
 };
 
 const CategoryGridView = ({ data, ...props }: CategoryGridViewProps) => {

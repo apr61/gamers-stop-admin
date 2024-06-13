@@ -1,5 +1,5 @@
 import supabase from "../../utils/supabase";
-import { LoginFormValues, SignUpFormValues } from "../../utils/types";
+import { LoginFormValues, SignUpFormValues } from "@/types/api";
 import errorHandler from "../errorHandler";
 
 const createNewUserEmailPass = async (newUser: SignUpFormValues) => {

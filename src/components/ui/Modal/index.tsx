@@ -1,11 +1,11 @@
-import { ReactElement, forwardRef } from "react";
+import { ReactNode, forwardRef } from "react";
 import Button from "../Button";
 import { CloseOutlined } from "@ant-design/icons";
 
 type ModalProps = {
   isOpen: boolean;
   handleClose: () => void;
-  children: ReactElement | ReactElement[];
+  children: ReactNode;
   title: string;
 };
 

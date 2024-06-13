@@ -1,11 +1,14 @@
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import Button from "@/components/ui/Button";
+import { ItemActionsType } from "@/types/api";
+
 
 type TableActionsProps<T> = {
-	readFn: (record: T) => void;
-	editFn: (record: T) => void;
-	deleteFn: (record: T) => void;
+	readFn?: (record: T) => void;
+	editFn?: (record: T) => void;
+	deleteFn?: (record: T) => void;
 	record: T;
+	allowedActions?: ("READ" | "UPDATE" | "DELETE")[];
 };
 
 export const TableActions = <T,>({
@@ -13,39 +16,40 @@ export const TableActions = <T,>({
 	deleteFn,
 	editFn,
 	record,
+	allowedActions = ["READ", "UPDATE", "DELETE"],
 }: TableActionsProps<T>) => {
-	const dropDownItems = [
+	let dropDownItems: ItemActionsType[] = [
 		{
 			label: "Show",
 			icon: <EyeOutlined />,
-			key: "read",
+			key: "READ",
 			className: "bg-blue-200 text-blue-500 hover:bg-blue-500",
 		},
 		{
 			label: "Edit",
 			icon: <EditOutlined />,
-			key: "update",
+			key: "UPDATE",
 			className: "bg-purple-200 text-purple-500 hover:bg-purple-500",
 		},
 		{
 			label: "Delete",
 			icon: <DeleteOutlined />,
-			key: "delete",
+			key: "DELETE",
 			className: "bg-red-200 text-red-500 hover:bg-red-500",
 		},
 	];
 	const handleDropdownOnClick = (key: string, record: T) => {
 		switch (key) {
-			case "read": {
-				readFn(record);
+			case "READ": {
+				readFn && readFn(record);
 				break;
 			}
-			case "update": {
-				editFn(record);
+			case "UPDATE": {
+				editFn && editFn(record);
 				break;
 			}
-			case "delete": {
-				deleteFn(record);
+			case "DELETE": {
+				deleteFn && deleteFn(record);
 				break;
 			}
 			default: {
@@ -53,6 +57,9 @@ export const TableActions = <T,>({
 			}
 		}
 	};
+	dropDownItems = dropDownItems.filter(
+		(dropDown) => allowedActions.indexOf(dropDown.key) !== -1,
+	);
 	return (
 		<div className="flex gap-1 items-center">
 			{dropDownItems.map((item) => (
@@ -72,4 +79,3 @@ export const TableActions = <T,>({
 		</div>
 	);
 };
-
