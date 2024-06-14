@@ -24,6 +24,7 @@ const createNewUser = createAsyncThunk(
 	"auth/createNewUser",
 	async (newUser: SignUpFormValues) => {
 		const data = await createNewUserEmailPass(newUser);
+		
 		if(data){	
 			return data.session;
 		}
@@ -35,6 +36,7 @@ const loginUser = createAsyncThunk(
 	"auth/loginUser",
 	async (newUser: LoginFormValues) => {
 		const data = await loginUserWithEmailPass(newUser);
+		
 		if(data){	
 			return data.session;
 		}

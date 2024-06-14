@@ -1,20 +1,19 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { selectCurrentUser } from "../redux/slice/authSlice";
-import { useAppSelector } from "../redux/store/hooks";
-import { user_role } from "@/types/api";
 import PageLoader from "../components/PageLoader";
+import { useAuth } from "@/hooks/useAuth";
+import { USER_ROLE } from "@/types/api";
 
 type RequireAuthProps = {
-  allowedRoles: user_role[];
+  allowedRoles: USER_ROLE[];
 };
 
 const RequireAuth = ({ allowedRoles }: RequireAuthProps) => {
-  const { status, session } = useAppSelector(selectCurrentUser);
+  const {session, user_role, isLoading} = useAuth()
   const location = useLocation();
 
-  if (status === "pending") return <PageLoader />;
+  if (isLoading) return <PageLoader />;
 
-  if (session && allowedRoles.includes(session.user.user_metadata.user_role)) {
+  if (session && allowedRoles.includes(user_role as USER_ROLE)) {
     return <Outlet />;
   }
 

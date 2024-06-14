@@ -49,10 +49,6 @@ const columns: ColumnConfig<User>[] = [
     ),
   },
   {
-    title: "Mobile Number",
-    dataIndex: "phone",
-  },
-  {
     title: "Last login",
     dataIndex: "lastLogin",
     render: (record: User) =>

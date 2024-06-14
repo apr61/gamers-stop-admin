@@ -11,8 +11,8 @@ const CreateBrand = () => {
 	const { action } = useAppSelector(selectBrandCurrentItem);
 	const dispatch = useAppDispatch();
 	const handleClose = () => {
-		close();
 		dispatch(resetBrandCurrentItem());
+		close();
 	};
 	useEffect(() => {
 		if (action === "create") {

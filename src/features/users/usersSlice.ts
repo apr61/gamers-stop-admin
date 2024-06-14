@@ -1,28 +1,24 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ItemsViewType, User, UserFormData } from "@/types/api";
+import { ItemsViewType, CustomUser, UserFormData } from "@/types/api";
 import { RootState } from "@/redux/store/store";
-import {
-	createUser,
-	deleteUser,
-	listAllUsers,
-	updateUser,
-} from "@/services/api/users";
+import { createUser, deleteUser, updateUser } from "@/services/api/users";
+import { getProfiles, searchProfiles } from "@/services/api/profiles";
 
 export type CurrentType = {
 	action: "create" | "read" | "update" | "delete" | "idle";
-	record: User | null;
+	record: CustomUser | null;
 	status: "idle" | "pending" | "succeeded" | "failed";
 	error: string | null;
 };
 
 interface UserState {
 	list: {
-		data: User[];
+		data: CustomUser[];
 		status: "idle" | "pending" | "succeeded" | "failed";
 		error: string | null;
 	};
 	search: {
-		data: User[];
+		data: CustomUser[];
 		totalItems: number;
 	};
 	current: CurrentType;
@@ -52,12 +48,15 @@ export const userSearch = createAsyncThunk(
 	"users/search",
 	async (_, { rejectWithValue }) => {
 		try {
-			const response = await listAllUsers();
-			const data = {
-				data: response.data as User[],
-				totalItems: response.count,
-			};
-			return data;
+			const response = await searchProfiles();
+			if (response) {
+				const data = {
+					data: response.data as CustomUser[],
+					totalItems: response.count,
+				};
+				return data;
+			}
+			return null;
 		} catch (error) {
 			if (error instanceof Error) {
 				return rejectWithValue(error.message);
@@ -148,8 +147,11 @@ const userSlice = createSlice({
 		builder
 			.addCase(userSearch.fulfilled, (state, action) => {
 				state.list.status = "succeeded";
-				state.search.data = action.payload?.data!;
-				state.search.totalItems = action.payload?.totalItems!;
+				const response = action.payload;
+				if (response) {
+					state.search.data = response.data;
+					state.search.totalItems = response.totalItems;
+				}
 			})
 			.addCase(userSearch.pending, (state) => {
 				state.list.status = "pending";

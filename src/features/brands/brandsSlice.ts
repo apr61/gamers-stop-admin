@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Brand, BrandFormValues, QueryType, TableName } from "@/types/api";
+import { Brand, BrandFormValues, QueryType } from "@/types/api";
 import { RootState } from "@/redux/store/store";
 import {
 	createBrand,
@@ -152,15 +152,12 @@ const brandSlice = createSlice({
 			state.current.action = action.payload.action;
 		},
 		resetBrandCurrentItem: (state) => {
-			state.current = {
-				action: "idle",
-				record: null,
-				status: "idle",
-				error: null,
-			};
+			state.current = initialState.current;
 		},
 		resetBrandState: (state) => {
-			state = initialState;
+			state.current = initialState.current;
+			state.list = initialState.list;
+			state.search = initialState.search;
 		},
 	},
 	extraReducers: (builder) => {

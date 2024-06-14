@@ -6,7 +6,7 @@ const createAddress = async (address: AddressFormValues): Promise<Address> => {
   const { data, error } = await supabase()
     .from("addresses")
     .insert([address])
-    .select(`*, user:profiles(id, full_name, user_role, avatar_url)`)
+    .select(`*, user:profiles(id, full_name, avatar_url)`)
     .single();
 
   if (error) {
@@ -20,7 +20,7 @@ const createAddress = async (address: AddressFormValues): Promise<Address> => {
 const getAddresses = async (): Promise<Address[]> => {
   const { data, error } = await supabase()
     .from("addresses")
-    .select(`*, user:profiles(id, full_name, user_role, avatar_url)`);
+    .select(`*, user:profiles(id, full_name, avatar_url)`);
 
   if (error) {
     throw new Error(error.message);
@@ -33,7 +33,7 @@ const getAddresses = async (): Promise<Address[]> => {
 const getAddressById = async (id: number): Promise<Address> => {
   const { data, error } = await supabase()
     .from("addresses")
-    .select(`*, user:profiles(id, full_name, user_role, avatar_url)`)
+    .select(`*, user:profiles(id, full_name, avatar_url)`)
     .eq("id", id)
     .single();
 
@@ -47,7 +47,7 @@ const getAddressById = async (id: number): Promise<Address> => {
 // Update an address
 const updateAddress = async (
   id: number,
-  address: AddressFormValues
+  address: AddressFormValues,
 ): Promise<Address> => {
   console.log(address);
 
@@ -55,7 +55,7 @@ const updateAddress = async (
     .from("addresses")
     .update(address)
     .eq("id", id)
-    .select(`*, user:profiles(id, full_name, user_role, avatar_url)`)
+    .select(`*, user:profiles(id, full_name, avatar_url)`)
     .single();
 
   if (error) {
@@ -78,7 +78,7 @@ const deleteAddress = async (id: number): Promise<number> => {
 const getAddressesByUserId = async (userId: string): Promise<Address[]> => {
   const { data, error } = await supabase()
     .from("addresses")
-    .select(`*, user:profiles(id, full_name, user_role, avatar_url)`)
+    .select(`*, user:profiles(id, full_name, avatar_url)`)
     .eq("userId", userId);
 
   if (error) {

@@ -1,5 +1,5 @@
 import supabase from "../../utils/supabase";
-import { QueryType, ProductFormValues, Product } from "../../utils/types";
+import { QueryType, ProductFormValues, Product } from "@/types/api";
 import { uploadFiles, deleteFile } from "../api/fileUpload";
 
 export const searchProducts = async (query: QueryType<Product>) => {

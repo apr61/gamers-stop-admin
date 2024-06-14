@@ -21,7 +21,7 @@ import Order from "./app/orders/Order";
 
 const router = createBrowserRouter([
   {
-    element: <RequireAuth allowedRoles={["ADMIN"]} />,
+    element: <RequireAuth allowedRoles={["admin"]} />,
     children: [
       {
         element: <AppRoot />,

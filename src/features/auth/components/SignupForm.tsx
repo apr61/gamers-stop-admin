@@ -10,6 +10,7 @@ import {
 	selectCurrentUser,
 	setAuthStatus,
 } from "@/redux/slice/authSlice";
+import { EmailRegex } from "@/utils/regex";
 
 const SignUpForm = () => {
 	const {
@@ -26,8 +27,6 @@ const SignUpForm = () => {
 		await dispatch(createNewUser(data));
 	};
 
-	const EmailRegex = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
-	const MobileNumberRegex = /^[6-9]{1}[0-9]{9}$/;
 
 	useEffect(() => {
 		if (status === "succeeded") {
@@ -73,21 +72,6 @@ const SignUpForm = () => {
 			/>
 			{errors.email && (
 				<p className="text-red-500">{errors.email.message}</p>
-			)}
-			<Input
-				label="Phone"
-				placeholder="+91-000000000"
-				type="text"
-				{...register("phone", {
-					required: "Phone number is required",
-					pattern: {
-						value: MobileNumberRegex,
-						message: "Phone number must be valid",
-					},
-				})}
-			/>
-			{errors.phone && (
-				<p className="text-red-500">{errors.phone.message}</p>
 			)}
 			<Input
 				label="Password"

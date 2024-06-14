@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 
-export type ItemsViewType = "GRID" | "LIST"
+export type ItemsViewType = "GRID" | "LIST";
 
 export type ItemActionsType = {
   label: string;
@@ -8,7 +8,6 @@ export type ItemActionsType = {
   key: "READ" | "UPDATE" | "DELETE";
   className: string;
 };
-
 
 export type Category = {
   id: number;
@@ -114,12 +113,12 @@ export type User = {
 };
 
 export type UserFormData = {
-  email: string,
-  full_name: string,
-  user_role: user_role,
-  phone: string,
-  avatar_url: string
-}
+  email: string;
+  full_name: string;
+  user_role: user_role;
+  phone: string;
+  avatar_url: string;
+};
 
 export type CustomUser = {
   id: string;
@@ -128,17 +127,17 @@ export type CustomUser = {
   avatar_url: string;
   email: string;
   phone: string;
+  created_at: string;
 };
 
 export type SignUpFormValues = {
   full_name: string;
   email: string;
   password: string;
-  phone: string
 };
 
 export type LoginFormValues = {
-  email: string
+  email: string;
   password: string;
 };
 
@@ -178,7 +177,7 @@ export type CrudConfig<T> = {
     resetEntityStateFn: () => void;
     setCurrentItemFn: (
       action: "read" | "update" | "delete" | "create",
-      record: T | null
+      record: T | null,
     ) => void;
   };
 };
@@ -205,3 +204,5 @@ export type QueryType<T> = {
 };
 
 export type Data = Order | Product | Category | CustomUser;
+
+export type USER_ROLE = "user" | "admin";

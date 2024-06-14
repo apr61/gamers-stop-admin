@@ -1,8 +1,16 @@
-import { LoginOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
+import {
+  LoginOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+} from "@ant-design/icons";
 import Button from "../ui/Button";
 import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
 import { selectSideNav, setSideNav } from "../../redux/slice/uiActionsSlice";
-import { logOutUser, selectCurrentUser, setAuthStatus } from "../../redux/slice/authSlice";
+import {
+  logOutUser,
+  selectCurrentUser,
+  setAuthStatus,
+} from "../../redux/slice/authSlice";
 import BlankUserProfile from "../../assets/blank-profile-picture.webp";
 import { useOnOutsideClick } from "@/hooks/useOnClickOutside";
 import {
@@ -12,6 +20,7 @@ import {
   DropDownSeparator,
 } from "../ui/Dropdown";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 const Navbar = () => {
   const sidenavOpen = useAppSelector(selectSideNav);
@@ -42,24 +51,24 @@ const Navbar = () => {
 export default Navbar;
 
 const UserProfile = () => {
-  const { status, session } = useAppSelector(selectCurrentUser);
+  const { user, isLoading } = useAuth();
   const [dropDown, setDropDown] = useState(false);
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const dropDownRef = useOnOutsideClick(() => setDropDown(false));
-  
-  if (status === "pending" || session === null) {
+
+  if (isLoading || user === null) {
     return;
   }
-  const userData = session.user.user_metadata;
+  const userData = user.user_metadata;
   const userProfilePic = userData.avatar_url
     ? userData.avatar_url
     : BlankUserProfile;
-  
+
   const handleLogout = async () => {
     await dispatch(logOutUser());
     dispatch(setAuthStatus("idle"));
   };
-  
+
   return (
     <div ref={dropDownRef} className="relative">
       <Button
