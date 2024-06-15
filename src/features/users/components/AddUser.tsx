@@ -1,6 +1,6 @@
 import Modal from "@/components/ui/Modal";
 import { resetUserCurrentItem, selectUserCurrentItem } from "../usersSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { useEffect, useState } from "react";
 import Input from "@/components/ui/Input";

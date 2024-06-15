@@ -5,7 +5,7 @@ import {
 	selectAddressItemsView,
 	setAddressCurrentItem,
 } from "../addressSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import { Address, ColumnConfig, QueryType } from "@/types/api";

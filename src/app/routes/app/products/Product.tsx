@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
-import { selectProdcutsCurrentItem } from "@/redux/slice/productsSlice";
-import { useAppSelector } from "@/redux/store/hooks";
+import { selectProdcutsCurrentItem } from "@/features/products/productSlice";
+import { useAppSelector } from "@/store/hooks";
 import ProductPreviewImage from "@/components/ProductImagePreview";
 import { currencyFormatter } from "@/utils/currencyFormatter";
 
@@ -130,4 +130,3 @@ export const SingleProduct = () => {
     </div>
   );
 };
-

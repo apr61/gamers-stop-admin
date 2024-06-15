@@ -5,7 +5,7 @@ import {
   resetAddressCurrentItem,
   selectAddressCurrentItem,
 } from "../addressSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect } from "react";
 
 const AddressDelete = () => {

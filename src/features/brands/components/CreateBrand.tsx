@@ -1,7 +1,7 @@
 import BrandForm from "./BrandForm";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import Modal from "@/components/ui/Modal";
-import { useAppDispatch, useAppSelector } from "@/redux/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { addBrand, resetBrandCurrentItem, selectBrandCurrentItem } from "../brandsSlice";
 import { useEffect } from "react";
 import { BrandFormValues } from "@/types/api";

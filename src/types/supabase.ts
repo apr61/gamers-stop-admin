@@ -51,7 +51,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "addresses_userid_fkey"
+            foreignKeyName: "addresses_userId_fkey"
             columns: ["userId"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -235,34 +235,28 @@ export type Database = {
       }
       profiles: {
         Row: {
-          avatar_url: string
+          avatar_url: string | null
           created_at: string | null
           email: string
-          full_name: string
+          full_name: string | null
           id: string
-          phone: string
           updated_at: string | null
-          user_role: string
         }
         Insert: {
-          avatar_url: string
+          avatar_url?: string | null
           created_at?: string | null
           email: string
-          full_name: string
+          full_name?: string | null
           id: string
-          phone: string
           updated_at?: string | null
-          user_role: string
         }
         Update: {
-          avatar_url?: string
+          avatar_url?: string | null
           created_at?: string | null
           email?: string
-          full_name?: string
+          full_name?: string | null
           id?: string
-          phone?: string
           updated_at?: string | null
-          user_role?: string
         }
         Relationships: [
           {
@@ -274,14 +268,50 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          id: number
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: number
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: number
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      custom_access_token_hook: {
+        Args: {
+          event: Json
+        }
+        Returns: Json
+      }
+      jwt_custom_claims_to_get_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
     }
     Enums: {
+      app_role: "admin" | "user"
       user_role: "admin" | "user"
     }
     CompositeTypes: {

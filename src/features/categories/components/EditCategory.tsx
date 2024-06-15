@@ -1,7 +1,7 @@
 import Drawer from "@/components/ui/Drawer";
 import CategoryForm from "./CategoryForm";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { useAppDispatch, useAppSelector } from "@/redux/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
 	resetCategoryCurrentItem,
 	selectCategoryCurrentItem,

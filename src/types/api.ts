@@ -90,7 +90,7 @@ export type ProductsOrdered = {
 
 export type Order = {
   id: number;
-  user: CustomUser | null;
+  user: Omit<CustomUser, "user_role" | "created_at"> | null;
   products_ordered: ProductsOrdered[];
   address: Omit<Address, "user" | "userId" | "created_at" | "isDefault"> | null;
   payment_status: string;
@@ -122,11 +122,10 @@ export type UserFormData = {
 
 export type CustomUser = {
   id: string;
-  full_name: string;
-  user_role: string;
-  avatar_url: string;
+  full_name: string | null;
+  user_role: USER_ROLE;
+  avatar_url: string | null;
   email: string;
-  phone: string;
   created_at: string;
 };
 
@@ -177,7 +176,7 @@ export type CrudConfig<T> = {
     resetEntityStateFn: () => void;
     setCurrentItemFn: (
       action: "read" | "update" | "delete" | "create",
-      record: T | null,
+      record: T | null
     ) => void;
   };
 };

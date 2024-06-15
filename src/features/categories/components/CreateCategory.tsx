@@ -5,7 +5,7 @@ import {
 	selectCategoryCurrentItem,
 } from "../categorySlice";
 import { useDisclosure } from "@/hooks/useDisclosure";
-import { useAppDispatch, useAppSelector } from "@/redux/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect } from "react";
 
 const CreateCategory = () => {

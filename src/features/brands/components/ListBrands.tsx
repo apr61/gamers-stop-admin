@@ -4,7 +4,7 @@ import {
 	selectBrands,
 	setBrandCurrentItem,
 } from "../brandsSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import { Brand, ColumnConfig, QueryType } from "@/types/api";

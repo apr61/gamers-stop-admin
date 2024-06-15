@@ -1,8 +1,14 @@
 import supabase from "../../utils/supabase";
-import { Order, OrderFormValues, QueryType } from "../../utils/types";
+import {
+  CustomUser,
+  Order,
+  OrderFormValues,
+  QueryType,
+  USER_ROLE,
+} from "@/types/api";
 
 const searchOrders = async (
-  query: QueryType<Order>,
+  query: QueryType<Order>
 ): Promise<{ data: Order[]; count: number }> => {
   const { count, error: countError } = await supabase()
     .from("orders")
@@ -20,9 +26,9 @@ const searchOrders = async (
       payment_status,
       order_date,
       order_number,
-      user:profiles (full_name, id, avatar_url, user_role, email, phone),
+      user:profiles (full_name, id, avatar_url, email, user_role: user_roles(role)),
       address: addresses (id, address, name, phoneNumber, pincode, townLocality, cityDistrict, state)
-    `,
+    `
     )
     .ilike(`${query.search.query}`, `%${query.search.with}%`)
     .order("order_date", { ascending: false })
@@ -32,13 +38,12 @@ const searchOrders = async (
 
   // Fetch products for each order by querying order_products and products tables
   const orderIds = orders.map((order) => order.id);
-  const { data: orderProducts, error: orderProductsError } =
-    await supabase()
-      .from("order_products")
-      .select(
-        "order_id, quantity, product: products (id, name, description, price, created_at,quantity, images, category_id, category:categories(*), brand:brands(id, brand_name))",
-      )
-      .in("order_id", orderIds);
+  const { data: orderProducts, error: orderProductsError } = await supabase()
+    .from("order_products")
+    .select(
+      "order_id, quantity, product: products (id, name, description, price, created_at,quantity, images, category_id, category:categories(*), brand:brands(id, brand_name))"
+    )
+    .in("order_id", orderIds);
 
   if (orderProductsError) throw orderProductsError;
 
@@ -62,7 +67,7 @@ const searchOrders = async (
 
 const updateOrder = async (
   orderId: number,
-  updatedOrder: any,
+  updatedOrder: any
 ): Promise<Order | null> => {
   const { data, error } = await supabase()
     .from("orders")
@@ -79,10 +84,7 @@ const updateOrder = async (
 };
 
 const deleteOrder = async (orderId: number): Promise<number> => {
-  const { error } = await supabase()
-    .from("orders")
-    .delete()
-    .eq("id", orderId);
+  const { error } = await supabase().from("orders").delete().eq("id", orderId);
 
   if (error) {
     console.error("Error deleting order:", error.message);
@@ -98,16 +100,15 @@ const createOrder = async (order: OrderFormValues): Promise<Order | null> => {
     .select(
       `
     id,
-    user_id,
     address_id,
     order_status,
     total_price,
     payment_status,
     order_date,
     order_number,
-    user:profiles (full_name, id, avatar_url, user_role, email, phone),
+    user:profiles (full_name, id, avatar_url, email, user_role: user_roles(role)),
     address: addresses (id, address, name, phoneNumber, pincode, townLocality, cityDistrict, state)
-  `,
+  `
     )
     .single();
 
@@ -116,13 +117,12 @@ const createOrder = async (order: OrderFormValues): Promise<Order | null> => {
     return null;
   }
 
-  const { data: orderProducts, error: orderProductsError } =
-    await supabase()
-      .from("order_products")
-      .select(
-        "order_id, quantity, product: products (id, name, description, price, created_at, quantity, images, category_id, category:categories(*), brand:brands(id, brand_name))",
-      )
-      .eq("order_id", data.id);
+  const { data: orderProducts, error: orderProductsError } = await supabase()
+    .from("order_products")
+    .select(
+      "order_id, quantity, product: products (id, name, description, price, created_at, quantity, images, category_id, category:categories(*), brand:brands(id, brand_name))"
+    )
+    .eq("order_id", data.id);
 
   if (orderProductsError) throw orderProductsError;
 
@@ -134,6 +134,10 @@ const createOrder = async (order: OrderFormValues): Promise<Order | null> => {
       product: product.product,
       quantity_ordered: product.quantity,
     })),
+    user: {
+      ...data.user,
+      user_role: data.user?.user_role[0].role as USER_ROLE,
+    } as CustomUser,
   };
 
   return ordersWithProducts;
@@ -142,9 +146,8 @@ const createOrder = async (order: OrderFormValues): Promise<Order | null> => {
 const fetchAllOrders = async (): Promise<Order[]> => {
   try {
     // Fetch orders with user details and address
-    const { data: orders, error: ordersError } = await supabase().from(
-      "orders",
-    ).select(`
+    const { data: orders, error: ordersError } = await supabase().from("orders")
+      .select(`
         id,
         user_id,
         address_id,
@@ -153,27 +156,26 @@ const fetchAllOrders = async (): Promise<Order[]> => {
         payment_status,
         order_date,
         order_number,
-        user:profiles (full_name, id, avatar_url, user_role, email, phone),
+        user:profiles (full_name, id, avatar_url, email, user_role: user_roles(role)),
         address: addresses (id, address, name, phoneNumber, pincode, townLocality, cityDistrict, state)
       `);
     if (ordersError || orders === null) throw ordersError;
 
     // Fetch products for each order by querying order_products and products tables
     const orderIds = orders.map((order) => order.id);
-    const { data: orderProducts, error: orderProductsError } =
-      await supabase()
-        .from("order_products")
-        .select(
-          "order_id, quantity, product: products (id, name, description, price, created_at,quantity, images, category_id, category:categories(*), brand:brands(id, brand_name))",
-        )
-        .in("order_id", orderIds);
+    const { data: orderProducts, error: orderProductsError } = await supabase()
+      .from("order_products")
+      .select(
+        "order_id, quantity, product: products (id, name, description, price, created_at,quantity, images, category_id, category:categories(*), brand:brands(id, brand_name))"
+      )
+      .in("order_id", orderIds);
 
     if (orderProductsError) throw orderProductsError;
 
     // Map products to their respective orders
     const ordersWithProducts = orders.map((order) => {
       const currentOrder = orderProducts.filter(
-        (op) => op.order_id === order.id,
+        (op) => op.order_id === order.id
       );
       return {
         ...order,
@@ -181,6 +183,10 @@ const fetchAllOrders = async (): Promise<Order[]> => {
           product: product.product,
           quantity_ordered: product.quantity,
         })),
+        user: {
+          ...order.user,
+          user_role: order.user?.user_role[0].role as USER_ROLE,
+        } as CustomUser,
       };
     });
     return ordersWithProducts;
@@ -225,9 +231,9 @@ const getOrdersByUserId = async (userId: string) => {
       payment_status,
       order_date,
       order_number,
-      user:profiles (full_name, id, avatar_url, user_role, email, phone),
+      user:profiles (full_name, id, avatar_url, email, user_role: user_roles(role)),
       address: addresses (id, address, name, phoneNumber, pincode, townLocality, cityDistrict, state)
-    `,
+    `
     )
     .eq("user_id", userId);
 
@@ -235,13 +241,12 @@ const getOrdersByUserId = async (userId: string) => {
 
   // Fetch products for each order by querying order_products and products tables
   const orderIds = orders.map((order) => order.id);
-  const { data: orderProducts, error: orderProductsError } =
-    await supabase()
-      .from("order_products")
-      .select(
-        "order_id, quantity, product: products (id, name, description, price, quantity,created_at, images, category_id, category:categories(*), brand:brands(id, brand_name))",
-      )
-      .in("order_id", orderIds);
+  const { data: orderProducts, error: orderProductsError } = await supabase()
+    .from("order_products")
+    .select(
+      "order_id, quantity, product: products (id, name, description, price, quantity,created_at, images, category_id, category:categories(*), brand:brands(id, brand_name))"
+    )
+    .in("order_id", orderIds);
 
   if (orderProductsError) throw orderProductsError;
 
@@ -254,6 +259,10 @@ const getOrdersByUserId = async (userId: string) => {
         product: product.product,
         quantity_ordered: product.quantity,
       })),
+      user: {
+        ...order.user,
+        user_role: order.user?.user_role[0].role as USER_ROLE,
+      } as CustomUser,
     };
   });
   return {

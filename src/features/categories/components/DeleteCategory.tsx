@@ -5,7 +5,7 @@ import {
   resetCategoryCurrentItem,
   selectCategoryCurrentItem,
 } from "../categorySlice";
-import { useAppDispatch, useAppSelector } from "@/redux/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect } from "react";
 
 const CategoryDelete = () => {

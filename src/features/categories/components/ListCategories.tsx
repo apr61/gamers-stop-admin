@@ -5,7 +5,7 @@ import {
   selectCategoryItemsView,
   setCategoryCurrentItem,
 } from "../categorySlice";
-import { useAppDispatch, useAppSelector } from "@/redux/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import { Category, ColumnConfig, QueryType } from "@/types/api";

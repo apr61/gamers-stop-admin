@@ -1,6 +1,6 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { ChangeEvent, useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/redux/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Button from "@/components/ui/Button";
 import FileInput from "@/components/ui/FileInput";
 import Input from "@/components/ui/Input";

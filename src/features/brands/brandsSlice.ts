@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Brand, BrandFormValues, QueryType } from "@/types/api";
-import { RootState } from "@/redux/store/store";
+import { RootState } from "@/store/store";
 import {
 	createBrand,
 	deleteBrand,

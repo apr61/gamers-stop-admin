@@ -4,7 +4,7 @@ import {
 	selectOrderSearch,
 	setOrderCurrentItem,
 } from "../orderSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import { Order, ColumnConfig, QueryType } from "@/types/api";

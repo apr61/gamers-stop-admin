@@ -6,7 +6,7 @@ import {
 	signOut,
 } from "@/services/api/auth";
 import { LoginFormValues, SignUpFormValues } from "@/types/api";
-import { RootState } from "@/redux/store/store";
+import { RootState } from "@/store/store";
 
 type AuthState = {
 	session: Session | null;

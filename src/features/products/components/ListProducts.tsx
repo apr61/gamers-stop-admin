@@ -5,7 +5,7 @@ import {
   selectProductItemsView,
   setProductCurrentItem,
 } from "../productSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
 import { Product, ColumnConfig, QueryType } from "@/types/api";

@@ -4,22 +4,17 @@ import {
   ShoppingCartOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { currencyFormatter } from "../utils/currencyFormatter";
-import Table from "../components/ui/Table";
+import { currencyFormatter } from "@/utils/currencyFormatter";
+import Table from "@/components/ui/Table";
 import { Link } from "react-router-dom";
-import {
-  ColumnConfig,
-  CustomUser,
-  Order,
-  ProductsOrdered,
-} from "../utils/types";
-import BlankUserProfile from "../assets/blank-profile-picture.webp";
-import { useCustomQuery } from "../hooks/useCustomQuery";
+import { ColumnConfig, CustomUser, Order, ProductsOrdered } from "@/types/api";
+import BlankUserProfile from "@/assets/blank-profile-picture.webp";
+import { useCustomQuery } from "@/hooks/useCustomQuery";
 import {
   getRecentOrders,
   getRecentProfiles,
   getTopSellingProducts,
-} from "../services/api/dashboard";
+} from "@/services/api/dashboard";
 
 function numberWithCommas(x: number) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -115,7 +110,7 @@ const RecentOrders = () => {
                 ? record?.user.avatar_url
                 : BlankUserProfile
             }
-            alt={record?.user?.full_name}
+            alt={record?.user?.full_name || ""}
           />
           <p>{record.user?.full_name}</p>
         </div>
@@ -175,7 +170,7 @@ const RecentUsers = () => {
           <img
             className="w-10 h-10 rounded-full"
             src={record?.avatar_url ? record?.avatar_url : BlankUserProfile}
-            alt={record?.full_name}
+            alt={record?.full_name || ""}
           />
           <p>{record.full_name}</p>
         </div>
@@ -184,10 +179,6 @@ const RecentUsers = () => {
     {
       title: "Email",
       dataIndex: "email",
-    },
-    {
-      title: "Phone",
-      dataIndex: "phone",
     },
   ];
   if (error) return <h1>{error}</h1>;

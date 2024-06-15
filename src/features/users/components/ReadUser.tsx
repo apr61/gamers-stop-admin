@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { resetUserCurrentItem, selectUserCurrentItem } from "../usersSlice";
-import { useAppSelector } from "@/redux/store/hooks";
+import { useAppSelector } from "@/store/hooks";
 import { useDisclosure } from "@/hooks/useDisclosure";
 import { useEffect } from "react";
 import Drawer from "@/components/ui/Drawer";
@@ -31,7 +31,7 @@ const ReadUser = () => {
           <img
             className="w-full h-full rounded-full"
             src={record.avatar_url ? record.avatar_url : BlankUserProfile}
-            alt={record.full_name}
+            alt={record.full_name || ""}
           />
         </div>
         <h2 className="text-xl font-semibold">{record.full_name}</h2>
@@ -41,10 +41,6 @@ const ReadUser = () => {
         </p>
         <hr className="w-full my-4" />
         <ul className="flex flex-col gap-4 items-start self-start">
-          <li className="flex gap-2">
-            <p className="font-semibold">Phone number</p> :{" "}
-            <p>{record.phone}</p>
-          </li>
           <li className="flex gap-2 items-center">
             <p className="font-semibold">User Role</p> :{" "}
             <p
@@ -58,10 +54,6 @@ const ReadUser = () => {
           <li className="flex gap-2">
             <p className="font-semibold">Member since</p> :{" "}
             <p>{new Date(record.created_at).toLocaleDateString()}</p>
-          </li>
-          <li className="flex gap-2">
-            <p className="font-semibold">Last login</p> :{" "}
-            <p>{record.lastLogin ? new Date(record.lastLogin).toLocaleDateString() : "Never"}</p>
           </li>
         </ul>
       </div>

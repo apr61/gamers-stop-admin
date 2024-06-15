@@ -4,14 +4,9 @@ import {
   MenuUnfoldOutlined,
 } from "@ant-design/icons";
 import Button from "../ui/Button";
-import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectSideNav, setSideNav } from "../../redux/slice/uiActionsSlice";
-import {
-  logOutUser,
-  selectCurrentUser,
-  setAuthStatus,
-} from "../../redux/slice/authSlice";
-import BlankUserProfile from "../../assets/blank-profile-picture.webp";
+import BlankUserProfile from "@/assets/blank-profile-picture.webp";
 import { useOnOutsideClick } from "@/hooks/useOnClickOutside";
 import {
   DropDownMenu,
@@ -51,12 +46,11 @@ const Navbar = () => {
 export default Navbar;
 
 const UserProfile = () => {
-  const { user, isLoading } = useAuth();
+  const { user, logOutFn, status } = useAuth();
   const [dropDown, setDropDown] = useState(false);
-  const dispatch = useAppDispatch();
   const dropDownRef = useOnOutsideClick(() => setDropDown(false));
 
-  if (isLoading || user === null) {
+  if (user === null) {
     return;
   }
   const userData = user.user_metadata;
@@ -64,9 +58,8 @@ const UserProfile = () => {
     ? userData.avatar_url
     : BlankUserProfile;
 
-  const handleLogout = async () => {
-    await dispatch(logOutUser());
-    dispatch(setAuthStatus("idle"));
+  const handleLogout = () => {
+    logOutFn();
   };
 
   return (
@@ -85,7 +78,9 @@ const UserProfile = () => {
         />
       </Button>
       <DropDownMenu
-        className={`top-14 right-0 min-w-[10rem] ${dropDown ? "max-h-96 p-1" : "max-h-0"}`}
+        className={`top-14 right-0 min-w-[10rem] ${
+          dropDown ? "max-h-96 p-1" : "max-h-0"
+        }`}
       >
         <DropDownList>
           <DropDownItem>
@@ -105,6 +100,8 @@ const UserProfile = () => {
               btnType="danger"
               className="w-full flex gap-2 justify-center items-center py-1"
               onClick={handleLogout}
+              loading={status === "pending"}
+              disabled={status === "pending"}
             >
               <>
                 <span className="text-xl">

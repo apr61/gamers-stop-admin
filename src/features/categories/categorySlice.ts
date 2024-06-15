@@ -5,7 +5,7 @@ import {
   ItemsViewType,
   QueryType,
 } from "@/types/api";
-import { RootState } from "@/redux/store/store";
+import { RootState } from "@/store/store";
 import {
   createCategory,
   deleteCategory,

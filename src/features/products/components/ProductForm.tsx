@@ -11,14 +11,17 @@ import { ChangeEvent, useEffect, useState } from "react";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import ImagePreview from "@/components/ImagePreview";
-import { useAppDispatch, useAppSelector } from "@/redux/store/hooks";
-import { fetchCategories, selectCategories } from "@/redux/slice/categorySlice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import {
+  fetchCategories,
+  selectCategories,
+} from "@/features/categories/categorySlice";
 import {
   addProduct,
   editProduct,
   selectProdcutsCurrentItem,
-} from "@/redux/slice/productsSlice";
-import { fetchBrands, selectBrands } from "@/redux/slice/brandsSlice";
+} from "@/features/products/productSlice";
+import { fetchBrands, selectBrands } from "@/features/brands/brandsSlice";
 
 type ProductFormProps = {
   product?: ProductFormValues;

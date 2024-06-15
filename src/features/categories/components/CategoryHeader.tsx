@@ -4,7 +4,7 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import { ChangeEvent, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/redux/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   selectCategoryItemsView,
   setCategoryCurrentItem,

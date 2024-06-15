@@ -1,6 +1,6 @@
 import ProductsForm from "@/features/products/components/ProductForm";
 import { selectProdcutsCurrentItem } from "@/features/products/productSlice";
-import { useAppSelector } from "@/redux/store/hooks";
+import { useAppSelector } from "@/store/hooks";
 import { ProductFormValues } from "@/types/api";
 import UrlToFileList from "@/utils/urlToFileList";
 import { useEffect, useState } from "react";

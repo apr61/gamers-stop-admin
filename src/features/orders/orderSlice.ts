@@ -5,7 +5,7 @@ import {
 	TableName,
 	OrderFormValues,
 } from "@/types/api";
-import { RootState } from "@/redux/store/store";
+import { RootState } from "@/store/store";
 import {
 	createOrder,
 	deleteOrder,

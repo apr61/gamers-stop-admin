@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import PageLoader from "../components/PageLoader";
+import PageLoader from "../PageLoader";
 import { useAuth } from "@/hooks/useAuth";
 import { USER_ROLE } from "@/types/api";
 

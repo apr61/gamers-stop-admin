@@ -1,10 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
-import Dashboard from "@/pages/Dashboard";
+import Dashboard from "./app/dashboard/dashboard";
 import Categories from "./app/categories";
-import Login from "@/app/routes/auth/login";
-import SignUp from "@/app/routes/auth/signup";
-import RequireAuth from "@/layout/RequireAuth";
-import Unautorized from "@/pages/Unauthorized";
+import Login from "./auth/login";
+import SignUp from "./auth/signup";
+import RequireAuth from "@/components/layouts/RequireAuth";
+import Unautorized from "./unauthorized";
 import Addresses from "./app/addresses/addresses";
 import Brands from "./app/brands/Brands";
 import Users from "./app/users/Users";

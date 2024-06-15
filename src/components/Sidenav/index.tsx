@@ -4,7 +4,6 @@ import {
   ClusterOutlined,
   DashboardOutlined,
   EnvironmentOutlined,
-  LoginOutlined,
   ProductOutlined,
   TrademarkOutlined,
   UserOutlined,
@@ -12,8 +11,7 @@ import {
 import { ReactElement } from "react";
 import { Link, NavLink } from "react-router-dom";
 import Button from "../ui/Button";
-import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
-import { logOutUser, setAuthStatus } from "../../redux/slice/authSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectSideNav, setSideNav } from "../../redux/slice/uiActionsSlice";
 import { useOnOutsideClick } from "../../hooks/useOnClickOutside";
 import useWindowSize from "../../hooks/useWindowSize";
@@ -59,7 +57,6 @@ const Sidenav = () => {
   ];
   const sidenavOpen = useAppSelector(selectSideNav);
 
-
   const windowSize = useWindowSize();
   const sideNavMobile = windowSize.width > 0 && windowSize.width <= 768;
   const handleClickOutside = () => {
@@ -78,7 +75,9 @@ const Sidenav = () => {
       }
     >
       <aside
-        className={`bg-white min-h-screen p-4 flex flex-col w-[16rem] sm:w-[18rem] top-0 bottom-0 absolute lg:sticky z-50 overflow-y-auto transition-all shadow-lg ${!sidenavOpen ? "-ml-[18rem] " : ""}`}
+        className={`bg-white min-h-screen p-4 flex flex-col w-[16rem] sm:w-[18rem] top-0 bottom-0 absolute lg:sticky z-50 overflow-y-auto transition-all shadow-lg ${
+          !sidenavOpen ? "-ml-[18rem] " : ""
+        }`}
         ref={sideNavRef}
       >
         <div className="flex items-center justify-between">

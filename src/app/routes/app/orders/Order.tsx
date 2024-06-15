@@ -6,7 +6,7 @@ import {
 	UserOutlined,
 } from "@ant-design/icons";
 import { selectOrdersCurrentItem } from "@/features/orders/orderSlice";
-import { useAppSelector } from "@/redux/store/hooks";
+import { useAppSelector } from "@/store/hooks";
 import { Navigate } from "react-router-dom";
 import { ColumnConfig, ProductsOrdered } from "@/types/api";
 import Table from "@/components/ui/Table";

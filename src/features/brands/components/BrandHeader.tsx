@@ -1,6 +1,6 @@
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import { useAppDispatch } from "@/redux/store/hooks";
+import { useAppDispatch } from "@/store/hooks";
 import { PlusOutlined } from "@ant-design/icons";
 import { ChangeEvent, useState } from "react";
 import { useSearchParams } from "react-router-dom";
