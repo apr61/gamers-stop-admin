@@ -82,7 +82,7 @@ const ListBrands = () => {
 
 	return (
 		<div className="mt-2">
-			<div className="bg-white">
+			<div className="">
 				<Table columns={tableColumns} data={data as Brand[]} />
 			</div>
 			<div className="flex w-full mt-4 justify-between">

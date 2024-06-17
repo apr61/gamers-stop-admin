@@ -97,7 +97,7 @@ const ListUsers = () => {
   return (
     <div className="mt-2">
       {itemsView === "LIST" ? (
-        <div className="bg-white">
+        <div className="">
           <Table columns={tableColumns} data={data as CustomUser[]} />
         </div>
       ) : (

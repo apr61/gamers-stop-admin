@@ -71,7 +71,7 @@ export const GridItemsAction = <T,>({
     (dropDown) => allowedActions.indexOf(dropDown.key) !== -1,
   );
   return (
-    <article className="border p-4 shadow-md bg-white rounded-md">
+    <article className="border p-4 shadow-md  rounded-md">
       <div className="relative" ref={dropDownRef}>
         <Button
           btnType="icon"

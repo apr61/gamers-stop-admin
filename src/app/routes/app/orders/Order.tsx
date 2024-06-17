@@ -63,7 +63,7 @@ const SingleOrder = () => {
 	const discount = 0;
 
 	return (
-		<div className="bg-white w-full p-4 rounded-md">
+		<div className=" w-full p-4 rounded-md">
 			<section>
 				<h2 className="text-lg font-bold">
 					Order ID: {record.order_number}

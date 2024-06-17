@@ -10,7 +10,7 @@ const DropDownMenu = React.forwardRef<HTMLDivElement, DropDownMenuProps>(
     return (
       <div
         className={`${cn(
-          "absolute min-w-[8rem] bg-white rounded-md overflow-hidden z-10 shadow-lg max-h-0 p-0 transition-max-height dropdown",
+          "absolute min-w-[8rem]  rounded-md overflow-hidden z-10 shadow-lg max-h-0 p-0 transition-max-height dropdown",
           className,
         )}`}
         ref={ref}

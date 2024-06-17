@@ -23,7 +23,7 @@ export const TableActions = <T,>({
 			label: "Show",
 			icon: <EyeOutlined />,
 			key: "READ",
-			className: "bg-blue-200 text-blue-500 hover:bg-blue-500",
+			className: "bg-blue-200 text-blue-500 hover:bg-primary",
 		},
 		{
 			label: "Edit",

@@ -30,7 +30,7 @@ const Drawer = ({
       onClick={closeDrawer}
     >
       <div
-        className={`opacity-100 fixed top-0 bottom-0 right-0 bg-white max-w-[24rem] transition-all w-full p-4 overflow-y-auto ${isDrawerOpen ? "" : "-mr-[30rem]"}`}
+        className={`opacity-100 fixed top-0 bottom-0 right-0  max-w-[24rem] transition-all w-full p-4 overflow-y-auto ${isDrawerOpen ? "" : "-mr-[30rem]"}`}
         onClick={handleInnerClick}
       >
         <div className="flex justify-between items-center">

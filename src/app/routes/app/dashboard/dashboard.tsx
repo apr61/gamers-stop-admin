@@ -38,7 +38,7 @@ export default Dashboard;
 const DashboardCard = () => {
   return (
     <div className="grid grid-cols-4 gap-4">
-      <div className="bg-white border p-4 rounded-sm shadow-sm flex items-center gap-4 transition-transform hover:scale-[1.05]">
+      <div className=" border p-4 rounded-sm shadow-sm flex items-center gap-4 transition-transform hover:scale-[1.05]">
         <div className="p-4 bg-amber-200 rounded-sm">
           <UserOutlined className="bg-amber-400 text-white p-2 rounded-sm" />
         </div>
@@ -49,7 +49,7 @@ const DashboardCard = () => {
           </h3>
         </div>
       </div>
-      <div className="bg-white border p-4 rounded-sm shadow-sm flex items-center gap-4 transition-transform hover:scale-[1.05]">
+      <div className=" border p-4 rounded-sm shadow-sm flex items-center gap-4 transition-transform hover:scale-[1.05]">
         <div className="p-4 bg-violet-200 rounded-sm">
           <ShoppingCartOutlined className="bg-violet-400 text-white p-2 rounded-sm" />
         </div>
@@ -60,7 +60,7 @@ const DashboardCard = () => {
           </h3>
         </div>
       </div>
-      <div className="bg-white border p-4 rounded-sm shadow-sm flex items-center gap-4 transition-transform hover:scale-[1.05]">
+      <div className=" border p-4 rounded-sm shadow-sm flex items-center gap-4 transition-transform hover:scale-[1.05]">
         <div className="p-4 bg-emerald-200 rounded-sm">
           <DollarOutlined className="bg-emerald-400 text-white p-2 rounded-sm" />
         </div>
@@ -73,7 +73,7 @@ const DashboardCard = () => {
           </h3>
         </div>
       </div>
-      <div className="bg-white border p-4 rounded-sm shadow-sm flex items-center gap-4 transition-transform hover:scale-[1.05]">
+      <div className=" border p-4 rounded-sm shadow-sm flex items-center gap-4 transition-transform hover:scale-[1.05]">
         <div className="p-4 bg-fuchsia-200 rounded-sm">
           <ProductOutlined className="bg-fuchsia-400 text-white p-2 rounded-sm" />
         </div>
@@ -145,7 +145,7 @@ const RecentOrders = () => {
   ];
   if (error) return <h1>{error}</h1>;
   return (
-    <section className="border rounded-md shadow-sm bg-white relative">
+    <section className="border rounded-md shadow-sm  relative">
       <h2 className="p-2 text-gray-700 text-lg font-semibold">Recent Orders</h2>
       <Link
         to="/orders"
@@ -183,7 +183,7 @@ const RecentUsers = () => {
   ];
   if (error) return <h1>{error}</h1>;
   return (
-    <section className="border rounded-md shadow-sm bg-white relative">
+    <section className="border rounded-md shadow-sm  relative">
       <h2 className="p-2 text-gray-700 text-lg font-semibold">Recent Users</h2>
       {loading ? <h1>Loading...</h1> : <Table data={data} columns={columns} />}
     </section>
@@ -239,7 +239,7 @@ const TopSellingProducts = () => {
 
   if (error) return <h1>{error}</h1>;
   return (
-    <section className="border rounded-md shadow-sm bg-white relative">
+    <section className="border rounded-md shadow-sm  relative">
       <h2 className="p-2 text-gray-700 text-lg font-semibold">
         Top Selling products
       </h2>

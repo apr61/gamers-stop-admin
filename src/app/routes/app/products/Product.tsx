@@ -8,7 +8,7 @@ export const SingleProduct = () => {
   const { record } = useAppSelector(selectProdcutsCurrentItem);
   if (record === null) return <Navigate to="/products" />;
   return (
-    <div className="w-full bg-white p-4 rounded-md flex flex-col md:flex-row gap-12">
+    <div className="w-full  p-4 rounded-md flex flex-col md:flex-row gap-12">
       <ProductPreviewImage images={record.images} name={record.name} />
       <div className="w-full">
         <header>

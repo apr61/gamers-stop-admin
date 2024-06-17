@@ -4,6 +4,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: "class",
   theme: {
     extend: {
       transitionProperty: {
@@ -13,7 +14,10 @@ export default {
         "dropdown" : "cubic-bezier(.51,.92,.24,1.15)"
       },
       colors: {
-        "current" : "currentColor"
+        background: "hsl(var(--clr-bg))",
+        foreground: "hsl(var(--clr-foreground))",
+        border: "hsl(var(--clr-border))",
+        primary: "hsl(var(--clr-primary))"
       }
     },
   },

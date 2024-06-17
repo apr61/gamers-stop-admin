@@ -117,7 +117,7 @@ const ListOrders = () => {
 
 	return (
 		<div className="mt-2">
-				<div className="bg-white">
+				<div className="">
 					<Table columns={tableColumns} data={data as Order[]} />
 				</div>
 			<div className="flex w-full mt-4 justify-between">

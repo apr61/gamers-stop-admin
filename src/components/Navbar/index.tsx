@@ -2,6 +2,8 @@ import {
   LoginOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  MoonOutlined,
+  SunOutlined,
 } from "@ant-design/icons";
 import Button from "../ui/Button";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -20,12 +22,16 @@ import { useAuth } from "@/hooks/useAuth";
 const Navbar = () => {
   const sidenavOpen = useAppSelector(selectSideNav);
   const dispatch = useAppDispatch();
-
+  const [theme, setTheme] = useState(false);
+  const handleTheme = () => {
+    setTheme((prev) => !prev);
+    document.body.classList.toggle("dark");
+  };
   return (
     <nav
       className={`${
         sidenavOpen ? "md:pl-[18.5rem] lg:pl-2" : ""
-      } sticky top-0 z-20 flex items-center bg-white w-full p-2 shadow-md`}
+      } sticky top-0 z-20 flex items-center w-full p-2 shadow-md`}
     >
       <Button
         btnType="icon"
@@ -36,7 +42,21 @@ const Navbar = () => {
           {sidenavOpen ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />}
         </span>
       </Button>
-      <div className="ml-auto">
+      <div className="ml-auto flex gap-4 items-center">
+        <div>
+          <Button
+            type="button"
+            btnType="icon"
+            className="hover:bg-gray-200 rounded-full p-2"
+            onClick={handleTheme}
+          >
+            {theme ? (
+              <MoonOutlined className="text-2xl" />
+            ) : (
+              <SunOutlined className="text-2xl" />
+            )}
+          </Button>
+        </div>
         <UserProfile />
       </div>
     </nav>

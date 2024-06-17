@@ -75,7 +75,7 @@ const Sidenav = () => {
       }
     >
       <aside
-        className={`bg-white min-h-screen p-4 flex flex-col w-[16rem] sm:w-[18rem] top-0 bottom-0 absolute lg:sticky z-50 overflow-y-auto transition-all shadow-lg ${
+        className={`min-h-screen p-4 flex flex-col w-[16rem] sm:w-[18rem] top-0 bottom-0 absolute lg:sticky z-50 overflow-y-auto transition-all shadow-lg ${
           !sidenavOpen ? "-ml-[18rem] " : ""
         }`}
         ref={sideNavRef}
