@@ -1,5 +1,5 @@
 import supabase from "../../utils/supabase";
-import { LoginFormValues, SignUpFormValues } from "../../utils/types";
+import { LoginFormValues, SignUpFormValues } from "@/types/api";
 import errorHandler from "../errorHandler";
 
 const createNewUserEmailPass = async (newUser: SignUpFormValues) => {
@@ -9,14 +9,12 @@ const createNewUserEmailPass = async (newUser: SignUpFormValues) => {
     options: {
       data: {
         full_name: newUser.full_name,
-        user_role: "USER",
         avatar_url: "",
-        phone: newUser.phone,
       },
     },
   });
   if (error) {
-    return errorHandler(error.message, error.status);
+    return errorHandler(error);
   }
   return data;
 };
@@ -27,7 +25,7 @@ const loginUserWithEmailPass = async (user: LoginFormValues) => {
     password: user.password,
   });
   if (error) {
-    return errorHandler(error.message, error.status);
+    return errorHandler(error);
   }
   return data;
 };
@@ -35,8 +33,24 @@ const loginUserWithEmailPass = async (user: LoginFormValues) => {
 const signOut = async () => {
   const { error } = await supabase().auth.signOut();
   if (error) {
-    return errorHandler(error.message, error.status);
+    return errorHandler(error);
   }
 };
 
-export { createNewUserEmailPass, loginUserWithEmailPass, signOut };
+const getCurrentUser = async () => {
+  const {
+    data: { user },
+    error,
+  } = await supabase().auth.getUser();
+  if (error) {
+    return errorHandler(error.message, error.status);
+  }
+  return user;
+};
+
+export {
+  createNewUserEmailPass,
+  loginUserWithEmailPass,
+  signOut,
+  getCurrentUser,
+};

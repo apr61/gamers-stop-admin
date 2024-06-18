@@ -4,7 +4,6 @@ import {
   ClusterOutlined,
   DashboardOutlined,
   EnvironmentOutlined,
-  LoginOutlined,
   ProductOutlined,
   TrademarkOutlined,
   UserOutlined,
@@ -12,8 +11,7 @@ import {
 import { ReactElement } from "react";
 import { Link, NavLink } from "react-router-dom";
 import Button from "../ui/Button";
-import { useAppDispatch, useAppSelector } from "../../redux/store/hooks";
-import { logOutUser, setAuthStatus } from "../../redux/slice/authSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectSideNav, setSideNav } from "../../redux/slice/uiActionsSlice";
 import { useOnOutsideClick } from "../../hooks/useOnClickOutside";
 import useWindowSize from "../../hooks/useWindowSize";
@@ -59,10 +57,6 @@ const Sidenav = () => {
   ];
   const sidenavOpen = useAppSelector(selectSideNav);
 
-  const handleLogout = async () => {
-    await dispatch(logOutUser());
-    dispatch(setAuthStatus("idle"));
-  };
   const windowSize = useWindowSize();
   const sideNavMobile = windowSize.width > 0 && windowSize.width <= 768;
   const handleClickOutside = () => {
@@ -76,12 +70,14 @@ const Sidenav = () => {
     <div
       className={
         sidenavOpen
-          ? `fixed md:static top-0 bottom-0 left-0 right-0 opacity-100 bg-black bg-opacity-20 z-50`
+          ? `fixed md:static top-0 bottom-0 left-0 right-0 opacity-100 bg-pop-over z-50`
           : ""
       }
     >
       <aside
-        className={`bg-white min-h-screen p-4 flex flex-col w-[16rem] sm:w-[18rem] top-0 bottom-0 absolute lg:sticky z-50 overflow-y-auto transition-all shadow-lg ${!sidenavOpen ? "-ml-[18rem] " : ""}`}
+        className={`bg-white dark:bg-dimBlack min-h-screen p-4 flex flex-col w-[16rem] sm:w-[18rem] top-0 bottom-0 absolute lg:sticky z-50 overflow-y-auto transition-all shadow-lg ${
+          !sidenavOpen ? "-ml-[18rem] " : ""
+        }`}
         ref={sideNavRef}
       >
         <div className="flex items-center justify-between">
@@ -106,20 +102,6 @@ const Sidenav = () => {
             />
           ))}
         </ul>
-        <div className="mt-auto">
-          <Button
-            btnType="danger"
-            className="w-full flex gap-2 justify-center items-center"
-            onClick={handleLogout}
-          >
-            <>
-              <span className="text-xl">
-                <LoginOutlined />
-              </span>
-              Logout
-            </>
-          </Button>
-        </div>
       </aside>
     </div>
   );
@@ -141,8 +123,8 @@ const NavItem = ({ href, text, Icon }: NavItemProps) => {
         className={({ isActive }) =>
           `rounded-md p-2 flex gap-2 items-center transition-all ease-in-out duration-150 ${
             isActive
-              ? "bg-blue-400 text-white hover:bg-blue-400"
-              : "hover:bg-gray-100"
+              ? "bg-primary text-white"
+              : "hover:bg-muted"
           }`
         }
       >

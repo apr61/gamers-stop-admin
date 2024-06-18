@@ -1,5 +1,5 @@
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import Button from "../Button";
 
 type PaginationProps = {
   currentPage: number;
@@ -19,34 +19,45 @@ const Pagination = ({ currentPage, totalPages, setPage }: PaginationProps) => {
     }
   };
 
+  const handlePage = (page: number) => {
+    setPage(page);
+  };
+
   const isPrevBtnDisabled = currentPage === 1;
   const isNextBtnDisabled = currentPage === totalPages;
 
   return (
     <div className="flex gap-2 items-center">
-      <button
+      <Button
         onClick={handlePrev}
         disabled={isPrevBtnDisabled}
-        className={`border py-1 px-2 rounded-md transition-all ease-in-out duration-150 ${isPrevBtnDisabled ? "bg-gray-200 border-gray-200 text-gray-400" : "border-gray-300 hover:bg-gray-200 text-gray-500"}`}
+        btnType="icon"
+        className={`p-3 rounded-md hover:bg-accent text-sm disabled:hover:bg-transparent`}
       >
         <LeftOutlined />
-      </button>
+      </Button>
       {[...Array(totalPages)].map((_, index) => (
-        <Link
+        <Button
           key={index}
-          to={`?page=${index + 1}`}
-          className={`border border-gray-300 text-gray-500 py-1 px-3 rounded-md hover:bg-gray-200 transition-all ease-in-out duration-150 ${index + 1 === currentPage ? "bg-gray-300 text-gray-700" : ""}`}
+          onClick={() => handlePage(index + 1)}
+          btnType="icon"
+          className={`px-4 py-2 rounded-md hover:bg-accent ${
+            index + 1 === currentPage
+              ? "bg-dimBlack text-primary"
+              : ""
+          }`}
         >
           {index + 1}
-        </Link>
+        </Button>
       ))}
-      <button
+      <Button
         onClick={handleNext}
         disabled={isNextBtnDisabled}
-        className={`border py-1 px-2 rounded-md transition-all ease-in-out duration-150 ${isNextBtnDisabled ? "bg-gray-200 border-gray-200 text-gray-400" : "border-gray-300 hover:bg-gray-200 text-gray-500"}`}
+        btnType="icon"
+        className={`p-3 rounded-md hover:bg-accent text-sm disabled:hover:bg-transparent`}
       >
         <RightOutlined />
-      </button>
+      </Button>
     </div>
   );
 };

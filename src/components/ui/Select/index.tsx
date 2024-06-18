@@ -16,7 +16,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         <select
           id={id}
           ref={ref}
-          className={`${className} w-full p-4 bg-white border rounded-md cursor-pointer`}
+          className={`${className} w-full p-4  border rounded-md cursor-pointer`}
         >
           <option>Select</option>
           {[...Array(5)].map((_, index) => (

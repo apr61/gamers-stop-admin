@@ -1,5 +1,5 @@
 import supabase from "../../utils/supabase";
-import { CustomUser, Order, ProductsOrdered } from "../../utils/types";
+import { CustomUser, Order, ProductsOrdered } from "@/types/api";
 
 const getRecentOrders = async (): Promise<Order[]> => {
   const { data: orders, error: ordersError } = await supabase()
@@ -14,7 +14,7 @@ const getRecentOrders = async (): Promise<Order[]> => {
 	  payment_status,
 	  order_date,
 	  order_number,
-	  user:profiles (full_name, id, avatar_url, user_role, email, phone),
+	  user:profiles (full_name, id, avatar_url, email),
 	  address: addresses (id, address, name, phoneNumber, pincode, townLocality, cityDistrict, state)
 	`
     )
@@ -25,13 +25,12 @@ const getRecentOrders = async (): Promise<Order[]> => {
 
   // Fetch products for each order by querying order_products and products tables
   const orderIds = orders.map((order) => order.id);
-  const { data: orderProducts, error: orderProductsError } =
-    await supabase()
-      .from("order_products")
-      .select(
-        "order_id, quantity, product: products (id, name, description, price,created_at, quantity, images, category_id, category:categories(*), brand:brands(id, brand_name))"
-      )
-      .in("order_id", orderIds);
+  const { data: orderProducts, error: orderProductsError } = await supabase()
+    .from("order_products")
+    .select(
+      "order_id, quantity, product: products (id, name, description, price,created_at, quantity, images, category_id, category:categories(*), brand:brands(id, brand_name))"
+    )
+    .in("order_id", orderIds);
 
   if (orderProductsError) throw orderProductsError;
 
@@ -53,8 +52,7 @@ const getRecentProfiles = async () => {
   try {
     const { data, error } = await supabase()
       .from("profiles")
-      .select("*")
-      .neq("user_role", "ADMIN")
+      .select("full_name, email, avatar_url")
       .order("created_at", { ascending: false })
       .limit(5);
 

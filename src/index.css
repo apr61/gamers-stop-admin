@@ -2,28 +2,61 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --clr-bg: 216 12% 90%;
+    --clr-foreground: 0 0% 20%;
+    --clr-primary: 217 91% 60%;
+    --clr-accent: 0 0% 96%;
+    --clr-muted: 210 10% 92%;
+    --clr-dim-black: 0 0% 100%;
+    --clr-border: 0 0% 90%;
+    --clr-pop-over: 0 0% 0%/.3;
+  }
+  .dark {
+    --clr-bg: 0 0% 0%;
+    --clr-foreground: 0 0% 100%;
+    --clr-accent: 0 0% 23%;
+    --clr-muted: 0 0% 43%;
+    --clr-dim-black: 0 0% 12%;
+    --clr-border: 0 0% 35%;
+    --clr-pop-over: 0 0% 0%/.5;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
 body {
   min-height: 100vh;
   scroll-behavior: smooth;
   box-sizing: border-box;
-  font-family:  ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
 }
 
-/* Page loader styles */ 
+/* Page loader styles */
 
 .loader-dot:nth-child(1) {
-  animation: move 1s cubic-bezier(0.755, 0.05, 0.855, 0.06) alternate-reverse infinite;
+  animation: move 1s cubic-bezier(0.755, 0.05, 0.855, 0.06) alternate-reverse
+    infinite;
 }
 
 .loader-dot:nth-child(2) {
-  animation: move2 1s cubic-bezier(0.755, 0.05, 0.855, 0.06) alternate-reverse infinite;
+  animation: move2 1s cubic-bezier(0.755, 0.05, 0.855, 0.06) alternate-reverse
+    infinite;
 }
 
 .loader-dot:nth-child(3) {
-  animation: move3 1s cubic-bezier(0.755, 0.05, 0.855, 0.06) alternate-reverse infinite;
+  animation: move3 1s cubic-bezier(0.755, 0.05, 0.855, 0.06) alternate-reverse
+    infinite;
 }
 .loader-dot:nth-child(4) {
-  animation: move4 1s cubic-bezier(0.755, 0.05, 0.855, 0.06) alternate-reverse infinite;
+  animation: move4 1s cubic-bezier(0.755, 0.05, 0.855, 0.06) alternate-reverse
+    infinite;
 }
 
 @keyframes move {

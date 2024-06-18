@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { User, UserFormData } from "../../utils/types";
+import { User, UserFormData } from "@/types/api";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supbaseSecretKey = import.meta.env.VITE_SUPABASE_SECRET_KEY;

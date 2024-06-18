@@ -1,14 +1,14 @@
 import supabase from "../../utils/supabase";
-import { QueryType, ProductFormValues, Product } from "../../utils/types";
+import { QueryType, ProductFormValues, Product } from "@/types/api";
 import { uploadFiles, deleteFile } from "../api/fileUpload";
 
 export const searchProducts = async (query: QueryType<Product>) => {
   const { count, error: countError } = await supabase()
     .from("products")
     .select("*", { count: "exact", head: true });
-  if (countError) {
-    throw new Error(countError.message);
-  }
+  
+  if (countError) throw countError
+  
   const { data, error } = await supabase()
     .from("products")
     .select(
@@ -17,9 +17,9 @@ export const searchProducts = async (query: QueryType<Product>) => {
     .ilike(`${query.search.query}`, `%${query.search.with}%`)
     .order("created_at", { ascending: false })
     .range(query.pagination.from, query.pagination.to);
-  if (error) {
-    throw new Error(error.message);
-  }
+  
+  if (error) throw error
+  
   const response = {
     data: data ? data : [],
     count: count ? count : 0,
@@ -28,7 +28,6 @@ export const searchProducts = async (query: QueryType<Product>) => {
 };
 
 export async function createProduct(values: ProductFormValues) {
-  try {
     let imageUrls: string[] = [];
 
     if (values.images) {
@@ -44,7 +43,7 @@ export async function createProduct(values: ProductFormValues) {
         quantity: values.quantity,
         category_id: values.category_id,
         images: imageUrls,
-        brand_id: values.brand_id
+        brand_id: values.brand_id,
       })
       .select(
         `*, category:categories(id, category_name, category_image), brand:brands(id, brand_name)`,
@@ -54,14 +53,9 @@ export async function createProduct(values: ProductFormValues) {
     if (error) throw error;
 
     return data;
-  } catch (error) {
-    console.error("Error creating product:", error);
-    throw error;
-  }
 }
 
 export async function getProducts() {
-  try {
     const { data, error } = await supabase()
       .from("products")
       .select("*, category:categories(*), brand:brands(id, brand_name)");
@@ -69,31 +63,21 @@ export async function getProducts() {
     if (error) throw error;
 
     return data;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    throw error;
-  }
 }
 
 export async function getProductById(id: number) {
-  try {
-    const { data, error } = await supabase()
-      .from("products")
-      .select("*, category:categories(*), brand:brands(id, brand_name)")
-      .eq("id", id)
-      .single();
+  const { data, error } = await supabase()
+    .from("products")
+    .select("*, category:categories(*), brand:brands(id, brand_name)")
+    .eq("id", id)
+    .single();
 
-    if (error) throw error;
+  if (error) throw error;
 
-    return data;
-  } catch (error) {
-    console.error("Error fetching product:", error);
-    throw error;
-  }
+  return data;
 }
 
 export async function updateProduct(id: number, values: ProductFormValues) {
-  try {
     let imageUrls: string[] = [];
 
     const { data: imagesData, error: imagesError } = await supabase()
@@ -121,7 +105,7 @@ export async function updateProduct(id: number, values: ProductFormValues) {
         quantity: values.quantity,
         category_id: values.category_id,
         images: imageUrls,
-        brand_id: values.brand_id
+        brand_id: values.brand_id,
       })
       .eq("id", id)
       .select(
@@ -132,10 +116,7 @@ export async function updateProduct(id: number, values: ProductFormValues) {
     if (error) throw error;
 
     return data;
-  } catch (error) {
-    console.error("Error updating product:", error);
-    throw error;
-  }
+  
 }
 
 export async function deleteProduct(id: number) {
@@ -148,10 +129,7 @@ export async function deleteProduct(id: number) {
 
     if (fetchError) throw fetchError;
 
-    const { error } = await supabase()
-      .from("products")
-      .delete()
-      .eq("id", id);
+    const { error } = await supabase().from("products").delete().eq("id", id);
 
     if (error) throw error;
 
