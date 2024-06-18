@@ -1,22 +1,14 @@
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import {
-  PlusOutlined,
-} from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import { ChangeEvent, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import {
-  selectCategoryItemsView,
-  setCategoryCurrentItem,
-  setCategoryItemsView,
-} from "../categorySlice";
+import { useAppDispatch } from "@/store/hooks";
+import { setCategoryCurrentItem } from "../categorySlice";
 import { useSearchParams } from "react-router-dom";
-import ItemViewSelect from "@/components/ItemViewSelect/ItemViewSelect";
 
 const CategoryHeader = () => {
   const [search, setSearch] = useState<string>("");
   const dispatch = useAppDispatch();
-  const itemsView = useAppSelector(selectCategoryItemsView);
   const [_, setSearchParams] = useSearchParams();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -51,10 +43,7 @@ const CategoryHeader = () => {
             placeholder="search"
             value={search}
             onChange={(e) => handleChange(e)}
-          />
-          <ItemViewSelect
-            itemsView={itemsView}
-            onClick={(value) => dispatch(setCategoryItemsView(value))}
+            className="bg-dimBlack border-border"
           />
         </div>
       </div>

@@ -26,29 +26,14 @@ const UsersHeader = () => {
 	};
 	return (
 		<header className="flex items-center gap-4">
-			<div className="flex justify-between w-full">
-				<Button
-					className="flex items-center gap-2"
-					onClick={() =>
-						dispatch(
-							setUserCurrentItem({
-								record: null,
-								action: "create",
-							}),
-						)
-					}
-				>
-					<>
-						<PlusOutlined />
-						Add new user
-					</>
-				</Button>
-				<div className="flex gap-2">
+			<div className="flex w-full">
+				<div className="ml-auto flex gap-2">
 					<Input
 						type="search"
 						placeholder="search"
 						value={search}
 						onChange={(e) => handleChange(e)}
+						className="bg-dimBlack border-border"
 					/>
 					<ItemViewSelect
 						itemsView={itemsView}

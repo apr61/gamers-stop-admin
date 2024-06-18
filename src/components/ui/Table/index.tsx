@@ -18,7 +18,7 @@ const Table = <T,>({ columns, data }: TableProps<T>) => {
       {columns.map((column) => (
         <th
           key={column.title}
-          className={`text-start p-2 w-fit text-nowrap ${column.className}`}
+          className={`text-start p-4 w-fit text-nowrap ${column.className}`}
         >
           {column.title}
         </th>
@@ -32,7 +32,7 @@ const Table = <T,>({ columns, data }: TableProps<T>) => {
   ) : (
     data.map((record, rowIndex) => (
       <tr
-        className="w-full border-b-[1px] hover:bg-gray-50 transition-all ease-in-out duration-150"
+        className="w-full border-b-[1px] border-b-border hover:bg-accent transition-all ease-in-out duration-150"
         key={rowIndex}
       >
         {columns.map((column, colIndex) => (
@@ -48,9 +48,9 @@ const Table = <T,>({ columns, data }: TableProps<T>) => {
     ))
   );
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto bg-dimBlack rounded-md">
       <table className="w-full rounded-md border-collapse table-auto">
-        <thead className="text-black bg-gray-50 border-b-[1px]">
+        <thead className="text-black bg-accent text-foreground border-b-[1px] border-b-border">
           {TableHeader}
         </thead>
         <tbody>{TableBody}</tbody>

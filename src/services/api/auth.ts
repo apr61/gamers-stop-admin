@@ -14,7 +14,7 @@ const createNewUserEmailPass = async (newUser: SignUpFormValues) => {
     },
   });
   if (error) {
-    return errorHandler(error.message, error.status);
+    return errorHandler(error);
   }
   return data;
 };
@@ -25,7 +25,7 @@ const loginUserWithEmailPass = async (user: LoginFormValues) => {
     password: user.password,
   });
   if (error) {
-    return errorHandler(error.message, error.status);
+    return errorHandler(error);
   }
   return data;
 };
@@ -33,7 +33,7 @@ const loginUserWithEmailPass = async (user: LoginFormValues) => {
 const signOut = async () => {
   const { error } = await supabase().auth.signOut();
   if (error) {
-    return errorHandler(error.message, error.status);
+    return errorHandler(error);
   }
 };
 

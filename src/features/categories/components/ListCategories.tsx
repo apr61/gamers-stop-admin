@@ -20,10 +20,6 @@ const columns: ColumnConfig<Category>[] = [
     dataIndex: "id",
   },
   {
-    title: "Name",
-    dataIndex: "category_name",
-  },
-  {
     title: "Image",
     dataIndex: "category_image",
     render: (record: Category) => (
@@ -33,6 +29,10 @@ const columns: ColumnConfig<Category>[] = [
         className="w-10 h-10 brightness-[90%]"
       />
     ),
+  },
+  {
+    title: "Name",
+    dataIndex: "category_name",
   },
 ];
 

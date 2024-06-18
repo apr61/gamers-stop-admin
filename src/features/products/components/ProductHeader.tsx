@@ -55,6 +55,7 @@ const ProductHeader = () => {
             placeholder="search"
             value={search}
             onChange={(e) => handleChange(e)}
+            className="bg-dimBlack border-border"
           />
           <ItemViewSelect
             itemsView={itemsView}

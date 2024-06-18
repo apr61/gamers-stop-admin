@@ -12,13 +12,12 @@ const uploadFile = async (file: File, bucketName: string) => {
     .upload(nanoid(), file);
 
   if (error) {
-    throw new Error(error.message);
+    throw error 
   }
 
   if (data) {
     return getPublicUrl(data.path, bucketName);
   }
-  return ""
 };
 
 // Function to upload multiple files to Supabase Storage
@@ -32,8 +31,7 @@ const uploadFiles = async (fileList: FileList, bucketName: string) => {
     const results = await Promise.all(uploads);
     return results.filter((url): url is string => url !== null);
   } catch (error) {
-    if (error instanceof Error) throw new Error(error.message);
-    return [];
+    throw error
   }
 };
 
@@ -56,6 +54,7 @@ const deleteFile = async (fileUrl: string[]) => {
   }
 };
 
+/*
 const updateFile = async (editFileData: EditFilesType): Promise<string[]> => {
   const { files, path } = editFileData;
   const fileArray = Array.from(files);
@@ -113,10 +112,12 @@ const updateFile = async (editFileData: EditFilesType): Promise<string[]> => {
     }
   }
 };
+*/
+
 
 const getPublicUrl = (path: string, bucketName: string) => {
   const { data } = supabase().storage.from(bucketName).getPublicUrl(path);
   return data.publicUrl;
 };
 
-export { uploadFiles, deleteFile, updateFile };
+export { uploadFiles, deleteFile };

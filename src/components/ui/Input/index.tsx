@@ -1,3 +1,4 @@
+import { cn } from "@/utils/cn";
 import React, { InputHTMLAttributes, useId } from "react";
 
 type InputPropsType = InputHTMLAttributes<HTMLInputElement> &{
@@ -7,7 +8,7 @@ type InputPropsType = InputHTMLAttributes<HTMLInputElement> &{
 };
 
 const Input = React.forwardRef<HTMLInputElement, InputPropsType>(
-  ({ label = "", placeholder, type = "text", ...props }, ref) => {
+  ({ label = "", placeholder, type = "text",className, ...props }, ref) => {
     const id = useId();
 
     return (
@@ -18,7 +19,7 @@ const Input = React.forwardRef<HTMLInputElement, InputPropsType>(
           </label>
         )}
         <input
-          className="border rounded-md p-2 focus:outline focus:outline-2 focus:outline-blue-500"
+          className={`${cn("border rounded-md p-2 focus:outline focus:outline-2 focus:outline-blue-500", className)}`}
           type={type}
           placeholder={placeholder}
           id={id}

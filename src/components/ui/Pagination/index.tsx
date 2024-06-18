@@ -33,7 +33,7 @@ const Pagination = ({ currentPage, totalPages, setPage }: PaginationProps) => {
         onClick={handlePrev}
         disabled={isPrevBtnDisabled}
         btnType="icon"
-        className={`border p-2 rounded-md transition-all ease-in-out duration-150 ${isPrevBtnDisabled ? "bg-gray-200 border-gray-200 text-gray-400" : "border-gray-300 hover:bg-gray-200 text-gray-500"}`}
+        className={`p-2 rounded-md border-gray-300 hover:bg-accent text-sm`}
       >
         <LeftOutlined />
       </Button>
@@ -42,7 +42,7 @@ const Pagination = ({ currentPage, totalPages, setPage }: PaginationProps) => {
           key={index}
           onClick={() => handlePage(index + 1)}
           btnType="icon"
-          className={`border border-gray-300 text-gray-500 py-1 px-3 rounded-md hover:bg-gray-200 transition-all ease-in-out duration-150 ${index + 1 === currentPage ? "bg-gray-300 text-gray-700" : ""}`}
+          className={`py-1 px-3 rounded-md hover:bg-accent ${index + 1 === currentPage ? "bg-dimBlack border border-primary text-primary" : ""}`}
         >
           {index + 1}
         </Button>
@@ -51,7 +51,7 @@ const Pagination = ({ currentPage, totalPages, setPage }: PaginationProps) => {
         onClick={handleNext}
         disabled={isNextBtnDisabled}
         btnType="icon"
-        className={`border p-2 rounded-md transition-all ease-in-out duration-150 ${isNextBtnDisabled ? "bg-gray-200 border-gray-200 text-gray-400" : "border-gray-300 hover:bg-gray-200 text-gray-500"}`}
+        className={`p-2 rounded-md hover:bg-accent text-sm`}
       >
         <RightOutlined />
       </Button>

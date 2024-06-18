@@ -75,7 +75,7 @@ const Sidenav = () => {
       }
     >
       <aside
-        className={`min-h-screen p-4 flex flex-col w-[16rem] sm:w-[18rem] top-0 bottom-0 absolute lg:sticky z-50 overflow-y-auto transition-all shadow-lg ${
+        className={`bg-white dark:bg-dimBlack min-h-screen p-4 flex flex-col w-[16rem] sm:w-[18rem] top-0 bottom-0 absolute lg:sticky z-50 overflow-y-auto transition-all shadow-lg ${
           !sidenavOpen ? "-ml-[18rem] " : ""
         }`}
         ref={sideNavRef}
@@ -123,8 +123,8 @@ const NavItem = ({ href, text, Icon }: NavItemProps) => {
         className={({ isActive }) =>
           `rounded-md p-2 flex gap-2 items-center transition-all ease-in-out duration-150 ${
             isActive
-              ? "bg-blue-400 text-white hover:bg-blue-400"
-              : "hover:bg-gray-100"
+              ? "bg-primary text-white"
+              : "hover:bg-muted"
           }`
         }
       >

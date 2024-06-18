@@ -1,17 +1,15 @@
+import { CustomError } from "@/types/api";
 import toast from "react-hot-toast";
 
-const errorHandler = async (
-  error: string,
-  statusCode: string | number | undefined = undefined,
-) => {
-  let message = "";
-  if (statusCode) {
-    message = `${statusCode} - ${error}`;
+const errorHandler = async (error: CustomError) => {
+  const { code, message } = error;
+  let customMessage = "";
+  if (code) {
+    customMessage = `${code} - ${message}`;
   } else {
-    message = `500 - ${error}`;
+    customMessage = `500 - ${message}`;
   }
-  toast.error(message);
-  // throw new Error(error)
+  toast.error(customMessage);
 };
 
 export default errorHandler;

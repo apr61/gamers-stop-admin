@@ -31,14 +31,14 @@ const Navbar = () => {
     <nav
       className={`${
         sidenavOpen ? "md:pl-[18.5rem] lg:pl-2" : ""
-      } sticky top-0 z-20 flex items-center w-full p-2 shadow-md`}
+      } sticky top-0 z-20 flex items-center w-full p-2 shadow-md dark:shadow-custom-dark bg-white dark:bg-dimBlack`}
     >
       <Button
         btnType="icon"
         onClick={() => dispatch(setSideNav(!sidenavOpen))}
         title={sidenavOpen ? "Close Side Menu" : "Open Side Menu"}
       >
-        <span className="text-xl hover:bg-gray-100 w-10 h-10 rounded-md grid place-content-center">
+        <span className="text-xl hover:bg-accent w-10 h-10 rounded-md grid place-content-center">
           {sidenavOpen ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />}
         </span>
       </Button>
@@ -47,13 +47,13 @@ const Navbar = () => {
           <Button
             type="button"
             btnType="icon"
-            className="hover:bg-gray-200 rounded-full p-2"
+            className="bg-accent rounded-full p-2"
             onClick={handleTheme}
           >
             {theme ? (
-              <MoonOutlined className="text-2xl" />
+              <SunOutlined className="text-xl" />
             ) : (
-              <SunOutlined className="text-2xl" />
+              <MoonOutlined className="text-xl" />
             )}
           </Button>
         </div>
@@ -98,7 +98,7 @@ const UserProfile = () => {
         />
       </Button>
       <DropDownMenu
-        className={`top-14 right-0 min-w-[10rem] ${
+        className={`top-14 right-0 min-w-[10rem] bg-dimBlack dark:shadow-custom-dark ${
           dropDown ? "max-h-96 p-1" : "max-h-0"
         }`}
       >

@@ -4,20 +4,25 @@
 
 @layer base {
   :root {
-    --clr-bg: 90 0% 100%;
-    --clr-foreground: 217, 66%, 14%;
+    --clr-bg: 216 12% 90%;
+    --clr-foreground: 0 0% 20%;
     --clr-primary: 217 91% 60%;
+    --clr-accent: 0 0% 96%;
+    --clr-muted: 210 10% 92%;
+    --clr-dim-black: 0 0% 100%;
+    --clr-border: 0 0% 90%;
   }
   .dark {
-    --clr-bg: 217, 66%, 14%;
+    --clr-bg: 0 0% 0%;
     --clr-foreground: 0 0% 100%;
+    --clr-accent: 0 0% 23%;
+    --clr-muted: 0 0% 43%;
+    --clr-dim-black: 0 0% 12%;
+    --clr-border: 0 0% 35%;
   }
 }
 
 @layer base {
-  * {
-    @apply: border-border;
-  }
   body {
     @apply bg-background text-foreground;
   }

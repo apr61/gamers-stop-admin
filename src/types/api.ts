@@ -1,3 +1,4 @@
+import { AuthError, PostgrestError } from "@supabase/supabase-js";
 import { ReactElement } from "react";
 
 export type ItemsViewType = "GRID" | "LIST";
@@ -176,7 +177,7 @@ export type CrudConfig<T> = {
     resetEntityStateFn: () => void;
     setCurrentItemFn: (
       action: "read" | "update" | "delete" | "create",
-      record: T | null
+      record: T | null,
     ) => void;
   };
 };
@@ -205,3 +206,11 @@ export type QueryType<T> = {
 export type Data = Order | Product | Category | CustomUser;
 
 export type USER_ROLE = "user" | "admin";
+
+export type CustomError =
+  | PostgrestError
+  | AuthError
+  | {
+      code: string;
+      message: string;
+    };

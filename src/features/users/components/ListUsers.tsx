@@ -19,7 +19,7 @@ import { ROLE_COLORS } from "@/utils/constants";
 
 const columns: ColumnConfig<CustomUser>[] = [
   {
-    title: "CustomUser",
+    title: "Avatar",
     render: (record: CustomUser) => (
       <div className="flex gap-2 items-center">
         <img
@@ -27,9 +27,12 @@ const columns: ColumnConfig<CustomUser>[] = [
           src={record?.avatar_url ? record?.avatar_url : BlankUserProfile}
           alt={record?.full_name || ""}
         />
-        <p>{record.full_name}</p>
       </div>
     ),
+  },
+  {
+    title: "Name",
+    dataIndex: "full_name",
   },
   {
     title: "Email",
