@@ -30,7 +30,7 @@ const LoginForm = () => {
 
   return (
     <form
-      className="flex flex-col gap-2 w-full"
+      className="flex flex-col gap-2 bg-white dark:bg-dimBlack p-4 rounded-md w-full"
       onSubmit={handleSubmit(onSubmit)}
     >
       <h2 className="text-center text-xl font-bold">Login</h2>

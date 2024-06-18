@@ -38,50 +38,50 @@ export default Dashboard;
 const DashboardCard = () => {
   return (
     <div className="grid grid-cols-4 gap-4">
-      <div className=" border p-4 rounded-sm shadow-sm flex items-center gap-4 transition-transform hover:scale-[1.05]">
+      <div className="p-4 rounded-sm shadow-sm flex items-center gap-4 transition-transform hover:scale-[1.05] bg-dimBlack">
         <div className="p-4 bg-amber-200 rounded-sm">
           <UserOutlined className="bg-amber-400 text-white p-2 rounded-sm" />
         </div>
         <div>
-          <p className="font-semibold text-gray-500 capitalize">Total Users</p>
-          <h3 className="text-xl font-bold text-gray-600">
+          <p className="font-semibold text-gray-500 capitalize dark:text-white">Total Users</p>
+          <h3 className="text-xl font-bold text-gray-600 dark:text-gray-400">
             {numberWithCommas(1000)}
           </h3>
         </div>
       </div>
-      <div className=" border p-4 rounded-sm shadow-sm flex items-center gap-4 transition-transform hover:scale-[1.05]">
+      <div className="  p-4 rounded-sm shadow-sm flex items-center gap-4 transition-transform hover:scale-[1.05] bg-dimBlack">
         <div className="p-4 bg-violet-200 rounded-sm">
           <ShoppingCartOutlined className="bg-violet-400 text-white p-2 rounded-sm" />
         </div>
         <div>
-          <p className="font-semibold text-gray-500 capitalize">Total Orders</p>
-          <h3 className="text-xl font-bold text-gray-600">
+          <p className="font-semibold text-gray-500 capitalize dark:text-white">Total Orders</p>
+          <h3 className="text-xl font-bold text-gray-600 dark:text-gray-400">
             {numberWithCommas(5000)}
           </h3>
         </div>
       </div>
-      <div className=" border p-4 rounded-sm shadow-sm flex items-center gap-4 transition-transform hover:scale-[1.05]">
+      <div className="  p-4 rounded-sm shadow-sm flex items-center gap-4 transition-transform hover:scale-[1.05] bg-dimBlack">
         <div className="p-4 bg-emerald-200 rounded-sm">
           <DollarOutlined className="bg-emerald-400 text-white p-2 rounded-sm" />
         </div>
         <div>
-          <p className="font-semibold text-gray-500 capitalize">
+          <p className="font-semibold text-gray-500 capitalize dark:text-white">
             Total Revenue
           </p>
-          <h3 className="text-xl font-bold text-gray-600">
+          <h3 className="text-xl font-bold text-gray-600 dark:text-gray-400">
             {currencyFormatter(50000)}
           </h3>
         </div>
       </div>
-      <div className=" border p-4 rounded-sm shadow-sm flex items-center gap-4 transition-transform hover:scale-[1.05]">
+      <div className="  p-4 rounded-sm shadow-sm flex items-center gap-4 transition-transform hover:scale-[1.05] bg-dimBlack">
         <div className="p-4 bg-fuchsia-200 rounded-sm">
           <ProductOutlined className="bg-fuchsia-400 text-white p-2 rounded-sm" />
         </div>
         <div>
-          <p className="font-semibold text-gray-500 capitalize">
+          <p className="font-semibold text-gray-500 dark:text-white capitalize">
             Total Products
           </p>
-          <h3 className="text-xl font-bold text-gray-600">
+          <h3 className="text-xl font-bold text-gray-600 dark:text-gray-400">
             {numberWithCommas(500)}
           </h3>
         </div>
@@ -145,8 +145,8 @@ const RecentOrders = () => {
   ];
   if (error) return <h1>{error}</h1>;
   return (
-    <section className="border rounded-md shadow-sm  relative">
-      <h2 className="p-2 text-gray-700 text-lg font-semibold">Recent Orders</h2>
+    <section className=" rounded-md shadow-sm bg-dimBlack relative">
+      <h2 className="p-2 text-gray-700 dark:text-white text-lg font-semibold">Recent Orders</h2>
       <Link
         to="/orders"
         className="text-blue-500 font-semibold absolute top-2 right-2 hover:underline"
@@ -183,8 +183,8 @@ const RecentUsers = () => {
   ];
   if (error) return <h1>{error}</h1>;
   return (
-    <section className="border rounded-md shadow-sm  relative">
-      <h2 className="p-2 text-gray-700 text-lg font-semibold">Recent Users</h2>
+    <section className=" rounded-md shadow-sm bg-dimBlack  relative">
+      <h2 className="p-2 text-gray-700 dark:text-white text-lg font-semibold">Recent Users</h2>
       {loading ? <h1>Loading...</h1> : <Table data={data} columns={columns} />}
     </section>
   );
@@ -239,8 +239,8 @@ const TopSellingProducts = () => {
 
   if (error) return <h1>{error}</h1>;
   return (
-    <section className="border rounded-md shadow-sm  relative">
-      <h2 className="p-2 text-gray-700 text-lg font-semibold">
+    <section className=" rounded-md shadow-sm bg-dimBlack relative">
+      <h2 className="p-2 text-gray-700 dark:text-white text-lg font-semibold">
         Top Selling products
       </h2>
       {loading ? <h1>Loading...</h1> : <Table data={data} columns={columns} />}

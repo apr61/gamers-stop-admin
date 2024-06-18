@@ -95,7 +95,7 @@ const ProductsForm = ({ product, images }: ProductFormProps) => {
               record && "name" in record ? record.brand?.id! : null
             }
           />
-          <div className=" p-4 rounded-md shadow-md">
+          <div className="bg-dimBlack p-4 rounded-md shadow-md">
             <Input
               placeholder="Stock"
               label="Stock"
@@ -112,7 +112,7 @@ const ProductsForm = ({ product, images }: ProductFormProps) => {
               <p className="text-red-500">{errors.quantity.message}</p>
             )}
           </div>
-          <div className=" p-4 rounded-md shadow-md">
+          <div className="bg-dimBlack p-4 rounded-md shadow-md">
             <Input
               placeholder="Price"
               label="Price"
@@ -169,13 +169,13 @@ const CategorySelect = ({
   }, [dispatch]);
   return (
     <>
-      <div className="w-full flex gap-2 flex-col  shadow-md p-4 rounded-md">
+      <div className="w-full flex gap-2 flex-col  shadow-md p-4 rounded-md bg-dimBlack">
         <label htmlFor="category" className="text-lg cursor-pointer">
           Category
         </label>
         <select
           id="category"
-          className={`w-full p-4  border rounded-md cursor-pointer`}
+          className={`w-full p-4  border border-border rounded-md cursor-pointer bg-dimBlack`}
           {...register("category_id", { required: "Category is required" })}
         >
           <option value="">Select category</option>
@@ -222,13 +222,13 @@ const BrandSelect = ({
   }, [dispatch]);
   return (
     <>
-      <div className="w-full flex gap-2 flex-col  shadow-md p-4 rounded-md">
+      <div className="w-full flex gap-2 flex-col shadow-md p-4 rounded-md bg-dimBlack">
         <label htmlFor="brand" className="text-lg cursor-pointer">
           Brand
         </label>
         <select
           id="brand"
-          className={`w-full p-4  border rounded-md cursor-pointer`}
+          className={`w-full p-4  border border-border rounded-md cursor-pointer bg-dimBlack`}
           {...register("brand_id", { required: "Brand is required" })}
         >
           <option value="">Select brand</option>
@@ -259,7 +259,7 @@ const BrandSelect = ({
 
 const ProductMain = ({ register, errors }: ProductFromType) => {
   return (
-    <div className=" shadow-md p-4 rounded-md flex flex-col gap-2">
+    <div className="bg-dimBlack shadow-md p-4 rounded-md flex flex-col gap-2">
       <Input
         placeholder="Product name"
         label="Name"
@@ -274,7 +274,7 @@ const ProductMain = ({ register, errors }: ProductFromType) => {
         <textarea
           id="description"
           {...register("description", { required: "Description is required" })}
-          className="focus:outline focus:outline-2 focus:outline-blue-500 border rounded-md p-2 resize-none"
+          className="focus:outline focus:outline-2 focus:outline-blue-500 border border-border rounded-md p-2 resize-none bg-dimBlack"
           rows={10}
         ></textarea>
       </div>
@@ -312,7 +312,7 @@ const ProductGallery = ({
     setValue("images", null);
   };
   return (
-    <div className=" shadow-md p-4 rounded-md flex flex-col gap-2">
+    <div className="bg-dimBlack shadow-md p-4 rounded-md flex flex-col gap-2">
       <h2 className="text-lg">Product Gallery</h2>
       <div className="min-h-[10rem]">
         <FileInput

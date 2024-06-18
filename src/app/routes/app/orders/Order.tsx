@@ -2,7 +2,6 @@ import {
 	CreditCardOutlined,
 	EnvironmentOutlined,
 	MailOutlined,
-	PhoneOutlined,
 	UserOutlined,
 } from "@ant-design/icons";
 import { selectOrdersCurrentItem } from "@/features/orders/orderSlice";
@@ -63,7 +62,7 @@ const SingleOrder = () => {
 	const discount = 0;
 
 	return (
-		<div className=" w-full p-4 rounded-md">
+		<div className="w-full p-4 rounded-md">
 			<section>
 				<h2 className="text-lg font-bold">
 					Order ID: {record.order_number}
@@ -78,17 +77,13 @@ const SingleOrder = () => {
 					</h2>
 					<div className="flex flex-col gap-2 mt-4">
 						<p className="text-lg font-semibold text-gray-600 flex gap-4">
-							<img src={record.user?.avatar_url ? record.user?.avatar_url : BlankUserProfile} alt={record.user?.full_name} 
+							<img src={record.user?.avatar_url ? record.user?.avatar_url : BlankUserProfile} alt={record.user?.full_name!} 
 								loading="lazy" className="w-10 h-10 rounded-md overflow-hidden" />
 							{record.user?.full_name}
 						</p>
 						<p className="flex gap-2 items-center">
 							<MailOutlined />
 							{record.user?.email}
-						</p>
-						<p className="flex gap-2 items-center">
-							<PhoneOutlined />
-							{record.user?.phone}
 						</p>
 					</div>
 				</section>

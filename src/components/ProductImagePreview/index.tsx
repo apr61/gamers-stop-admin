@@ -11,7 +11,7 @@ const ProductPreviewImage = ({ images, name }: ProductPreviewImageProps) => {
 	return (
 		<div className="flex gap-2 flex-col items-center w-full h-fit md:sticky md:top-[4rem] md:max-w-[25rem] md:items-start">
 			<div
-				className={`max-w-[25rem] w-full h-[25rem] rounded-sm overflow-hidden flex hover:brightness-[85%] transition-all`}
+				className={`max-w-[25rem] w-full h-[25rem] rounded-md overflow-hidden flex hover:brightness-[85%] transition-all`}
 			>
 				{images.map((img, ind) => (
 					<img
@@ -28,7 +28,7 @@ const ProductPreviewImage = ({ images, name }: ProductPreviewImageProps) => {
 				{images.map((img, ind) => (
 					<div
 						key={`${img}-${ind}`}
-						className={`w-24 h-24 border rounded-sm overflow-hidden cursor-pointer hover:brightness-[85%] transition-all ${image === ind ? "brightness-[85%]" : ""}`}
+						className={`w-24 h-24 border rounded-md overflow-hidden cursor-pointer hover:brightness-[85%] transition-all ${image === ind ? "brightness-[85%]" : ""}`}
 					>
 						<img
 							key={img + ind}

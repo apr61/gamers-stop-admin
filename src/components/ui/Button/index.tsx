@@ -17,7 +17,7 @@ const Button = ({
   ...props
 }: ButtonProps) => {
   let baseClass =
-    "hover:bg-opacity-90 rounded-md w-fit focus:outline-2 focus:outline-2 focus:outline-offset-2 disabled:opacity-75 disabled:cursor-not-allowed disabled:hover:bg-transparent flex items-center justify-center gap-2";
+    "hover:bg-opacity-90 rounded-md w-fit focus:outline-2 focus:outline-2 focus:outline-offset-2 disabled:opacity-75 disabled:cursor-not-allowed flex items-center justify-center gap-2";
   const styles = {
     primary: "px-2 py-1 bg-primary text-white focus:outline-blue-400",
     ghost:

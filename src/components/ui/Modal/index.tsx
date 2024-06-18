@@ -15,10 +15,10 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
   ({ isOpen, handleClose, children, title, className }, ref) => {
     if (!isOpen) return;
     return (
-      <div className="fixed top-0 bottom-0 right-0 left-0 bg-black bg-opacity-20 z-50 flex items-center justify-center w-full h-full">
+      <div className="fixed top-0 bottom-0 right-0 left-0 bg-pop-over z-50 flex items-center justify-center w-full h-full">
         <div
           className={cn(
-            "min-w-fit  rounded-md z-10 relative py-4 px-8 mx-4",
+            "min-w-fit  rounded-md z-10 relative py-4 px-8 mx-4 bg-dimBlack",
             className
           )}
           ref={ref}

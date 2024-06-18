@@ -1,5 +1,4 @@
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
 import Button from "../Button";
 
 type PaginationProps = {
@@ -22,7 +21,7 @@ const Pagination = ({ currentPage, totalPages, setPage }: PaginationProps) => {
 
   const handlePage = (page: number) => {
     setPage(page);
-  }
+  };
 
   const isPrevBtnDisabled = currentPage === 1;
   const isNextBtnDisabled = currentPage === totalPages;
@@ -33,7 +32,7 @@ const Pagination = ({ currentPage, totalPages, setPage }: PaginationProps) => {
         onClick={handlePrev}
         disabled={isPrevBtnDisabled}
         btnType="icon"
-        className={`p-2 rounded-md border-gray-300 hover:bg-accent text-sm`}
+        className={`p-3 rounded-md hover:bg-accent text-sm disabled:hover:bg-transparent`}
       >
         <LeftOutlined />
       </Button>
@@ -42,7 +41,11 @@ const Pagination = ({ currentPage, totalPages, setPage }: PaginationProps) => {
           key={index}
           onClick={() => handlePage(index + 1)}
           btnType="icon"
-          className={`py-1 px-3 rounded-md hover:bg-accent ${index + 1 === currentPage ? "bg-dimBlack border border-primary text-primary" : ""}`}
+          className={`px-4 py-2 rounded-md hover:bg-accent ${
+            index + 1 === currentPage
+              ? "bg-dimBlack text-primary"
+              : ""
+          }`}
         >
           {index + 1}
         </Button>
@@ -51,7 +54,7 @@ const Pagination = ({ currentPage, totalPages, setPage }: PaginationProps) => {
         onClick={handleNext}
         disabled={isNextBtnDisabled}
         btnType="icon"
-        className={`p-2 rounded-md hover:bg-accent text-sm`}
+        className={`p-3 rounded-md hover:bg-accent text-sm disabled:hover:bg-transparent`}
       >
         <RightOutlined />
       </Button>

@@ -19,7 +19,7 @@ const Input = React.forwardRef<HTMLInputElement, InputPropsType>(
           </label>
         )}
         <input
-          className={`${cn("border rounded-md p-2 focus:outline focus:outline-2 focus:outline-blue-500", className)}`}
+          className={`${cn("border border-border rounded-md p-2 focus:outline focus:outline-2 focus:outline-blue-500 bg-dimBlack", className)}`}
           type={type}
           placeholder={placeholder}
           id={id}

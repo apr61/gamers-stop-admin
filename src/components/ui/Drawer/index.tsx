@@ -1,12 +1,14 @@
 import { CloseOutlined } from "@ant-design/icons";
 import { ReactElement } from "react";
 import Button from "../Button";
+import { cn } from "@/utils/cn";
 
 type DrawerProps = {
   children: ReactElement[] | ReactElement;
   isDrawerOpen: boolean;
   closeDrawer: () => void;
   title?: string;
+  className?: string;
 };
 
 const Drawer = ({
@@ -14,6 +16,7 @@ const Drawer = ({
   isDrawerOpen,
   closeDrawer,
   title = "",
+  className,
 }: DrawerProps) => {
   const handleInnerClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -23,14 +26,19 @@ const Drawer = ({
       className={`
         ${
           isDrawerOpen
-            ? "fixed top-0 bottom-0 left-0 right-0 opacity-100 bg-black bg-opacity-20 z-50"
+            ? "fixed top-0 bottom-0 left-0 right-0 opacity-100 bg-pop-over z-50"
             : ""
         }
       `}
       onClick={closeDrawer}
     >
       <div
-        className={`opacity-100 fixed top-0 bottom-0 right-0  max-w-[24rem] transition-all w-full p-4 overflow-y-auto ${isDrawerOpen ? "" : "-mr-[30rem]"}`}
+        className={`${cn(
+          `opacity-100 fixed top-0 bottom-0 right-0 max-w-[24rem] transition-all w-full p-4 overflow-y-auto bg-dimBlack ${
+            isDrawerOpen ? "" : "-mr-[30rem]"
+          }`,
+          className
+        )}`}
         onClick={handleInnerClick}
       >
         <div className="flex justify-between items-center">

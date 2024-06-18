@@ -171,7 +171,7 @@ const UserSelect = ({ register, errors, currentUserId }: UserSelectProps) => {
         </label>
         <select
           id="category"
-          className={`w-full p-4  border rounded-md cursor-pointer`}
+          className={`w-full p-4  border border-border rounded-md cursor-pointer bg-dimBlack`}
           {...register("userId", { required: "User is required" })}
         >
           <option value="">Select user</option>

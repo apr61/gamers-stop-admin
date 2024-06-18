@@ -70,7 +70,7 @@ const Sidenav = () => {
     <div
       className={
         sidenavOpen
-          ? `fixed md:static top-0 bottom-0 left-0 right-0 opacity-100 bg-black bg-opacity-20 z-50`
+          ? `fixed md:static top-0 bottom-0 left-0 right-0 opacity-100 bg-pop-over z-50`
           : ""
       }
     >

@@ -28,6 +28,7 @@ const CreateCategory = () => {
 			isDrawerOpen={isOpen}
 			closeDrawer={handleClose}
 			title="Category"
+			className="bg-dimBlack"
 		>
 			<CategoryForm title="Add new category" />
 		</Drawer>

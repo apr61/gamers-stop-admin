@@ -16,7 +16,7 @@ const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>(
           className="cursor-pointer w-12 h-6 bg-primary rounded-xl relative shadow-inner"
         >
           <span
-            className={`w-4 h-4 rounded-full  absolute transition-transform duration-3000 ease-in ${
+            className={`w-4 h-4 bg-white rounded-full absolute transition-transform duration-3000 ease-in ${
                 isChecked ? "transform translate-x-7" : "transform translate-x-1"
             } top-1`}
           ></span>

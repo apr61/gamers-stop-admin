@@ -18,10 +18,12 @@ export default {
         dimBlack: "hsl(var(--clr-dim-black))",
         accent: "hsl(var(--clr-accent))",
         muted: "hsl(var(--clr-muted))",
+        "pop-over": "hsl(var(--clr-pop-over))"
       },
       boxShadow: {
         'custom-light': '0 4px 6px rgba(0, 0, 0, 0.1)',
-        'custom-dark': '0 4px 6px -1px rgb(100 0 0 / 0.9), 0 2px 4px -2px rgb(100 0 0 / 0.9);',
+        'custom-dark': '0 10px 15px -3px rgba(255, 255, 255, 0.01), 0 4px 6px -2px rgba(255, 255, 255, 0.05)',
+        
       },
     },
   },
