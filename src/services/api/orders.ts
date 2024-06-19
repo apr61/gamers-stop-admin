@@ -76,7 +76,6 @@ const updateOrder = async (
     .single();
 
   if (error) {
-    console.error("Error updating order:", error.message);
     return null;
   }
 
@@ -87,7 +86,7 @@ const deleteOrder = async (orderId: number): Promise<number> => {
   const { error } = await supabase().from("orders").delete().eq("id", orderId);
 
   if (error) {
-    console.error("Error deleting order:", error.message);
+    throw error
   }
 
   return orderId;
@@ -113,8 +112,7 @@ const createOrder = async (order: OrderFormValues): Promise<Order | null> => {
     .single();
 
   if (error) {
-    console.error("Error creating order:", error.message);
-    return null;
+    throw error
   }
 
   const { data: orderProducts, error: orderProductsError } = await supabase()
@@ -191,8 +189,7 @@ const fetchAllOrders = async (): Promise<Order[]> => {
     });
     return ordersWithProducts;
   } catch (error) {
-    console.error("Error fetching orders:", error);
-    return [];
+    throw error
   }
 };
 
@@ -211,8 +208,7 @@ const getOrders = async (): Promise<any> => {
     `);
 
   if (error) {
-    console.error("Error fetching orders:", error.message);
-    return null;
+    throw error
   }
 
   return data;

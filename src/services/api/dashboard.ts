@@ -60,7 +60,6 @@ const getRecentProfiles = async () => {
 
     return data as CustomUser[];
   } catch (error) {
-    console.error("Error fetching profiles:", error);
     throw error;
   }
 };

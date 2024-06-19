@@ -96,7 +96,6 @@ const ListUsers = () => {
     });
   };
   if (error) return <p>Error: {error}</p>;
-  console.log(data)
 
   return (
     <div className="mt-2">

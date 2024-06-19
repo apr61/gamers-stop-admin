@@ -81,13 +81,13 @@ const Sidenav = () => {
       }
     >
       <aside
-        className={`min-h-screen flex flex-col w-[14rem] top-0 bottom-0 fixed z-50 lg:sticky overflow-y-auto transition-all  ${
+        className={`min-h-screen flex flex-col w-[16rem] top-0 bottom-0 fixed z-50 lg:sticky overflow-y-auto transition-all  ${
           !sidenavOpen ? "-ml-[18rem] " : ""
         }`}
         ref={sideNavRef}
       >
         <div className="flex items-center justify-between w-full bg-white dark:bg-dimBlack">
-          <Link to="/dashboard" className={`text-2xl 2xl:text-4xl block p-4 w-full ${!sidenavOpen ? "shadow-custom-dark" : ""}`}>
+          <Link to="/dashboard" className={`text-2xl block p-4 w-full ${!sidenavOpen ? "shadow-custom-dark" : ""}`}>
             Gamers Stop
           </Link>
           {/* <Button
@@ -98,7 +98,7 @@ const Sidenav = () => {
             <CloseOutlined />
           </Button> */}
         </div>
-        <ul className="flex flex-col h-full px-4 md:py-4 bg-accent flex-stretch">
+        <ul className="flex flex-col p-2 md:p-4 bg-accent flex-grow">
           {navItems.map((navItem) => (
             <NavItem
               key={navItem.href}

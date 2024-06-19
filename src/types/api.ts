@@ -91,7 +91,7 @@ export type ProductsOrdered = {
 
 export type Order = {
   id: number;
-  user: Omit<CustomUser, "user_role" | "created_at"> | null;
+  user: Omit<CustomUser, "user_role" | "created_at" | "addresses"> | null;
   products_ordered: ProductsOrdered[];
   address: Omit<Address, "user" | "userId" | "created_at" | "isDefault"> | null;
   payment_status: string;
