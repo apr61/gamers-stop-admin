@@ -29,14 +29,13 @@ const Navbar = () => {
   };
   return (
     <nav
-      className={`${
-        sidenavOpen ? "md:pl-[18.5rem] lg:pl-2" : ""
-      } sticky top-0 z-20 flex items-center w-full p-2 shadow-md dark:shadow-custom-dark bg-white dark:bg-dimBlack`}
+      className={`sticky top-0 z-40 flex items-center w-full p-2 bg-white dark:bg-dimBlack h-[4rem]`}
     >
       <Button
         btnType="icon"
         onClick={() => dispatch(setSideNav(!sidenavOpen))}
         title={sidenavOpen ? "Close Side Menu" : "Open Side Menu"}
+        className="block lg:hidden"
       >
         <span className="text-xl hover:bg-accent w-10 h-10 rounded-md grid place-content-center">
           {sidenavOpen ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />}

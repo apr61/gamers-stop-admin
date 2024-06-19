@@ -8,7 +8,7 @@ import {
   TrademarkOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import Button from "../ui/Button";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -58,41 +58,47 @@ const Sidenav = () => {
   const sidenavOpen = useAppSelector(selectSideNav);
 
   const windowSize = useWindowSize();
-  const sideNavMobile = windowSize.width > 0 && windowSize.width <= 768;
+  const sideNavMobile = windowSize.width > 0 && windowSize.width < 1024;
   const handleClickOutside = () => {
     if (sideNavMobile) {
       dispatch(setSideNav(false));
     }
   };
 
+  useEffect(() => {
+    if(windowSize.width >= 1024){
+      dispatch(setSideNav(true));
+    }
+  }, [windowSize])
+
   const sideNavRef = useOnOutsideClick(handleClickOutside);
   return (
     <div
       className={
-        sidenavOpen
-          ? `fixed md:static top-0 bottom-0 left-0 right-0 opacity-100 bg-pop-over z-50`
+        sideNavMobile && sidenavOpen
+          ? `fixed top-0 bottom-0 left-0 right-0 opacity-100 bg-pop-over z-50`
           : ""
       }
     >
       <aside
-        className={`bg-white dark:bg-dimBlack min-h-screen p-4 flex flex-col w-[16rem] sm:w-[18rem] top-0 bottom-0 absolute lg:sticky z-50 overflow-y-auto transition-all shadow-lg ${
+        className={`min-h-screen flex flex-col w-[16rem] top-0 bottom-0 fixed z-50 lg:sticky overflow-y-auto transition-all  ${
           !sidenavOpen ? "-ml-[18rem] " : ""
         }`}
         ref={sideNavRef}
       >
-        <div className="flex items-center justify-between">
-          <Link to="/dashboard" className="text-2xl 2xl:text-4xl block">
+        <div className="flex items-center justify-between w-full bg-white dark:bg-dimBlack">
+          <Link to="/dashboard" className={`text-2xl block p-4 w-full ${!sidenavOpen ? "shadow-custom-dark" : ""}`}>
             Gamers Stop
           </Link>
-          <Button
-            className="md:hidden"
+          {/* <Button
+            className="lg:hidden"
             btnType="icon"
             onClick={() => dispatch(setSideNav(false))}
           >
             <CloseOutlined />
-          </Button>
+          </Button> */}
         </div>
-        <ul className="py-2 flex flex-col">
+        <ul className="flex flex-col p-2 md:p-4 bg-accent flex-grow">
           {navItems.map((navItem) => (
             <NavItem
               key={navItem.href}
@@ -122,9 +128,7 @@ const NavItem = ({ href, text, Icon }: NavItemProps) => {
         to={href}
         className={({ isActive }) =>
           `rounded-md p-2 flex gap-2 items-center transition-all ease-in-out duration-150 ${
-            isActive
-              ? "bg-primary text-white"
-              : "hover:bg-muted"
+            isActive ? "bg-primary text-white" : "hover:bg-muted"
           }`
         }
       >

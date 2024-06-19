@@ -42,7 +42,7 @@ const ListCategories = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = searchParams.get("page") || 1;
   const search = searchParams.get("search") || "";
-  const itemsPerPage = 6;
+  const itemsPerPage = 12;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const dispatch = useAppDispatch();
   const itemsView = useAppSelector(selectCategoryItemsView);

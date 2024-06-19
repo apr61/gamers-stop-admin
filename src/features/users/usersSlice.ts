@@ -1,7 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ItemsViewType, CustomUser, UserFormData } from "@/types/api";
+import { ItemsViewType, CustomUser } from "@/types/api";
 import { RootState } from "@/store/store";
-import { createUser, deleteUser, updateUser } from "@/services/api/users";
 import { getProfiles, searchProfiles } from "@/services/api/profiles";
 
 export type CurrentType = {
@@ -66,55 +65,7 @@ export const userSearch = createAsyncThunk(
         totalItems: 0,
       };
     }
-  }
-);
-
-export const addUser = createAsyncThunk(
-  "users/add",
-  async (data: UserFormData, { rejectWithValue }) => {
-    try {
-      const response = await createUser(data);
-      return response;
-    } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
-      }
-      return null;
-    }
-  }
-);
-
-export const editUser = createAsyncThunk(
-  "users/edit",
-  async (
-    { data, id }: { data: UserFormData; id: string },
-    { rejectWithValue }
-  ) => {
-    try {
-      const response = await updateUser(id, data);
-      return response;
-    } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
-      }
-      return null;
-    }
-  }
-);
-
-export const removeUser = createAsyncThunk(
-  "users/remove",
-  async (id: string, { rejectWithValue }) => {
-    try {
-      const response = await deleteUser(id);
-      return response;
-    } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
-      }
-      return null;
-    }
-  }
+  },
 );
 
 export const fetchUsers = createAsyncThunk(
@@ -129,7 +80,7 @@ export const fetchUsers = createAsyncThunk(
       }
       return [];
     }
-  }
+  },
 );
 
 const userSlice = createSlice({
@@ -138,7 +89,7 @@ const userSlice = createSlice({
   reducers: {
     setUserCurrentItem: (
       state,
-      action: PayloadAction<Omit<CurrentType, "status" | "error">>
+      action: PayloadAction<Omit<CurrentType, "status" | "error">>,
     ) => {
       state.current.record = action.payload.record;
       state.current.action = action.payload.action;
@@ -178,53 +129,6 @@ const userSlice = createSlice({
           data: [],
           totalItems: 0,
         };
-      })
-      .addCase(addUser.fulfilled, (state, action) => {
-        state.list.status = "succeeded";
-        const user = action.payload;
-        if (user) {
-          state.search.data.unshift(user);
-        }
-      })
-      .addCase(addUser.pending, (state) => {
-        state.current.status = "pending";
-      })
-      .addCase(addUser.rejected, (state, action) => {
-        state.list.status = "failed";
-        state.current.error = action.payload as string;
-      })
-      .addCase(editUser.fulfilled, (state, action) => {
-        state.list.status = "succeeded";
-        const user = action.payload;
-        if (user) {
-          state.search.data = state.search.data.map((u) => {
-            if (u.id === user.id) {
-              return user;
-            }
-            return u;
-          });
-        }
-      })
-      .addCase(editUser.pending, (state) => {
-        state.current.status = "pending";
-      })
-      .addCase(editUser.rejected, (state, action) => {
-        state.list.status = "failed";
-        state.current.error = action.payload as string;
-      })
-      .addCase(removeUser.fulfilled, (state, action) => {
-        state.list.status = "succeeded";
-        const id = action.payload;
-        if (id) {
-          state.search.data = state.search.data.filter((u) => u.id !== id);
-        }
-      })
-      .addCase(removeUser.pending, (state) => {
-        state.current.status = "pending";
-      })
-      .addCase(removeUser.rejected, (state, action) => {
-        state.list.status = "failed";
-        state.current.error = action.payload as string;
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.list.status = "succeeded";

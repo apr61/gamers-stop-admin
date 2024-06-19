@@ -1,5 +1,5 @@
 import supabase from "../../utils/supabase";
-import { Brand, BrandFormValues, QueryType } from "../../utils/types";
+import { Brand, BrandFormValues, QueryType } from "@/types/api";
 
 const createBrand = async (brand: BrandFormValues): Promise<Brand | null> => {
   const { data, error } = await supabase()
@@ -9,7 +9,6 @@ const createBrand = async (brand: BrandFormValues): Promise<Brand | null> => {
     .single();
 
   if (error) {
-    console.error("Error creating brand:", error.message);
     return null;
   }
 
@@ -20,7 +19,6 @@ const getBrands = async (): Promise<Brand[] | null> => {
   const { data, error } = await supabase().from("brands").select("*");
 
   if (error) {
-    console.error("Error fetching brands:", error.message);
     return null;
   }
 
@@ -39,7 +37,6 @@ const updateBrand = async (
     .single();
 
   if (error) {
-    console.error("Error updating brand:", error.message);
     return null;
   }
 
@@ -50,7 +47,6 @@ const deleteBrand = async (brandId: number): Promise<number | null> => {
   const { error } = await supabase().from("brands").delete().eq("id", brandId);
 
   if (error) {
-    console.error("Error deleting brand:", error.message);
     return null;
   }
 

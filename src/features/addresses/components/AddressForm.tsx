@@ -42,8 +42,6 @@ const AddressForm = ({
     setIsDefaultInput(false);
   };
 
-  console.log(address);
-
   return (
     <form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
       <h3 className="text-xl">{title}</h3>
