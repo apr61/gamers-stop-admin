@@ -5,9 +5,9 @@ import errorHandler from "../errorHandler";
 const getProfiles = async () => {
   const { data, error } = await supabase()
     .from("profiles")
-    .select("*, user_role: user_roles(role)");
+    .select("*, user_role: user_roles(role), addresses: addresses(*)");
 
-  if (error) return errorHandler(error.message, error.code);
+  if (error) return errorHandler(error);
 
   const users_with_roles = data.map((d) => {
     return {
@@ -24,13 +24,13 @@ const searchProfiles = async () => {
     .from("profiles")
     .select("*", { count: "exact", head: true });
 
-  if (countError) return errorHandler(countError.message, countError.code);
+  if (countError) return errorHandler(countError);
 
   const { data, error } = await supabase()
     .from("profiles")
-    .select("*, user_role: user_roles(role)");
+    .select("*, user_role: user_roles(role), addresses: addresses(*)");
 
-  if (error) return errorHandler(error.message, error.code);
+  if (error) return errorHandler(error);
   const users_with_roles = data.map((d) => {
     return {
       ...d,
@@ -46,10 +46,10 @@ const searchProfiles = async () => {
 const getProfileById = async (userId: string) => {
   const { data, error } = await supabase()
     .from("profiles")
-    .select("*")
+    .select("*, user_role: user_roles(role), addresses: addresses(*)")
     .eq("id", userId)
     .single();
-  if (error) return errorHandler(error.message, error.code);
+  if (error) return errorHandler(error);
   return data;
 };
 

@@ -9,10 +9,10 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 	return (
 		<div className="flex min-h-screen">
 			<Sidenav />
-			<div className="w-full">
-				<Navbar />
-				<main className="max-w-4xl xl:max-w-5xl 2xl:max-w-7xl mx-auto w-full my-8 px-4">
-					<div className="w-full">{children}</div>
+			<div className="w-full flex flex-col relative h-full">
+			<Navbar />
+				<main className="max-w-4xl xl:max-w-5xl 2xl:max-w-7xl mx-auto w-full px-4">
+					<div className="w-full my-8">{children}</div>
 				</main>
 			</div>
 		</div>

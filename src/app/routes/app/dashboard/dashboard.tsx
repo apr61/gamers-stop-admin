@@ -25,7 +25,7 @@ const Dashboard = () => {
     <div className="flex gap-4 flex-col">
       <DashboardCard />
       <RecentOrders />
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <RecentUsers />
         <TopSellingProducts />
       </div>
@@ -37,7 +37,7 @@ export default Dashboard;
 
 const DashboardCard = () => {
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
       <div className="p-4 rounded-sm shadow-sm flex items-center gap-4 transition-transform hover:scale-[1.05] bg-dimBlack">
         <div className="p-4 bg-amber-200 rounded-sm">
           <UserOutlined className="bg-amber-400 text-white p-2 rounded-sm" />

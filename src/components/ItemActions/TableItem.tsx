@@ -2,7 +2,6 @@ import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import Button from "@/components/ui/Button";
 import { ItemActionsType } from "@/types/api";
 
-
 type TableActionsProps<T> = {
 	readFn?: (record: T) => void;
 	editFn?: (record: T) => void;
@@ -23,19 +22,19 @@ export const TableActions = <T,>({
 			label: "Show",
 			icon: <EyeOutlined />,
 			key: "READ",
-			className: "bg-blue-200 text-blue-500 hover:bg-primary",
+			className: "bg-blue-200 dark:bg-blue-500 text-blue-500 dark:text-blue-200 hover:bg-blue-500",
 		},
 		{
 			label: "Edit",
 			icon: <EditOutlined />,
 			key: "UPDATE",
-			className: "bg-purple-200 text-purple-500 hover:bg-purple-500",
+			className: "bg-purple-200 dark:bg-purple-500 text-purple-500 dark:text-purple-200 hover:bg-purple-500",
 		},
 		{
 			label: "Delete",
 			icon: <DeleteOutlined />,
 			key: "DELETE",
-			className: "bg-red-200 text-red-500 hover:bg-red-500",
+			className: "bg-red-200 dark:bg-red-500 dark:text-red-200 text-red-500 hover:bg-red-500",
 		},
 	];
 	const handleDropdownOnClick = (key: string, record: T) => {

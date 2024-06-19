@@ -34,21 +34,20 @@ const Drawer = ({
     >
       <div
         className={`${cn(
-          `opacity-100 fixed top-0 bottom-0 right-0 max-w-[24rem] transition-all w-full p-4 overflow-y-auto bg-dimBlack ${
-            isDrawerOpen ? "" : "-mr-[30rem]"
+          `opacity-100 fixed top-0 bottom-0 right-0 max-w-[24rem] transition-all border-l border-border w-full overflow-y-auto bg-dimBlack ${
+            isDrawerOpen ? "" : "-mr-[100%]"
           }`,
-          className
+          className,
         )}`}
         onClick={handleInnerClick}
       >
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center bg-dimBlack p-4">
           <h2 className="text-lg">{title}</h2>
           <Button className="text-lg" onClick={closeDrawer} btnType="icon">
             <CloseOutlined />
           </Button>
         </div>
-        <hr className="mb-4 mt-2" />
-        {children}
+        <div className="p-4">{children}</div>
       </div>
     </div>
   );

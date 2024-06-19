@@ -18,7 +18,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
       <div className="fixed top-0 bottom-0 right-0 left-0 bg-pop-over z-50 flex items-center justify-center w-full h-full">
         <div
           className={cn(
-            "min-w-fit  rounded-md z-10 relative py-4 px-8 mx-4 bg-dimBlack",
+            "min-w-fit  rounded-md z-10 relative py-4 px-8 mx-4 bg-dimBlack border border-border",
             className
           )}
           ref={ref}

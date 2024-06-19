@@ -128,6 +128,7 @@ export type CustomUser = {
   avatar_url: string | null;
   email: string;
   created_at: string;
+  addresses: Omit<Address, "user" | "userId">[];
 };
 
 export type SignUpFormValues = {
