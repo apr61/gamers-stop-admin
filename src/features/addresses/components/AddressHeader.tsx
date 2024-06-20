@@ -1,20 +1,14 @@
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import ItemViewSelect from "@/components/ItemViewSelect/ItemViewSelect";
 import { PlusOutlined } from "@ant-design/icons";
 import { ChangeEvent, useState } from "react";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import {
-	selectAddressItemsView,
-	setAddressCurrentItem,
-	setAddressItemsView,
-} from "../addressSlice";
+import { useAppDispatch } from "@/store/hooks";
+import { setAddressCurrentItem } from "../addressSlice";
 import { useSearchParams } from "react-router-dom";
 
 const CategoryHeader = () => {
 	const [search, setSearch] = useState<string>("");
 	const dispatch = useAppDispatch();
-	const itemsView = useAppSelector(selectAddressItemsView);
 	const [_, setSearchParams] = useSearchParams();
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -50,12 +44,6 @@ const CategoryHeader = () => {
 						value={search}
 						onChange={(e) => handleChange(e)}
 						className="bg-dimBlack border-border"
-					/>
-					<ItemViewSelect
-						itemsView={itemsView}
-						onClick={(value) =>
-							dispatch(setAddressItemsView(value))
-						}
 					/>
 				</div>
 			</div>

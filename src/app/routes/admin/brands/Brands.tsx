@@ -4,7 +4,7 @@ import CreateBrand from "@/features/brands/components/CreateBrand";
 import EditBrand from "@/features/brands/components/EditBrand";
 import DeleteBrand from "@/features/brands/components/DeleteBrand";
 
-const Orders = () => {
+export const Brands = () => {
 	return (
 		<div className="my-8">
 			<BrandHeader />
@@ -18,4 +18,3 @@ const Orders = () => {
 	);
 };
 
-export default Orders;

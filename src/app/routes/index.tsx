@@ -1,113 +1,158 @@
-import { createBrowserRouter } from "react-router-dom";
-import Dashboard from "./app/dashboard/dashboard";
-import Categories from "./app/categories";
-import Login from "./auth/login";
-import SignUp from "./auth/signup";
+import { RouteObject, createBrowserRouter } from "react-router-dom";
 import RequireAuth from "@/components/layouts/RequireAuth";
-import Unautorized from "./unauthorized";
-import Addresses from "./app/addresses/addresses";
-import Brands from "./app/brands/Brands";
-import Users from "./app/users/Users";
-import { NotFoundRoute } from "./not-found";
-import AppRoot from "./app/root";
-import {
-  Products,
-  SingleProduct,
-  ProductEdit,
-  ProductNew,
-} from "./app/products";
-import Orders from "./app/orders/Orders";
-import Order from "./app/orders/Order";
+import AdminRoot from "./admin/root";
+import * as React from "react";
+import PageLoader from "@/components/PageLoader";
 
-const router = createBrowserRouter([
+// const Dashboard = React.lazy(() => import("./admin/dashboard/dashboard"));
+const Login = React.lazy(() => import("./auth/login"));
+const SignUp = React.lazy(() => import("./auth/signup"));
+const Unauthorized = React.lazy(() => import("./unauthorized"));
+const NotFoundRoute = React.lazy(() => import("./not-found"));
+
+const adminRoutes: RouteObject[] = [
   {
-    element: <RequireAuth allowedRoles={["admin"]} />,
+    path: "/admin",
+    element: (
+      <RequireAuth allowedRoles={["admin"]}>
+        <AdminRoot />
+      </RequireAuth>
+    ),
     children: [
       {
-        element: <AppRoot />,
+        path: "",
+        lazy: async () => {
+          const { Dashboard } = await import("./admin/dashboard/dashboard");
+          return { Component: Dashboard };
+        },
+      },
+      {
+        path: "users",
+        lazy: async () => {
+          const { Users } = await import("./admin/users/Users");
+          return { Component: Users };
+        },
+      },
+      {
+        path: "products",
         children: [
           {
-            path: "/dashboard",
-            element: <Dashboard />,
+            path: "",
+            lazy: async () => {
+              const { Products } = await import("./admin/products/Products");
+              return { Component: Products };
+            },
           },
           {
-            path: "/users",
-            element: <Users />,
+            path: "new",
+            lazy: async () => {
+              const { ProductNew } = await import(
+                "./admin/products/ProductNew"
+              );
+              return { Component: ProductNew };
+            },
           },
           {
-            path: "/products",
-            children: [
-              {
-                path: "",
-                element: <Products />,
-              },
-              {
-                path: "new",
-                element: <ProductNew />,
-              },
-              {
-                path: ":id/show",
-                element: <SingleProduct />,
-              },
-              {
-                path: ":id/edit",
-                element: <ProductEdit />,
-              },
-            ],
+            path: ":id/show",
+            lazy: async () => {
+              const { Product } = await import("./admin/products/Product");
+              return { Component: Product };
+            },
           },
           {
-            path: "/orders",
-            children: [
-              {
-                path: "",
-                element: <Orders />,
-              },
-              {
-                path: ":id/show",
-                element: <Order />,
-              },
-              {
-                path: ":id/edit",
-                element: <Order />,
-              },
-            ],
-          },
-          {
-            path: "/categories",
-            element: <Categories />,
-          },
-          {
-            path: "/addresses",
-            element: <Addresses />,
-          },
-          {
-            path: "/brands",
-            element: <Brands />,
+            path: ":id/edit",
+            lazy: async () => {
+              const { ProductEdit } = await import(
+                "./admin/products/ProductEdit"
+              );
+              return { Component: ProductEdit };
+            },
           },
         ],
       },
+      {
+        path: "orders",
+        children: [
+          {
+            path: "",
+            lazy: async () => {
+              const { Orders } = await import("./admin/orders/Orders");
+              return { Component: Orders };
+            },
+          },
+          {
+            path: ":id/show",
+            lazy: async () => {
+              const { Order } = await import("./admin/orders/Order");
+              return { Component: Order };
+            },
+          },
+          {
+            path: ":id/edit",
+            lazy: async () => {
+              const { Order } = await import("./admin/orders/Order");
+              return { Component: Order };
+            },
+          },
+        ],
+      },
+      {
+        path: "categories",
+        lazy: async () => {
+          const { Categories } = await import("./admin/categories");
+          return { Component: Categories };
+        },
+      },
+      {
+        path: "brands",
+        lazy: async () => {
+          const { Brands } = await import("./admin/brands/Brands");
+          return { Component: Brands };
+        },
+      },
     ],
   },
+];
+
+const commonRoutes: RouteObject[] = [
   {
     path: "/",
-    element: <Login />,
+    element: <h1>Home</h1>,
   },
   {
     path: "/auth/login",
-    element: <Login />,
+    element: (
+      <React.Suspense fallback={<PageLoader />}>
+        <Login />
+      </React.Suspense>
+    ),
   },
   {
     path: "/auth/signup",
-    element: <SignUp />,
+    element: (
+      <React.Suspense fallback={<PageLoader />}>
+        <SignUp />
+      </React.Suspense>
+    ),
   },
   {
     path: "/unauthorized",
-    element: <Unautorized />,
+    element: (
+      <React.Suspense fallback={<PageLoader />}>
+        <Unauthorized />
+      </React.Suspense>
+    ),
   },
   {
     path: "*",
-    element: <NotFoundRoute />,
+    element: (
+      <React.Suspense fallback={<PageLoader />}>
+        <NotFoundRoute />
+      </React.Suspense>
+    ),
   },
-]);
+];
+
+const router = createBrowserRouter([...commonRoutes, ...adminRoutes]);
 
 export default router;

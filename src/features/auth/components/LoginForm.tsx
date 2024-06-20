@@ -23,7 +23,7 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (status === "success") {
-      navigate("/dashboard");
+      navigate("/admin");
       reset();
     }
   }, [status]);

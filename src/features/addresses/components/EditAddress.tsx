@@ -9,11 +9,13 @@ import { useDisclosure } from "@/hooks/useDisclosure";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { AddressFormValues } from "@/types/api";
+import { useAuth } from "@/hooks/useAuth";
 
 const EditAddress = () => {
 	const { action, record } = useAppSelector(selectAddressCurrentItem);
 	const { isOpen, close, open } = useDisclosure();
 	const dispatch = useAppDispatch();
+	const { user } = useAuth();
 	const [values, setValues] = useState<AddressFormValues | undefined>(
 		undefined,
 	);
@@ -52,7 +54,9 @@ const EditAddress = () => {
 	if (record === null) return;
 
 	const handleSave = async (data: AddressFormValues) => {
-		await dispatch(editAddress({ formData: data, id: record.id }));
+		await dispatch(
+			editAddress({ formData: { ...data, userId: user?.id! }, id: record.id }),
+		);
 		close();
 		dispatch(resetAddressCurrentItem());
 	};

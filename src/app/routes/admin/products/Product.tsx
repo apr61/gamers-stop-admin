@@ -4,7 +4,7 @@ import { useAppSelector } from "@/store/hooks";
 import ProductPreviewImage from "@/components/ProductImagePreview";
 import { currencyFormatter } from "@/utils/currencyFormatter";
 
-export const SingleProduct = () => {
+export const Product = () => {
   const { record } = useAppSelector(selectProdcutsCurrentItem);
   if (record === null) return <Navigate to="/products" />;
   return (
@@ -16,7 +16,9 @@ export const SingleProduct = () => {
           <div className="flex gap-4">
             <p>{record.brand?.brand_name}</p>
             <p>
-              <span className="text-gray-700 dark:text-slate-400 font-semibold">Published : </span>
+              <span className="text-gray-700 dark:text-slate-400 font-semibold">
+                Published :{" "}
+              </span>
               {new Date(record.created_at).toLocaleDateString()}
             </p>
           </div>
@@ -25,11 +27,15 @@ export const SingleProduct = () => {
           {currencyFormatter(record.price)}
         </p>
         <section className="my-4">
-          <h3 className="text-lg font-semibold text-gray-700 dark:text-slate-400">Description :</h3>
+          <h3 className="text-lg font-semibold text-gray-700 dark:text-slate-400">
+            Description :
+          </h3>
           <p>{record.description}</p>
         </section>
         <section className="my-4">
-          <h3 className="text-lg font-semibold text-gray-700 dark:text-slate-400">Services :</h3>
+          <h3 className="text-lg font-semibold text-gray-700 dark:text-slate-400">
+            Services :
+          </h3>
           <ul>
             <li>10 days replacement</li>
             <li>Cash on delivery available</li>

@@ -2,7 +2,6 @@ import {
 	addressSearch,
 	selectAddresses,
 	selectAddressSearch,
-	selectAddressItemsView,
 	setAddressCurrentItem,
 } from "../addressSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -11,8 +10,7 @@ import { useEffect } from "react";
 import { Address, ColumnConfig, QueryType } from "@/types/api";
 import Pagination from "@/components/ui/Pagination";
 import Table from "@/components/ui/Table";
-import { GridItemsAction, TableActions } from "@/components/ItemActions";
-import ItemsGridLayout from "@/components/layouts/ItemsGridLayout";
+import { TableActions } from "@/components/ItemActions";
 import BlankUserProfile from "@/assets/blank-profile-picture.webp";
 
 const columns: ColumnConfig<Address>[] = [
@@ -27,9 +25,7 @@ const columns: ColumnConfig<Address>[] = [
 				<img
 					className="w-10 h-10 rounded-full"
 					src={
-						record?.user.avatar_url
-							? record?.user.avatar_url
-							: BlankUserProfile
+						record?.user.avatar_url ? record?.user.avatar_url : BlankUserProfile
 					}
 					alt={record?.user.full_name}
 				/>
@@ -67,7 +63,6 @@ const AddressList = () => {
 	const itemsPerPage = 6;
 	const totalPages = Math.ceil(totalItems / itemsPerPage);
 	const dispatch = useAppDispatch();
-	const itemsView = useAppSelector(selectAddressItemsView);
 
 	const handleRead = (record: Address) => {
 		dispatch(setAddressCurrentItem({ record: record, action: "read" }));
@@ -121,18 +116,10 @@ const AddressList = () => {
 
 	return (
 		<div className="mt-2">
-			{itemsView === "LIST" ? (
-				<div className="">
-					<Table columns={tableColumns} data={data as Address[]} />
-				</div>
-			) : (
-				<AddressGridView
-					data={data}
-					readFn={handleRead}
-					editFn={handleUpdate}
-					deleteFn={handleDelete}
-				/>
-			)}
+			<div className="">
+				<Table columns={tableColumns} data={data as Address[]} />
+			</div>
+
 			<div className="flex w-full mt-4 justify-between">
 				<p>
 					Page {+page} of {totalPages}
@@ -148,38 +135,3 @@ const AddressList = () => {
 };
 
 export default AddressList;
-
-type AddressGridViewProps = {
-	data: Address[];
-	readFn: (record: Address) => void;
-	editFn: (record: Address) => void;
-	deleteFn: (record: Address) => void;
-};
-
-const AddressGridView = ({ data, ...props }: AddressGridViewProps) => {
-	return (
-		<ItemsGridLayout>
-			{data.map((address) => (
-				<GridItemsAction key={address.id} record={address} {...props}>
-					<div className="mt-6 flex gap-2 flex-col items-center">
-						<div className="w-16 h-16 rounded-full overflow-hidden">
-							<img
-								src={
-									address?.user.avatar_url
-										? address?.user.avatar_url
-										: BlankUserProfile
-								}
-								className="w-full h-full object-cover"
-								loading="lazy"
-								alt={address?.user.full_name}
-							/>
-						</div>
-						<p className="text-lg font-semibold">{address.name}</p>
-						<p>+91-{address.phoneNumber}</p>
-						<p className="truncate w-[15ch]">{address.address}, {address.townLocality}, {address.cityDistrict}</p>
-					</div>
-				</GridItemsAction>
-			))}
-		</ItemsGridLayout>
-	);
-};

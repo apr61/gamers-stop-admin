@@ -21,7 +21,6 @@ interface UserState {
     totalItems: number;
   };
   current: CurrentType;
-  itemsView: ItemsViewType;
 }
 
 const initialState: UserState = {
@@ -40,7 +39,6 @@ const initialState: UserState = {
     status: "idle",
     error: null,
   },
-  itemsView: "GRID",
 };
 
 export const userSearch = createAsyncThunk(
@@ -105,9 +103,6 @@ const userSlice = createSlice({
     resetUserState: (state) => {
       state = initialState;
     },
-    setUserItemsView: (state, action: PayloadAction<ItemsViewType>) => {
-      state.itemsView = action.payload;
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -150,13 +145,11 @@ const userSlice = createSlice({
 export const selectUsers = (state: RootState) => state.users.list;
 export const selectUsersSearch = (state: RootState) => state.users.search;
 export const selectUserCurrentItem = (state: RootState) => state.users.current;
-export const selectUserItemsView = (state: RootState) => state.users.itemsView;
 
 export const {
   setUserCurrentItem,
   resetUserCurrentItem,
   resetUserState,
-  setUserItemsView,
 } = userSlice.actions;
 
 export default userSlice.reducer;

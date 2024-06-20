@@ -2,7 +2,7 @@ import OrderHeader from "@/features/orders/components/OrderHeader";
 import ListOrders from "@/features/orders/components/ListOrders";
 import DeleteOrder from "@/features/orders/components/DeleteOrder";
 
-const Orders = () => {
+export const Orders = () => {
 	return (
 		<div className="my-8">
 			<OrderHeader />
@@ -14,4 +14,3 @@ const Orders = () => {
 	);
 };
 
-export default Orders;

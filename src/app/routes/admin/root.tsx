@@ -3,14 +3,20 @@ import AdminLayout from "@/components/layouts/AdminLayout";
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 
-const AppRoot = () => {
+const AdminRoot = () => {
 	return (
-		<Suspense fallback={<PageLoader />}>
-			<AdminLayout>
+		<AdminLayout>
+			<Suspense
+				fallback={
+					<div className="flex w-full min-h-screen items-center justify-center">
+						<PageLoader />
+					</div>
+				}
+			>
 				<Outlet />
-			</AdminLayout>
-		</Suspense>
+			</Suspense>
+		</AdminLayout>
 	);
 };
 
-export default AppRoot;
+export default AdminRoot;

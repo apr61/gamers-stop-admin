@@ -1,16 +1,12 @@
 import {
-  FieldErrors,
   SubmitHandler,
-  UseFormRegister,
   useForm,
 } from "react-hook-form";
 import { AddressFormValues } from "@/types/api";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import CheckBox from "@/components/ui/checkbox";
-import { selectUsers, fetchUsers } from "@/features/users/usersSlice";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MobileNumberRegex } from "@/utils/regex";
 
 type AddressFormProps = {
@@ -133,11 +129,6 @@ const AddressForm = ({
         })}
         isChecked={isDefaultInput}
       />
-      <UserSelect
-        register={register}
-        errors={errors}
-        currentUserId={address ? address.userId : ""}
-      />
       <div className="flex gap-2">
         <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
           Save
@@ -148,52 +139,3 @@ const AddressForm = ({
 };
 
 export default AddressForm;
-
-type UserSelectProps = {
-  register: UseFormRegister<AddressFormValues>;
-  errors: FieldErrors<AddressFormValues>;
-  currentUserId: number | string;
-};
-
-const UserSelect = ({ register, errors, currentUserId }: UserSelectProps) => {
-  const { data: users, status, error } = useAppSelector(selectUsers);
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(fetchUsers());
-  }, [dispatch]);
-  return (
-    <>
-      <div className="w-full flex gap-2 flex-col">
-        <label htmlFor="category" className="text-lg cursor-pointer">
-          User
-        </label>
-        <select
-          id="category"
-          className={`w-full p-4  border border-border rounded-md cursor-pointer bg-dimBlack`}
-          {...register("userId", { required: "User is required" })}
-        >
-          <option value="">Select user</option>
-          {status === "pending" ? (
-            <option value="">Loading...</option>
-          ) : (
-            users
-              .filter((user) => user.user_role === "user")
-              .map((user) => (
-                <option
-                  key={user.id}
-                  value={user.id}
-                  className={`${
-                    currentUserId === user.id ? "bg-primary text-white" : ""
-                  }`}
-                >
-                  {user.full_name}
-                </option>
-              ))
-          )}
-        </select>
-      </div>
-      {errors.userId && <p className="text-red-500">{errors.userId.message}</p>}
-      {error && <p className="text-red-500">{error}</p>}
-    </>
-  );
-};

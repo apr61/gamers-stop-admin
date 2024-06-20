@@ -1,16 +1,13 @@
 import {
   BookOutlined,
-  CloseOutlined,
   ClusterOutlined,
   DashboardOutlined,
-  EnvironmentOutlined,
   ProductOutlined,
   TrademarkOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { ReactElement, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
-import Button from "../ui/Button";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectSideNav, setSideNav } from "../../redux/slice/uiActionsSlice";
 import { useOnOutsideClick } from "../../hooks/useOnClickOutside";
@@ -20,37 +17,32 @@ const Sidenav = () => {
   const dispatch = useAppDispatch();
   const navItems = [
     {
-      href: "/dashboard",
+      href: "",
       text: "Dashboard",
       icon: <DashboardOutlined />,
     },
     {
-      href: "/users",
+      href: "./users",
       text: "Users",
       icon: <UserOutlined />,
     },
     {
-      href: "/products",
+      href: "./products",
       text: "Products",
       icon: <ProductOutlined />,
     },
     {
-      href: "/categories",
+      href: "./categories",
       text: "Categories",
       icon: <ClusterOutlined />,
     },
     {
-      href: "/orders",
+      href: "./orders",
       text: "Orders",
       icon: <BookOutlined />,
     },
     {
-      href: "/addresses",
-      text: "Addresses",
-      icon: <EnvironmentOutlined />,
-    },
-    {
-      href: "/brands",
+      href: "./brands",
       text: "Brands",
       icon: <TrademarkOutlined />,
     },
@@ -66,10 +58,10 @@ const Sidenav = () => {
   };
 
   useEffect(() => {
-    if(windowSize.width >= 1024){
+    if (windowSize.width >= 1024) {
       dispatch(setSideNav(true));
     }
-  }, [windowSize])
+  }, [windowSize]);
 
   const sideNavRef = useOnOutsideClick(handleClickOutside);
   return (
@@ -87,16 +79,12 @@ const Sidenav = () => {
         ref={sideNavRef}
       >
         <div className="flex items-center justify-between w-full bg-white dark:bg-dimBlack">
-          <Link to="/dashboard" className={`text-2xl block p-4 w-full ${!sidenavOpen ? "shadow-custom-dark" : ""}`}>
+          <Link
+            to="/dashboard"
+            className={`text-2xl block p-4 w-full ${!sidenavOpen ? "shadow-custom-dark" : ""}`}
+          >
             Gamers Stop
           </Link>
-          {/* <Button
-            className="lg:hidden"
-            btnType="icon"
-            onClick={() => dispatch(setSideNav(false))}
-          >
-            <CloseOutlined />
-          </Button> */}
         </div>
         <ul className="flex flex-col p-2 md:p-4 bg-accent flex-grow">
           {navItems.map((navItem) => (
@@ -122,6 +110,7 @@ type NavItemProps = {
 };
 
 const NavItem = ({ href, text, Icon }: NavItemProps) => {
+  const checkForEnd = ["Products", "Orders"].indexOf(text) === -1; // Condition for nested routes active link
   return (
     <li className="w-full">
       <NavLink
@@ -131,6 +120,7 @@ const NavItem = ({ href, text, Icon }: NavItemProps) => {
             isActive ? "bg-primary text-white" : "hover:bg-muted"
           }`
         }
+        end={checkForEnd}
       >
         <span className="text-xl">{Icon}</span>
         {text}

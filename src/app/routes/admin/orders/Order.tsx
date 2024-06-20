@@ -12,7 +12,7 @@ import Table from "@/components/ui/Table";
 import { currencyFormatter } from "@/utils/currencyFormatter";
 import BlankUserProfile from "@/assets/blank-profile-picture.webp"
 
-const SingleOrder = () => {
+export const Order = () => {
 	const { record } = useAppSelector(
 		selectOrdersCurrentItem,
 	);
@@ -159,4 +159,3 @@ const SingleOrder = () => {
 	);
 };
 
-export default SingleOrder;

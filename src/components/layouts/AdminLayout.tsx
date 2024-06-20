@@ -1,5 +1,6 @@
 import Sidenav from "@/components/Sidenav";
 import Navbar from "@/components/Navbar";
+import LoadingProgress from "../LoadingProgress";
 
 type AdminLayoutProps = {
   children: React.ReactNode;
@@ -8,6 +9,7 @@ type AdminLayoutProps = {
 const AdminLayout = ({ children }: AdminLayoutProps) => {
   return (
     <div className="flex min-h-screen">
+      <LoadingProgress />
       <Sidenav />
       <div className="w-full flex flex-col relative h-full">
         <Navbar />

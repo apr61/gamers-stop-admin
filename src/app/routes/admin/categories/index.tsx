@@ -4,7 +4,7 @@ import EditCategory from "@/features/categories/components/EditCategory";
 import CreateCategory from "@/features/categories/components/CreateCategory";
 import CategoryDelete from "@/features/categories/components/DeleteCategory";
 
-const Categories = () => {
+export const Categories = () => {
   return (
     <div className="my-8">
       <CategoryHeader />
@@ -18,4 +18,3 @@ const Categories = () => {
   );
 };
 
-export default Categories;
